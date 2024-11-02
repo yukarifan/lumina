@@ -43,7 +43,7 @@ const PDFReader = () => {
         setNumPages(doc.numPages);
         setPageNum(1);
 
-        // 生成缩略图
+        // Generate thumbnails
         const thumbnailsArray = [];
         for (let i = 1; i <= doc.numPages; i++) {
           const page = await doc.getPage(i);
@@ -118,12 +118,23 @@ const PDFReader = () => {
       {/* Sidebar */}
       <div className={`${sidebarOpen ? 'w-64' : 'w-0'} bg-white shadow-lg transition-all duration-300 overflow-hidden`}>
         <div className="p-4">
-          <input
-            type="file"
-            accept=".pdf"
-            onChange={(e) => e.target.files?.[0] && loadPDF(e.target.files[0])}
-            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-          />
+          <label className="block">
+            <span className="sr-only">Choose PDF file</span>
+            <div className="relative">
+              <button 
+                onClick={() => (document.querySelector('input[type="file"]') as HTMLInputElement)?.click()}
+                className="w-full py-2 px-4 rounded-full text-sm font-semibold bg-blue-50 text-blue-700 hover:bg-blue-100"
+              >
+                Select PDF File
+              </button>
+              <input
+                type="file"
+                accept=".pdf"
+                onChange={(e) => e.target.files?.[0] && loadPDF(e.target.files[0])}
+                className="hidden"
+              />
+            </div>
+          </label>
           <div className="mt-4 space-y-2 overflow-auto" style={{ maxHeight: 'calc(100vh - 100px)' }}>
             {thumbnails.map((thumbnail, index) => (
               <div
@@ -202,7 +213,7 @@ const PDFReader = () => {
           />
           {!pdfDoc && !loading && (
             <div className="flex items-center justify-center h-64 bg-white rounded-lg shadow w-full max-w-2xl">
-              <p className="text-gray-500">请选择一个PDF文件</p>
+              <p className="text-gray-500">Please select a PDF file</p>
             </div>
           )}
         </div>
