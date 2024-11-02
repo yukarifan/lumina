@@ -192,7 +192,7 @@ const PDFReader = () => {
           
           context.beginPath();
           context.arc(btnX + btnSize/2, btnY + btnSize/2, btnSize/2, 0, Math.PI * 2);
-          context.fillStyle = '#ff4444';
+          context.fillStyle = 'rgba(255, 68, 68, 0.9)'; // Red background
           context.fill();
           
           context.strokeStyle = 'white';
@@ -286,6 +286,22 @@ const PDFReader = () => {
   const handleMouseUp = () => {
     if (!selectionMode || !currentSelection) return;
     
+    // Calculate selection dimensions
+    const width = Math.abs(currentSelection.end.x - currentSelection.start.x);
+    const height = Math.abs(currentSelection.end.y - currentSelection.start.y);
+    
+    // Minimum size threshold (adjust these values as needed)
+    const MIN_WIDTH = 20;  // minimum 20 pixels width
+    const MIN_HEIGHT = 20; // minimum 20 pixels height
+    
+    // Check if selection is too small
+    if (width < MIN_WIDTH || height < MIN_HEIGHT) {
+      console.log('Selection too small:', { width, height });
+      setIsSelecting(false);
+      setCurrentSelection(null);
+      return;
+    }
+
     const hasOverlap = (selections[pageNum] || []).some(existing => 
       checkOverlap(existing, currentSelection)
     );
@@ -321,8 +337,11 @@ const PDFReader = () => {
     const rect = overlayCanvasRef.current?.getBoundingClientRect();
     if (!rect) return;
     
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const x = (e.clientX - rect.left) / scale;
+    const y = (e.clientY - rect.top) / scale;
+
+    console.log('Mouse Position:', { x, y });
+    console.log('Current Page Selections:', selections[pageNum]);
 
     // Check if mouse is over any selection on current page
     const hoveredId = (selections[pageNum] || []).find(selection => {
@@ -333,9 +352,19 @@ const PDFReader = () => {
       const selWidth = Math.abs(width);
       const selHeight = Math.abs(height);
 
+      console.log('Selection:', {
+        id: selection.id,
+        x: selX,
+        y: selY,
+        width: selWidth,
+        height: selHeight,
+        mouseInBounds: x >= selX && x <= selX + selWidth && y >= selY && y <= selY + selHeight
+      });
+
       return x >= selX && x <= selX + selWidth && y >= selY && y <= selY + selHeight;
     })?.id || null;
 
+    console.log('Hovered Selection ID:', hoveredId);
     setHoveredSelection(hoveredId);
   };
 
@@ -366,12 +395,17 @@ const PDFReader = () => {
     const height = selection.end.y - selection.start.y;
     const selX = width >= 0 ? selection.start.x : selection.end.x;
     const absWidth = Math.abs(width);
-    const btnSize = 24; // Match the size used in drawSelectionOverlay
-    const btnX = selX + absWidth - btnSize - 8;
-    const btnY = height >= 0 ? selection.start.y : selection.end.y;
+    const btnSize = 24;
+    const btnX = (selX + absWidth - btnSize - 8) * scale;
+    const btnY = (height >= 0 ? selection.start.y : selection.end.y) * scale + 8;
 
     // Check if click is within delete button
-    if (x >= btnX && x <= btnX + btnSize && y >= btnY && y <= btnY + btnSize) {
+    const distance = Math.sqrt(
+      Math.pow(x - (btnX + btnSize/2), 2) + 
+      Math.pow(y - (btnY + btnSize/2), 2)
+    );
+
+    if (distance <= btnSize/2) {
       deleteSelection(hoveredSelection);
     }
   };
