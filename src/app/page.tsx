@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight, Plus, Minus, MousePointer, MessageSquare, X,
 import { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
 import { ImageAnalyzer } from '@/app/components/ImageAnalyzer';
 import { StudentHighlight, HeatmapData } from '@/types/highlights';
-import { generateSyntheticHighlights, generateHeatmapData } from '@/utils/syntheticData';
+import { generateSyntheticHighlights, generateRandomSyntheticHighlights, generateHeatmapData } from '@/utils/syntheticData';
 import { HeatmapOverlay } from '@/app/components/HeatmapOverlay';
 
 interface Selection {
