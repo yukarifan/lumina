@@ -1,5 +1,5 @@
 import { StudentHighlight } from '@/types/highlights';
-
+import { HeatmapData } from '@/types/highlights';
 const STUDENT_COUNT = 50;
 const HIGHLIGHTS_PER_STUDENT = 3;
 
