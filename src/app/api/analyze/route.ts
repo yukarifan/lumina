@@ -20,20 +20,39 @@ export async function POST(request: Request) {
 
     const { image, question } = body;
     
-    // Validate required fields
-    if (!image && !question) {
-      return NextResponse.json({ 
-        error: 'Missing required fields', 
-        details: 'Either image or question must be provided'
-      }, { status: 400 });
-    }
+    // Base message for image analysis
+    const baseMessage = question 
+      ? question 
+      : "The picture is from user, a student. Please analyze this image from a PDF document, give a concise summary, and ask the user to clarify any confusion. Be concise but informative.";
 
-    // Mock response based on whether it's a question or general analysis
-    const mockResponse = question 
-      ? "This appears to be a mathematical equation showing the relationship between energy and mass. The equation E=mc² is Einstein's famous mass-energy equivalence formula, where E represents energy, m represents mass, and c represents the speed of light in vacuum."
-      : "I can see a diagram illustrating basic geometric principles. There's a right triangle with sides labeled a, b, and c, demonstrating the Pythagorean theorem (a²+b²=c²).";
+    const messages = [
+      // Include conversation history if available
+      ...(history?.map(msg => ({
+        role: msg.role as "assistant" | "user",
+        content: msg.content
+      })) || []),
+      {
+        role: "user",
+        content: [
+          { type: "text", text: baseMessage },
+          ...(image ? [{
+            type: "image_url",
+            image_url: {
+              url: image,
+              detail: "high"
+            }
+          }] : [])
+        ]
+      },
+    ];
 
-    return NextResponse.json({ analysis: mockResponse });
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: messages as any,
+      max_tokens: 500,
+    });
+
+    const analysis = processLatexDelimiters(response.choices[0].message.content || '');
     
   } catch (error) {
     console.error('Error in analyze route:', error);
