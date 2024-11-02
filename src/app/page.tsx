@@ -68,6 +68,9 @@ const PDFReader = () => {
   const [showHeatmap, setShowHeatmap] = useState(false);
   const [syntheticHighlights, setSyntheticHighlights] = useState<StudentHighlight[]>([]);
   const [heatmapData, setHeatmapData] = useState<HeatmapData | null>(null);
+  const [renderedPages, setRenderedPages] = useState<{
+    [pageNum: number]: HTMLCanvasElement;
+  }>({});
 
   useEffect(() => {
   const loadPdfJs = async () => {
@@ -128,29 +131,17 @@ const PDFReader = () => {
     }
   };
 
-  const renderPage = async (num: number, doc: PDFDocumentProxy | null = pdfDoc) => {
+  const renderPage = async (pageNum: number, doc: PDFDocumentProxy | null = pdfDoc) => {
     if (!doc) return;
 
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
     if (!context) return;
 
-    const page = await doc.getPage(num);
+    const page = await doc.getPage(pageNum);
     const viewport = page.getViewport({ scale });
     canvas.height = viewport.height;
     canvas.width = viewport.width;
-
-    // Set the same dimensions for overlay canvas
-    const overlayCanvas = overlayCanvasRef.current;
-    if (overlayCanvas) {
-      overlayCanvas.style.position = 'absolute';
-      overlayCanvas.style.top = '0';
-      overlayCanvas.style.left = '0';
-      overlayCanvas.style.zIndex = '50'; // High z-index to ensure it's on top
-      overlayCanvas.height = viewport.height;
-      overlayCanvas.width = viewport.width;
-    }
 
     const renderContext = {
       canvasContext: context,
@@ -158,7 +149,19 @@ const PDFReader = () => {
     };
 
     await page.render(renderContext).promise;
-    drawSelectionOverlay(); // Draw selection overlay after rendering PDF
+    
+    setRenderedPages(prev => ({
+      ...prev,
+      [pageNum]: canvas
+    }));
+  };
+
+  const renderAllPages = async () => {
+    if (!pdfDoc || !numPages) return;
+    
+    for (let i = 1; i <= numPages; i++) {
+      await renderPage(i);
+    }
   };
 
   // Add this new function to handle overlay drawing
@@ -251,9 +254,10 @@ const PDFReader = () => {
   // Separate useEffect for PDF rendering
   useEffect(() => {
     if (pdfDoc) {
-      renderPage(pageNum);
+      // pdfDoc.destroy();
+      renderAllPages();
     }
-  }, [pageNum, scale, pdfDoc]);
+  }, [scale, pdfDoc]);
 
   const changePage = (offset: number) => {
     const newPage = pageNum + offset;
@@ -1030,8 +1034,8 @@ const PDFReader = () => {
         </div>
 
         {/* PDF View Area */}
-        <div className={`flex-1 overflow-auto transition-all duration-300`}>
-          <div className="flex justify-center p-4">
+        <div className="flex-1 overflow-auto transition-all duration-300">
+          <div className="flex flex-col items-center p-4 space-y-4">
             {loading ? (
               <div className="flex items-center justify-center h-64">
                 <div className="text-gray-500">Loading PDF...</div>
@@ -1066,34 +1070,43 @@ const PDFReader = () => {
                 </label>
               </div>
             ) : (
-              <div className="relative">
-                <canvas
-                  ref={canvasRef}
-                  className="shadow-lg bg-white"
-                />
-                <canvas
-                  ref={overlayCanvasRef}
-                  className="absolute top-0 left-0 pointer-events-auto"
-                  style={{ 
-                    zIndex: 50,
-                    cursor: selectionMode ? 'crosshair' : 'default'
-                  }}
-                  onMouseDown={handleMouseDown}
-                  onMouseMove={handleMouseMove}
-                  onMouseUp={handleMouseUp}
-                  onMouseLeave={() => {
-                    handleMouseUp();
-                    setHoveredSelection(null);
-                  }}
-                  onClick={handleOverlayClick}
-                />
-                {showHeatmap && heatmapData && (
-                  <HeatmapOverlay
-                    heatmapData={heatmapData}
-                    width={canvasRef.current?.width || 0}
-                    height={canvasRef.current?.height || 0}
-                  />
-                )}
+              <div className="relative space-y-4">
+                {Object.entries(renderedPages).map(([pageNum, canvas]) => (
+                  <div key={pageNum} className="relative shadow-lg">
+                    <img 
+                      src={canvas.toDataURL()}
+                      alt={`Page ${pageNum}`}
+                      className="bg-white"
+                    />
+                    {/* Overlay canvas for selections */}
+                    <canvas
+                      className="absolute top-0 left-0 pointer-events-auto"
+                      style={{ 
+                        zIndex: 50,
+                        cursor: selectionMode ? 'crosshair' : 'default',
+                        width: canvas.width,
+                        height: canvas.height
+                      }}
+                      width={canvas.width}
+                      height={canvas.height}
+                      onMouseDown={handleMouseDown}
+                      onMouseMove={handleMouseMove}
+                      onMouseUp={handleMouseUp}
+                      onMouseLeave={() => {
+                        handleMouseUp();
+                        setHoveredSelection(null);
+                      }}
+                      onClick={handleOverlayClick}
+                    />
+                    {showHeatmap && heatmapData && (
+                      <HeatmapOverlay
+                        heatmapData={heatmapData}
+                        width={canvas.width}
+                        height={canvas.height}
+                      />
+                    )}
+                  </div>
+                ))}
               </div>
             )}
           </div>
