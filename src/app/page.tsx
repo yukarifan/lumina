@@ -1,8 +1,12 @@
 "use client";
-import React, { useEffect, useRef, useState } from 'react';
-import { ChevronLeft, ChevronRight, Plus, Minus, MousePointer, MessageSquare, X } from 'lucide-react';
+import React, { useEffect, useRef, useState, JSX, ComponentPropsWithoutRef } from 'react';
+import { ChevronLeft, ChevronRight, Plus, Minus, MousePointer, MessageSquare, X, GripVertical } from 'lucide-react';
 import { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
 import { ImageAnalyzer } from '@/app/components/ImageAnalyzer';
+import ReactMarkdown from 'react-markdown';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import 'katex/dist/katex.min.css';
 
 interface Selection {
   id?: string;
@@ -14,6 +18,9 @@ interface AIResponse {
   id: string;
   text: string;
   timestamp: Date;
+  imageData?: string;
+  parentId?: string;
+  role: 'user' | 'assistant';
 }
 
 const PDFReader = () => {
@@ -37,6 +44,9 @@ const PDFReader = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [zoomInput, setZoomInput] = useState(String(Math.round(scale * 100)));
   const [pageInput, setPageInput] = useState(String(pageNum));
+  const [chatInput, setChatInput] = useState('');
+  const [analysisPanelWidth, setAnalysisPanelWidth] = useState(384); // 384px = 96rem (default width)
+  const [isResizing, setIsResizing] = useState(false);
 
   useEffect(() => {
   const loadPdfJs = async () => {
@@ -396,7 +406,10 @@ const PDFReader = () => {
       setAiResponses(prev => [...prev, {
         id: crypto.randomUUID(),
         text: data.analysis,
-        timestamp: new Date()
+        timestamp: new Date(),
+        imageData: imageData,
+        parentId: aiResponses[aiResponses.length - 1]?.id,
+        role: 'assistant'
       }]);
     } catch (error) {
       console.error('Error analyzing selection:', error);
@@ -444,10 +457,83 @@ const PDFReader = () => {
     setPageInput(String(pageNum));
   }, [pageNum]);
 
+  const handleChatSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!chatInput.trim()) return;
+
+    const question = chatInput.trim();
+    setChatInput('');
+    setIsAnalyzing(true);
+
+    // Add user's message to the chat immediately
+    const userMessage: AIResponse = {
+      id: crypto.randomUUID(),
+      text: question,
+      timestamp: new Date(),
+      parentId: aiResponses[aiResponses.length - 1]?.id,
+      role: 'user'
+    };
+    setAiResponses(prev => [...prev, userMessage]);
+
+    try {
+      const history = aiResponses.map(r => ({
+        role: r.role === 'user' ? 'user' as const : 'assistant' as const,
+        content: r.text
+      }));
+
+      const response = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          question,
+          history,
+        })
+      });
+
+      const data = await response.json();
+      console.log('Received image analysis response:', data);
+      
+      // Add AI response to chat
+      setAiResponses(prev => [...prev, {
+        id: crypto.randomUUID(),
+        text: data.analysis,
+        timestamp: new Date(),
+        parentId: userMessage.id,
+        role: 'assistant'
+      }]);
+    } catch (error) {
+      console.error('Error sending follow-up:', error);
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  const handleResize = (e: MouseEvent) => {
+    if (!isResizing) return;
+    
+    // Calculate new width based on mouse position
+    const newWidth = window.innerWidth - e.clientX;
+    // Set minimum and maximum widths
+    const clampedWidth = Math.min(Math.max(300, newWidth), 800);
+    setAnalysisPanelWidth(clampedWidth);
+  };
+
+  // Add useEffect to handle mouse events during resize
+  useEffect(() => {
+    if (isResizing) {
+      window.addEventListener('mousemove', handleResize);
+      window.addEventListener('mouseup', () => setIsResizing(false));
+    }
+    return () => {
+      window.removeEventListener('mousemove', handleResize);
+      window.removeEventListener('mouseup', () => setIsResizing(false));
+    };
+  }, [isResizing]);
+
   return (
-    <div className="fixed inset-0 flex no-scroll">
+    <div className="fixed inset-0 flex no-scroll select-none">
       {/* Left Sidebar - Thumbnails */}
-      <div className={`transition-all duration-300 ${
+      <div className={`transition-all duration-300 select-none ${
         sidebarOpen ? 'w-64' : 'w-0'
       } border-r bg-gray-50 scroll-y overflow-hidden`}>
         <div className="p-4 w-64"> {/* Fixed width container for content */}
@@ -471,7 +557,7 @@ const PDFReader = () => {
       </div>
 
       {/* Main PDF Viewer */}
-      <div className={`flex-1 flex flex-col scroll-hidden transition-all duration-300 ${
+      <div className={`flex-1 flex flex-col scroll-hidden transition-all duration-300 select-none ${
         sidebarOpen ? 'ml-0' : 'ml-0'
       }`}>
         {/* Toolbar */}
@@ -660,7 +746,25 @@ const PDFReader = () => {
       </div>
 
       {/* AI Analysis Panel */}
-      <div className="w-96 border-l bg-white flex flex-col scroll-hidden">
+      <div 
+        className="flex flex-col scroll-hidden bg-white border-l relative select-none"
+        style={{ width: `${analysisPanelWidth}px` }}
+      >
+        {/* Resize Handle */}
+        <div
+          className="absolute left-[-8px] top-0 bottom-0 w-4 cursor-ew-resize group flex items-center justify-center"
+          onMouseDown={() => setIsResizing(true)}
+        >
+          {/* Thick Background Line */}
+          <div className="absolute inset-y-0 left-[50%] w-[8px] bg-gray-200 transform -translate-x-1/2" />
+          
+          {/* Grip Icon */}
+          <GripVertical 
+            size={24} 
+            className="relative z-10 text-gray-400 group-hover:text-blue-500 transition-colors"
+          />
+        </div>
+
         {/* Chat Header */}
         <div className="flex-none p-4 border-b">
           <h3 className="font-semibold">AI Analysis</h3>
@@ -670,12 +774,42 @@ const PDFReader = () => {
         <div className="flex-1 scroll-y p-4">
           <div className="space-y-2">
             {aiResponses.map(response => (
-              <div key={response.id} className="bg-blue-50 rounded-lg p-3">
+              <div 
+                key={response.id} 
+                className={`rounded-lg p-3 ${
+                  response.role === 'user' 
+                    ? 'bg-gray-100 ml-8' 
+                    : 'bg-blue-50 mr-8'
+                }`}
+              >
                 <div className="max-h-[300px] overflow-y-auto custom-scrollbar">
-                  <ImageAnalyzer 
-                    key={response.id}
-                    image={response.text}
-                  />
+                  {response.imageData ? (
+                    <ImageAnalyzer 
+                      key={response.id}
+                      image={response.text}
+                    />
+                  ) : (
+                    <ReactMarkdown
+                      remarkPlugins={[remarkMath]}
+                      rehypePlugins={[rehypeKatex]}
+                      className="prose prose-sm max-w-none"
+                      components={{
+                        p: ({node, ...props}) => <p className="mb-2" {...props} />,
+                        a: ({node, ...props}) => <a className="text-blue-600 hover:underline" {...props} />,
+                        code: ({node, inline, ...props}: {
+                          node?: any;
+                          inline?: boolean;
+                          children?: React.ReactNode;
+                        } & Omit<ComponentPropsWithoutRef<'code'>, 'children'>): JSX.Element => (
+                          inline 
+                            ? <code className="bg-gray-100 px-1 rounded" {...props} />
+                            : <code className="block bg-gray-100 p-2 rounded" {...props} />
+                        ),
+                      }}
+                    >
+                      {response.text}
+                    </ReactMarkdown>
+                  )}
                 </div>
                 <p className="text-xs text-gray-500 mt-1">
                   {response.timestamp.toLocaleTimeString()}
@@ -683,11 +817,31 @@ const PDFReader = () => {
               </div>
             ))}
             {isAnalyzing && (
-              <div className="bg-gray-50 rounded-lg p-3">
-                <p className="text-sm text-gray-500">Analyzing selection...</p>
+              <div className="bg-gray-50 rounded-lg p-3 mr-8">
+                <p className="text-sm text-gray-500">Analyzing...</p>
               </div>
             )}
           </div>
+        </div>
+
+        {/* Chat Input */}
+        <div className="flex-none p-4 border-t">
+          <form onSubmit={handleChatSubmit} className="flex gap-2">
+            <input
+              type="text"
+              value={chatInput}
+              onChange={(e) => setChatInput(e.target.value)}
+              placeholder="Ask a follow-up question..."
+              className="flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+            />
+            <button
+              type="submit"
+              disabled={!chatInput.trim()}
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50"
+            >
+              Send
+            </button>
+          </form>
         </div>
       </div>
     </div>
