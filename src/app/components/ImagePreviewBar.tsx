@@ -1,5 +1,6 @@
 import React from 'react';
 import { X, Image as ImageIcon } from 'lucide-react';
+import { AIResponse } from '@/types/ai';
 
 interface ImagePreviewBarProps {
   isOpen: boolean;
@@ -11,6 +12,7 @@ interface ImagePreviewBarProps {
     analysis?: string;
     summary?: string;
     conversationId?: string;
+    conversation?: AIResponse[];
   }[];
   onDeleteImage: (id: string) => void;
   onImageClick: (id: string) => void;

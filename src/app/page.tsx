@@ -48,6 +48,8 @@ const PDFReader = () => {
     timestamp: Date;
     analysis?: string;
     summary?: string;
+    conversationId?: string;
+    conversation?: AIResponse[];
   }>>([]);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [pageInput, setPageInput] = useState(String(pageNum));
@@ -526,7 +528,8 @@ const PDFReader = () => {
         timestamp: new Date(),
         analysis: analysisData.analysis,
         summary: summaryData.summary,
-        conversationId: imageId
+        conversationId: imageId,
+        conversation: [initialResponse]
       }]);
 
       // Set the new response and open chat
@@ -573,6 +576,7 @@ const PDFReader = () => {
     e.preventDefault();
     if (!chatInput.trim()) return;
 
+    // Find the current image ID from the first message that has imageData
     const currentImageId = aiResponses[0]?.imageData ? 
       capturedImages.find(img => img.data === aiResponses[0].imageData)?.id : 
       null;
@@ -594,7 +598,6 @@ const PDFReader = () => {
         content: msg.text
       }));
 
-      // Make API call
       const response = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -613,18 +616,29 @@ const PDFReader = () => {
         role: 'assistant'
       };
 
-      setAiResponses(prev => [...prev, aiMessage]);
+      const updatedResponses = [...aiResponses, userMessage, aiMessage];
+      setAiResponses(updatedResponses);
 
-      // Update conversation if we're in one
+      // Update conversation if we have a current image
       if (currentImageId) {
+        // Update conversations state
         setConversations(prev => ({
           ...prev,
-          [currentImageId]: [...prev[currentImageId], userMessage, aiMessage]
+          [currentImageId]: updatedResponses
         }));
+
+        // Update captured images with new conversation
+        setCapturedImages(prev => prev.map(img => 
+          img.id === currentImageId 
+            ? { ...img, conversation: updatedResponses }
+            : img
+        ));
+
+        // Update the summary with the new conversation
+        await updateImageSummary(currentImageId, updatedResponses);
       }
     } catch (error) {
       console.error('Error getting AI response:', error);
-      // Optionally add error message to UI
       setAiResponses(prev => [...prev, {
         id: crypto.randomUUID(),
         text: "Sorry, I couldn't process your request. Please try again.",
@@ -685,6 +699,37 @@ const PDFReader = () => {
       document.removeEventListener('mouseup', handleMouseUp);
     };
   }, [isResizing]);
+
+  const updateImageSummary = async (imageId: string, conversation: AIResponse[]) => {
+    try {
+      // Format the entire conversation with clear role labels and chronological order
+      const fullConversation = conversation
+        .map(msg => {
+          const roleLabel = msg.role === 'assistant' ? 'AI' : 'User';
+          return `${roleLabel}: ${msg.text}`;
+        })
+        .join('\n\n'); // Add extra line break for better readability
+
+      const summaryResponse = await fetch('/api/summarize', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          text: fullConversation,
+          isConversation: true  // Add flag to indicate this is a conversation
+        })
+      });
+
+      const summaryData = await summaryResponse.json();
+
+      setCapturedImages(prev => prev.map(img => 
+        img.id === imageId 
+          ? { ...img, summary: summaryData.summary, conversation }
+          : img
+      ));
+    } catch (error) {
+      console.error('Error updating summary:', error);
+    }
+  };
 
   return (
     <div className="fixed inset-0 flex no-scroll select-none">
