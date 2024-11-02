@@ -14,7 +14,16 @@ export async function POST(request: Request) {
       messages: [
         {
           role: "user",
-          content: `Summarize the following analysis in 20 words or less, keep core terms and phrases: "${text}"`,
+          content: `Analyze this conversation between User and AI. Create a brief summary (20 words max) that highlights:
+1. The main topic or concept being discussed
+2. Specifically identify what the user was confused about or asked for clarification on
+3. The key conclusion or explanation provided
+
+Example format:
+"Topic: [main topic]. User confusion: [specific confusion]. Resolution: [key conclusion]"
+
+Conversation:
+${text}`,
         },
       ],
       max_tokens: 50,

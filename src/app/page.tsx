@@ -51,6 +51,8 @@ const PDFReader = () => {
     timestamp: Date;
     analysis?: string;
     summary?: string;
+    conversationId?: string;
+    conversation?: AIResponse[];
   }>>([]);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [pageInput, setPageInput] = useState(String(pageNum));
@@ -59,6 +61,9 @@ const PDFReader = () => {
   const [chatInput, setChatInput] = useState('');
   const [analysisPanelWidth, setAnalysisPanelWidth] = useState(400);
   const [isResizing, setIsResizing] = useState(false);
+  const [conversations, setConversations] = useState<{
+    [imageId: string]: AIResponse[];
+  }>({});
   const [studentId] = useState(`student_${crypto.randomUUID()}`); // Simulated student ID
   const [showHeatmap, setShowHeatmap] = useState(false);
   const [syntheticHighlights, setSyntheticHighlights] = useState<StudentHighlight[]>([]);
@@ -458,12 +463,15 @@ const PDFReader = () => {
     }
   };
 
-  // Update the analyzeSelection function to handle scaling
+  // Modify analyzeSelection function
   const analyzeSelection = async (selection: Selection) => {
     if (!canvasRef.current) return;
     
     setIsAnalyzing(true);
     const imageId = crypto.randomUUID();
+    
+    // Clear existing chat responses immediately when starting a new capture
+    setAiResponses([]);
     
     try {
       const tempCanvas = document.createElement('canvas');
@@ -489,14 +497,7 @@ const PDFReader = () => {
 
       const imageData = tempCanvas.toDataURL('image/png');
       
-      // Add image with temporary state
-      setCapturedImages(prev => [...prev, { 
-        id: imageId, 
-        data: imageData,
-        timestamp: new Date()
-      }]);
-
-      // Get analysis
+      // Create initial conversation
       const analysisResponse = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -504,8 +505,6 @@ const PDFReader = () => {
       });
 
       const analysisData = await analysisResponse.json();
-      
-      // Get summary
       const summaryResponse = await fetch('/api/summarize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -514,29 +513,47 @@ const PDFReader = () => {
 
       const summaryData = await summaryResponse.json();
       
-      // Update image with both analysis and summary
-      setCapturedImages(prev => prev.map(img => 
-        img.id === imageId 
-          ? { 
-              ...img, 
-              analysis: analysisData.analysis,
-              summary: summaryData.summary
-            }
-          : img
-      ));
-
-      setAiResponses(prev => [...prev, {
+      // Create initial response for the new conversation
+      const initialResponse: AIResponse = {
         id: crypto.randomUUID(),
         text: analysisData.analysis,
         timestamp: new Date(),
+        imageData: imageData,
         role: 'assistant'
+      };
+
+      // Update conversations state
+      setConversations(prev => ({
+        ...prev,
+        [imageId]: [initialResponse]
+      }));
+
+      // Update captured images
+      setCapturedImages(prev => [...prev, { 
+        id: imageId, 
+        data: imageData,
+        timestamp: new Date(),
+        analysis: analysisData.analysis,
+        summary: summaryData.summary,
+        conversationId: imageId,
+        conversation: [initialResponse]
       }]);
+
+      // Set the new response and open chat
+      setAiResponses([initialResponse]);
       setIsChatOpen(true);
     } catch (error) {
       console.error('Error analyzing selection:', error);
     } finally {
       setIsAnalyzing(false);
     }
+  };
+
+  // Add handler for image click
+  const handleImageClick = (imageId: string) => {
+    const conversation = conversations[imageId] || [];
+    setAiResponses(conversation);
+    setIsChatOpen(true);
   };
 
   const handleDeleteImage = (imageId: string) => {
@@ -561,9 +578,15 @@ const PDFReader = () => {
     }
   };
 
+  // Modify handleChatSubmit to save responses to the current conversation
   const handleChatSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!chatInput.trim()) return;
+
+    // Find the current image ID from the first message that has imageData
+    const currentImageId = aiResponses[0]?.imageData ? 
+      capturedImages.find(img => img.data === aiResponses[0].imageData)?.id : 
+      null;
 
     const userMessage: AIResponse = {
       id: crypto.randomUUID(),
@@ -575,6 +598,145 @@ const PDFReader = () => {
     // Add user message to UI
     setAiResponses(prev => [...prev, userMessage]);
     setChatInput('');
+
+    try {
+      // Get previous messages for context
+      const messageHistory = aiResponses.map(msg => ({
+        role: msg.role,
+        content: msg.text
+      }));
+
+      const response = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          question: chatInput,
+          history: messageHistory
+        })
+      });
+
+      const data = await response.json();
+
+      const aiMessage: AIResponse = {
+        id: crypto.randomUUID(),
+        text: data.analysis,
+        timestamp: new Date(),
+        role: 'assistant'
+      };
+
+      const updatedResponses = [...aiResponses, userMessage, aiMessage];
+      setAiResponses(updatedResponses);
+
+      // Update conversation if we have a current image
+      if (currentImageId) {
+        // Update conversations state
+        setConversations(prev => ({
+          ...prev,
+          [currentImageId]: updatedResponses
+        }));
+
+        // Update captured images with new conversation
+        setCapturedImages(prev => prev.map(img => 
+          img.id === currentImageId 
+            ? { ...img, conversation: updatedResponses }
+            : img
+        ));
+
+        // Update the summary with the new conversation
+        await updateImageSummary(currentImageId, updatedResponses);
+      }
+    } catch (error) {
+      console.error('Error getting AI response:', error);
+      setAiResponses(prev => [...prev, {
+        id: crypto.randomUUID(),
+        text: "Sorry, I couldn't process your request. Please try again.",
+        timestamp: new Date(),
+        role: 'assistant'
+      }]);
+    }
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isResizing) return;
+      
+      // Get window width for boundary checking
+      const windowWidth = window.innerWidth;
+      
+      // Calculate new width while respecting boundaries
+      const minWidth = 300;
+      const maxWidth = Math.min(800, windowWidth - 100); // Leave some space on screen
+      const newWidth = Math.max(minWidth, Math.min(maxWidth, windowWidth - e.clientX));
+      
+      // Update width with requestAnimationFrame for smoother resizing
+      requestAnimationFrame(() => {
+        setAnalysisPanelWidth(newWidth);
+      });
+    };
+
+    const handleMouseUp = () => {
+      document.body.style.cursor = 'default';
+      document.body.style.userSelect = 'auto';
+      setIsResizing(false);
+    };
+
+    const handleMouseDown = () => {
+      document.body.style.cursor = 'ew-resize';
+      document.body.style.userSelect = 'none';
+      setIsResizing(true);
+    };
+
+    // Add resize handle element
+    const resizeHandle = document.querySelector('.resize-handle');
+    if (resizeHandle) {
+      resizeHandle.addEventListener('mousedown', handleMouseDown);
+    }
+
+    // Add document-level event listeners
+    if (isResizing) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    }
+
+    return () => {
+      // Clean up all event listeners
+      if (resizeHandle) {
+        resizeHandle.removeEventListener('mousedown', handleMouseDown);
+      }
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isResizing]);
+
+  const updateImageSummary = async (imageId: string, conversation: AIResponse[]) => {
+    try {
+      // Format the entire conversation with clear role labels and chronological order
+      const fullConversation = conversation
+        .map(msg => {
+          const roleLabel = msg.role === 'assistant' ? 'AI' : 'User';
+          return `${roleLabel}: ${msg.text}`;
+        })
+        .join('\n\n'); // Add extra line break for better readability
+
+      const summaryResponse = await fetch('/api/summarize', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          text: fullConversation,
+          isConversation: true  // Add flag to indicate this is a conversation
+        })
+      });
+
+      const summaryData = await summaryResponse.json();
+
+      setCapturedImages(prev => prev.map(img => 
+        img.id === imageId 
+          ? { ...img, summary: summaryData.summary, conversation }
+          : img
+      ));
+    } catch (error) {
+      console.error('Error updating summary:', error);
+    }
 
     try {
       // Get previous messages for context
@@ -844,8 +1006,16 @@ const PDFReader = () => {
                   setIsOpen={setIsImageBarOpen}
                   images={capturedImages}
                   onDeleteImage={handleDeleteImage}
+            onImageClick={handleImageClick}
                 />
                 <div className="border-l pl-4 ml-4">
+                  <button
+                    onClick={() => setIsImageBarOpen(!isImageBarOpen)}
+                    className={`p-2 rounded hover:bg-gray-100 ${isImageBarOpen ? 'bg-blue-100' : ''}`}
+                    title="Image Gallery"
+                  >
+                    <GalleryVerticalEnd size={20} />
+                  </button>
                   <button
                     onClick={() => setShowHeatmap(!showHeatmap)}
                     className={`p-2 rounded hover:bg-gray-100 ${showHeatmap ? 'bg-red-100' : ''}`}
