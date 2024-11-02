@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     const analysis = response.choices[0]?.message?.content || "No analysis available";
     
     // Log the response to terminal
-    console.log('OpenAI Response:', analysis);
+    // console.log('OpenAI Response:', analysis);
 
     return NextResponse.json({ 
       analysis,
