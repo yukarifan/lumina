@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState } from 'react';
-import { ChevronLeft, ChevronRight, Plus, Minus } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, Minus, MousePointer } from 'lucide-react';
 import { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
 
 const PDFReader = () => {
@@ -12,6 +12,10 @@ const PDFReader = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [thumbnails, setThumbnails] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const [isSelecting, setIsSelecting] = useState(false);
+  const [selectionStart, setSelectionStart] = useState<{ x: number; y: number } | null>(null);
+  const [selectionEnd, setSelectionEnd] = useState<{ x: number; y: number } | null>(null);
+  const [selectionMode, setSelectionMode] = useState(false);
 
   useEffect(() => {
   const loadPdfJs = async () => {
@@ -91,13 +95,22 @@ const PDFReader = () => {
     };
 
     await page.render(renderContext).promise;
+
+    // Draw selection rectangle if exists
+    if (selectionStart && selectionEnd && context) {
+      context.strokeStyle = '#0066cc';
+      context.lineWidth = 2;
+      const width = selectionEnd.x - selectionStart.x;
+      const height = selectionEnd.y - selectionStart.y;
+      context.strokeRect(selectionStart.x, selectionStart.y, width, height);
+    }
   };
 
   useEffect(() => {
     if (pdfDoc) {
       renderPage(pageNum);
     }
-  }, [pageNum, scale, pdfDoc]);
+  }, [pageNum, scale, pdfDoc, selectionStart, selectionEnd]);
 
   const changePage = (offset: number) => {
     const newPage = pageNum + offset;
@@ -111,6 +124,37 @@ const PDFReader = () => {
       const newScale = prevScale + delta;
       return Math.min(Math.max(0.5, newScale), 2.0);
     });
+  };
+
+  const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (!selectionMode) return;
+    
+    const rect = canvasRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    setIsSelecting(true);
+    setSelectionStart({ x, y });
+    setSelectionEnd({ x, y });
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (!isSelecting || !selectionMode) return;
+    
+    const rect = canvasRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    setSelectionEnd({ x, y });
+  };
+
+  const handleMouseUp = () => {
+    if (!selectionMode) return;
+    setIsSelecting(false);
   };
 
   return (
@@ -198,6 +242,15 @@ const PDFReader = () => {
               <Plus size={20} />
             </button>
           </div>
+          <div className="border-l pl-4 ml-4">
+            <button
+              onClick={() => setSelectionMode(!selectionMode)}
+              className={`p-2 rounded hover:bg-gray-100 ${selectionMode ? 'bg-blue-100' : ''}`}
+              title="Selection Tool"
+            >
+              <MousePointer size={20} />
+            </button>
+          </div>
         </div>
 
         {/* PDF Viewer */}
@@ -210,6 +263,11 @@ const PDFReader = () => {
           <canvas
             ref={canvasRef}
             className="shadow-lg bg-white"
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            style={{ cursor: selectionMode ? 'crosshair' : 'default' }}
           />
           {!pdfDoc && !loading && (
             <div className="flex items-center justify-center h-64 bg-white rounded-lg shadow w-full max-w-2xl">
