@@ -8,7 +8,7 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import { ImagePreviewBar } from '@/app/components/ImagePreviewBar';
 import { StudentHighlight, HeatmapData } from '@/types/highlights';
-import { generateSyntheticHighlights, generateRandomSyntheticHighlights, generateHeatmapData } from '@/utils/syntheticData';
+import { generateHeatmapData, saveSelectionToFile } from '@/utils/syntheticData';
 import { HeatmapOverlay } from '@/app/components/HeatmapOverlay';
 
 interface Selection {
@@ -66,7 +66,6 @@ const PDFReader = () => {
   }>({});
   const [studentId] = useState(`student_${crypto.randomUUID()}`); // Simulated student ID
   const [showHeatmap, setShowHeatmap] = useState(false);
-  const [syntheticHighlights, setSyntheticHighlights] = useState<StudentHighlight[]>([]);
   const [heatmapData, setHeatmapData] = useState<HeatmapData | null>(null);
 
   useEffect(() => {
@@ -363,6 +362,18 @@ const PDFReader = () => {
         ...prev,
         [pageNum]: [...(prev[pageNum] || []), currentSelection]
       }));
+
+      // Save selection to file
+      const highlight: StudentHighlight = {
+        id: currentSelection.id || crypto.randomUUID(),
+        studentId: studentId,
+        pageNumber: pageNum,
+        selection: currentSelection,
+        question: '', // You can add question handling here if needed
+        timestamp: new Date()
+      };
+      
+      saveSelectionToFile(highlight);
 
       // Start analysis in the background
       analyzeSelection(currentSelection);
@@ -827,25 +838,27 @@ const PDFReader = () => {
       document.removeEventListener('mouseup', handleMouseUp);
     };
   }, [isResizing]);
-  useEffect(() => {
-    if (pdfDoc && numPages) {
-      const highlights = generateSyntheticHighlights(numPages);
-      setSyntheticHighlights(highlights);
-    }
-  }, [pdfDoc, numPages]);
 
-  // Add another useEffect to update heatmap data when page changes
+  // Instead, we'll just use the actual selections for the heatmap
   useEffect(() => {
-    if (canvasRef.current && syntheticHighlights.length > 0) {
+    if (canvasRef.current) {
+      const currentPageSelections = selections[pageNum] || [];
       const data = generateHeatmapData(
-        syntheticHighlights,
+        currentPageSelections.map(sel => ({
+          id: sel.id || crypto.randomUUID(),
+          studentId: studentId,
+          pageNumber: pageNum,
+          selection: sel,
+          question: '',
+          timestamp: new Date()
+        })),
         pageNum,
         canvasRef.current.width,
         canvasRef.current.height
       );
       setHeatmapData(data);
     }
-  }, [pageNum, syntheticHighlights, canvasRef.current?.width, canvasRef.current?.height]);
+  }, [pageNum, selections, canvasRef.current?.width, canvasRef.current?.height]);
 
   return (
     <div className="fixed inset-0 flex no-scroll select-none">
