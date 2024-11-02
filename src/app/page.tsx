@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState, JSX, ComponentPropsWithoutRef } from 'react';
-import { ChevronLeft, ChevronRight, Plus, Minus, MousePointer, MessageSquare, X, GripVertical, Send } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, Minus, MousePointer, GalleryVerticalEnd, X, GripVertical, Send } from 'lucide-react';
 import { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
 import { ImageAnalyzer } from '@/app/components/ImageAnalyzer';
 import ReactMarkdown from 'react-markdown';
@@ -242,7 +242,9 @@ const PDFReader = () => {
   const adjustZoom = (delta: number) => {
     setScale(prevScale => {
       const newScale = prevScale + delta;
-      return Math.min(Math.max(0.5, newScale), 2.0);
+      const clampedScale = Math.min(Math.max(0.5, newScale), 2.0);
+      setZoomInput(String(Math.round(clampedScale * 100))); // Update zoom input
+      return clampedScale;
     });
   };
 
@@ -668,7 +670,7 @@ const PDFReader = () => {
                 className={`p-2 rounded hover:bg-gray-100 ${isImageBarOpen ? 'bg-blue-100' : ''}`}
                 title="Captured Images"
               >
-                <MessageSquare size={20} />
+                <GalleryVerticalEnd size={20} />
               </button>
             </div>
           </div>
