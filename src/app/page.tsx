@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, Plus, Minus, MousePointer, MessageSquare, X } from 'lucide-react';
 import { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
 import { ImageAnalyzer } from '@/app/components/ImageAnalyzer';
+import { ImagePreviewBar } from '@/app/components/ImagePreviewBar';
 
 interface Selection {
   id?: string;
@@ -35,6 +36,13 @@ const PDFReader = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [currentImage, setCurrentImage] = useState<string | null>(null);
+  const [isImageBarOpen, setIsImageBarOpen] = useState(false);
+  const [capturedImages, setCapturedImages] = useState<{
+    id: string;
+    data: string;
+    analysis?: string;
+    timestamp?: Date;
+  }[]>([]);
 
   useEffect(() => {
   const loadPdfJs = async () => {
@@ -331,14 +339,21 @@ const PDFReader = () => {
     const width = selection.end.x - selection.start.x;
     const height = selection.end.y - selection.start.y;
     const selX = width >= 0 ? selection.start.x : selection.end.x;
-    const absWidth = Math.abs(width);
-    const btnSize = 24; // Match the size used in drawSelectionOverlay
-    const btnX = selX + absWidth - btnSize - 8;
-    const btnY = height >= 0 ? selection.start.y : selection.end.y;
+    const selY = height >= 0 ? selection.start.y : selection.end.y;
+    const btnSize = 24;
+    const btnX = selX + Math.abs(width) - btnSize - 8;
+    const btnY = selY + 8;
 
-    // Check if click is within delete button
-    if (x >= btnX && x <= btnX + btnSize && y >= btnY && y <= btnY + btnSize) {
+    // Check if click is within delete button bounds
+    const isInDeleteButton = 
+      x >= btnX && 
+      x <= btnX + btnSize && 
+      y >= btnY && 
+      y <= btnY + btnSize;
+
+    if (isInDeleteButton) {
       deleteSelection(hoveredSelection);
+      setHoveredSelection(null);
     }
   };
 
@@ -346,53 +361,80 @@ const PDFReader = () => {
     if (!canvasRef.current) return;
     
     setIsAnalyzing(true);
+    const imageId = crypto.randomUUID();
+    
     try {
-      // Create a temporary canvas for the selection
       const tempCanvas = document.createElement('canvas');
       const context = tempCanvas.getContext('2d');
       if (!context) return;
 
-      // Calculate dimensions
       const width = Math.abs(selection.end.x - selection.start.x);
       const height = Math.abs(selection.end.y - selection.start.y);
       const x = Math.min(selection.start.x, selection.end.x);
       const y = Math.min(selection.start.y, selection.end.y);
 
-      // Set canvas size
       tempCanvas.width = width;
       tempCanvas.height = height;
-
-      // Copy the selected region
       context.drawImage(
         canvasRef.current,
         x, y, width, height,
         0, 0, width, height
       );
 
-      // Convert to base64
       const imageData = tempCanvas.toDataURL('image/png');
+      
+      // Add image with temporary state
+      setCapturedImages(prev => [...prev, { 
+        id: imageId, 
+        data: imageData,
+        timestamp: new Date()
+      }]);
 
-      // Send to API
-      const response = await fetch('/api/analyze', {
+      // Get analysis
+      const analysisResponse = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ image: imageData })
       });
 
-      const data = await response.json();
+      const analysisData = await analysisResponse.json();
       
-      // Add response to chat
+      // Get summary
+      const summaryResponse = await fetch('/api/summarize', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: analysisData.analysis })
+      });
+
+      const summaryData = await summaryResponse.json();
+      
+      // Update image with both analysis and summary
+      setCapturedImages(prev => prev.map(img => 
+        img.id === imageId 
+          ? { 
+              ...img, 
+              analysis: analysisData.analysis,
+              summary: summaryData.summary
+            }
+          : img
+      ));
+
       setAiResponses(prev => [...prev, {
-        id: crypto.randomUUID(),
-        text: data.analysis,
+        id: imageId,
+        text: analysisData.analysis,
         timestamp: new Date()
       }]);
-      setIsChatOpen(true);
+      
+      setIsImageBarOpen(true);
     } catch (error) {
       console.error('Error analyzing selection:', error);
     } finally {
       setIsAnalyzing(false);
     }
+  };
+
+  const handleDeleteImage = (id: string) => {
+    setCapturedImages(prev => prev.filter(img => img.id !== id));
   };
 
   return (
@@ -489,6 +531,12 @@ const PDFReader = () => {
               <MousePointer size={20} />
             </button>
           </div>
+          <ImagePreviewBar
+            isOpen={isImageBarOpen}
+            setIsOpen={setIsImageBarOpen}
+            images={capturedImages}
+            onDeleteImage={handleDeleteImage}
+          />
         </div>
 
         {/* PDF Viewer - Change to overflow-auto */}
