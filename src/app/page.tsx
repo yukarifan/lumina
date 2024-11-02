@@ -1,8 +1,11 @@
 "use client";
-import React, { useEffect, useRef, useState } from 'react';
-import { ChevronLeft, ChevronRight, Plus, Minus, MousePointer, MessageSquare, X } from 'lucide-react';
+import React, { useEffect, useRef, useState, JSX, ComponentPropsWithoutRef } from 'react';
+import { ChevronLeft, ChevronRight, Plus, Minus, MousePointer, MessageSquare, X, GripVertical, Send } from 'lucide-react';
 import { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
 import { ImageAnalyzer } from '@/app/components/ImageAnalyzer';
+import ReactMarkdown from 'react-markdown';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 import { ImagePreviewBar } from '@/app/components/ImagePreviewBar';
 
 interface Selection {
@@ -15,6 +18,9 @@ interface AIResponse {
   id: string;
   text: string;
   timestamp: Date;
+  imageData?: string;
+  parentId?: string;
+  role: 'user' | 'assistant';
 }
 
 const PDFReader = () => {
@@ -24,25 +30,32 @@ const PDFReader = () => {
   const [pageNum, setPageNum] = useState(1);
   const [numPages, setNumPages] = useState<number | null>(null);
   const [scale, setScale] = useState(1.0);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isImageBarOpen, setIsImageBarOpen] = useState(false);
   const [thumbnails, setThumbnails] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
-  const [selections, setSelections] = useState<Selection[]>([]);
+  const [selections, setSelections] = useState<{ [pageNum: number]: Selection[] }>({});
   const [currentSelection, setCurrentSelection] = useState<Selection | null>(null);
   const [isSelecting, setIsSelecting] = useState(false);
   const [selectionMode, setSelectionMode] = useState(false);
   const [hoveredSelection, setHoveredSelection] = useState<string | null>(null);
   const [aiResponses, setAiResponses] = useState<AIResponse[]>([]);
-  const [isChatOpen, setIsChatOpen] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [currentImage, setCurrentImage] = useState<string | null>(null);
-  const [isImageBarOpen, setIsImageBarOpen] = useState(false);
-  const [capturedImages, setCapturedImages] = useState<{
+  const [capturedImages, setCapturedImages] = useState<Array<{
     id: string;
     data: string;
+    timestamp: Date;
     analysis?: string;
-    timestamp?: Date;
-  }[]>([]);
+    summary?: string;
+  }>>([]);
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [pageInput, setPageInput] = useState(String(pageNum));
+  const [zoomInput, setZoomInput] = useState('100');
+  const [isDragging, setIsDragging] = useState(false);
+  const [chatInput, setChatInput] = useState('');
+  const [analysisPanelWidth, setAnalysisPanelWidth] = useState(400);
+  const [isResizing, setIsResizing] = useState(false);
 
   useEffect(() => {
   const loadPdfJs = async () => {
@@ -145,13 +158,25 @@ const PDFReader = () => {
       context.fillStyle = 'rgba(0, 0, 0, 0.5)';
       context.fillRect(0, 0, overlayCanvas.width, overlayCanvas.height);
 
-      [...selections, currentSelection].filter(Boolean).forEach(selection => {
+      // Get selections for current page
+      const currentPageSelections = selections[pageNum] || [];
+      [...currentPageSelections, currentSelection].filter(Boolean).forEach(selection => {
         if (!selection) return;
         
-        const width = selection.end.x - selection.start.x;
-        const height = selection.end.y - selection.start.y;
-        const x = width >= 0 ? selection.start.x : selection.end.x;
-        const y = height >= 0 ? selection.start.y : selection.end.y;
+        // Scale the coordinates
+        const scaledStart = {
+          x: selection.start.x * scale,
+          y: selection.start.y * scale
+        };
+        const scaledEnd = {
+          x: selection.end.x * scale,
+          y: selection.end.y * scale
+        };
+        
+        const width = scaledEnd.x - scaledStart.x;
+        const height = scaledEnd.y - scaledStart.y;
+        const x = width >= 0 ? scaledStart.x : scaledEnd.x;
+        const y = height >= 0 ? scaledStart.y : scaledEnd.y;
         const absWidth = Math.abs(width);
         const absHeight = Math.abs(height);
 
@@ -166,23 +191,19 @@ const PDFReader = () => {
           const btnX = x + absWidth - btnSize - 8;
           const btnY = y + 8;
           
-          // Add fade-in animation using globalAlpha
           context.save();
-          context.globalAlpha = 0.9; // Slightly transparent for better visual
+          context.globalAlpha = 0.9;
           
-          // Add shadow
           context.shadowColor = 'rgba(0, 0, 0, 0.3)';
           context.shadowBlur = 8;
           context.shadowOffsetX = 2;
           context.shadowOffsetY = 2;
           
-          // Draw button background
           context.beginPath();
           context.arc(btnX + btnSize/2, btnY + btnSize/2, btnSize/2, 0, Math.PI * 2);
           context.fillStyle = '#ff4444';
           context.fill();
           
-          // Draw X symbol
           context.strokeStyle = 'white';
           context.lineWidth = 2.5;
           context.lineCap = 'round';
@@ -225,14 +246,21 @@ const PDFReader = () => {
     });
   };
 
+  const getScaledCoordinates = (clientX: number, clientY: number) => {
+    const rect = canvasRef.current?.getBoundingClientRect();
+    if (!rect) return { x: 0, y: 0 };
+    
+    // Convert client coordinates to canvas coordinates
+    const x = (clientX - rect.left) / scale;
+    const y = (clientY - rect.top) / scale;
+    
+    return { x, y };
+  };
+
   const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!selectionMode) return;
     
-    const rect = canvasRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const { x, y } = getScaledCoordinates(e.clientX, e.clientY);
     
     setIsSelecting(true);
     setCurrentSelection({ start: { x, y }, end: { x, y } });
@@ -241,11 +269,7 @@ const PDFReader = () => {
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!isSelecting || !selectionMode || !currentSelection) return;
     
-    const rect = canvasRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const { x, y } = getScaledCoordinates(e.clientX, e.clientY);
     
     setCurrentSelection(prev => prev ? { ...prev, end: { x, y } } : null);
   };
@@ -271,11 +295,16 @@ const PDFReader = () => {
   const handleMouseUp = () => {
     if (!selectionMode || !currentSelection) return;
     
-    const hasOverlap = selections.some(existing => checkOverlap(existing, currentSelection));
+    const hasOverlap = (selections[pageNum] || []).some(existing => 
+      checkOverlap(existing, currentSelection)
+    );
     
     if (!hasOverlap) {
       const newSelection = { ...currentSelection, id: crypto.randomUUID() };
-      setSelections(prev => [...prev, newSelection]);
+      setSelections(prev => ({
+        ...prev,
+        [pageNum]: [...(prev[pageNum] || []), newSelection]
+      }));
       analyzeSelection(newSelection);
     }
     
@@ -285,7 +314,10 @@ const PDFReader = () => {
 
   // Add a clear selections button to the toolbar
   const clearSelections = () => {
-    setSelections([]);
+    setSelections(prev => ({
+      ...prev,
+      [pageNum]: []
+    }));
     setCurrentSelection(null);
   };
 
@@ -301,8 +333,8 @@ const PDFReader = () => {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    // Check if mouse is over any selection
-    const hoveredId = selections.find(selection => {
+    // Check if mouse is over any selection on current page
+    const hoveredId = (selections[pageNum] || []).find(selection => {
       const width = selection.end.x - selection.start.x;
       const height = selection.end.y - selection.start.y;
       const selX = width >= 0 ? selection.start.x : selection.end.x;
@@ -317,7 +349,10 @@ const PDFReader = () => {
   };
 
   const deleteSelection = (idToDelete: string) => {
-    setSelections(prev => prev.filter(sel => sel.id !== idToDelete));
+    setSelections(prev => ({
+      ...prev,
+      [pageNum]: (prev[pageNum] || []).filter(sel => sel.id !== idToDelete)
+    }));
     setHoveredSelection(null);
   };
 
@@ -332,7 +367,7 @@ const PDFReader = () => {
     const y = e.clientY - rect.top;
 
     // Find the hovered selection
-    const selection = selections.find(sel => sel.id === hoveredSelection);
+    const selection = (selections[pageNum] || []).find(sel => sel.id === hoveredSelection);
     if (!selection) return;
 
     // Calculate delete button position
@@ -357,6 +392,7 @@ const PDFReader = () => {
     }
   };
 
+  // Update the analyzeSelection function to handle scaling
   const analyzeSelection = async (selection: Selection) => {
     if (!canvasRef.current) return;
     
@@ -368,16 +404,20 @@ const PDFReader = () => {
       const context = tempCanvas.getContext('2d');
       if (!context) return;
 
+      // Calculate dimensions
       const width = Math.abs(selection.end.x - selection.start.x);
       const height = Math.abs(selection.end.y - selection.start.y);
       const x = Math.min(selection.start.x, selection.end.x);
       const y = Math.min(selection.start.y, selection.end.y);
 
+      // Set canvas size
       tempCanvas.width = width;
       tempCanvas.height = height;
+
+      // Copy the selected region
       context.drawImage(
         canvasRef.current,
-        x, y, width, height,
+        x * scale, y * scale, width * scale, height * scale,
         0, 0, width, height
       );
 
@@ -420,12 +460,12 @@ const PDFReader = () => {
       ));
 
       setAiResponses(prev => [...prev, {
-        id: imageId,
+        id: crypto.randomUUID(),
         text: analysisData.analysis,
-        timestamp: new Date()
+        timestamp: new Date(),
+        role: 'assistant'
       }]);
-      
-      setIsImageBarOpen(true);
+      setIsChatOpen(true);
     } catch (error) {
       console.error('Error analyzing selection:', error);
     } finally {
@@ -433,33 +473,51 @@ const PDFReader = () => {
     }
   };
 
-  const handleDeleteImage = (id: string) => {
-    setCapturedImages(prev => prev.filter(img => img.id !== id));
+  const handleDeleteImage = (imageId: string) => {
+    setCapturedImages(prev => prev.filter(img => img.id !== imageId));
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files[0];
+    if (file?.type === 'application/pdf') {
+      loadPDF(file);
+    }
+  };
+
+  const handleChatSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!chatInput.trim()) return;
+
+    const userMessage: AIResponse = {
+      id: crypto.randomUUID(),
+      text: chatInput,
+      timestamp: new Date(),
+      role: 'user'
+    };
+
+    setAiResponses(prev => [...prev, userMessage]);
+    setChatInput('');
   };
 
   return (
-    <div className="flex h-screen bg-gray-100 overflow-hidden">
-      {/* Sidebar */}
-      <div className={`${sidebarOpen ? 'w-64' : 'w-0'} bg-white shadow-lg transition-all duration-300 overflow-y-auto`}>
-        <div className="p-4">
-          <label className="block">
-            <span className="sr-only">Choose PDF file</span>
-            <div className="relative">
-              <button 
-                onClick={() => (document.querySelector('input[type="file"]') as HTMLInputElement)?.click()}
-                className="w-full py-2 px-4 rounded-full text-sm font-semibold bg-blue-50 text-blue-700 hover:bg-blue-100"
-              >
-                Select PDF File
-              </button>
-              <input
-                type="file"
-                accept=".pdf"
-                onChange={(e) => e.target.files?.[0] && loadPDF(e.target.files[0])}
-                className="hidden"
-              />
-            </div>
-          </label>
-          <div className="mt-4 space-y-2 overflow-auto" style={{ maxHeight: 'calc(100vh - 100px)' }}>
+    <div className="fixed inset-0 flex no-scroll select-none">
+      {/* Left Sidebar - Thumbnails */}
+      <div className={`transition-all duration-300 select-none ${
+        sidebarOpen ? 'w-64' : 'w-0'
+      } border-r bg-gray-50 scroll-y overflow-hidden`}>
+        <div className="p-4 w-64"> {/* Fixed width container for content */}
+          <div className="overflow-auto">
             {thumbnails.map((thumbnail, index) => (
               <div
                 key={index}
@@ -478,58 +536,141 @@ const PDFReader = () => {
         </div>
       </div>
 
-      {/* Main content - Change to flex-col */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Toolbar - Now stays fixed */}
-        <div className="flex-none bg-white shadow-sm p-4 flex items-center space-x-4">
+      {/* Main PDF Viewer */}
+      <div className={`flex-1 flex flex-col scroll-hidden transition-all duration-300 select-none ${
+        sidebarOpen ? 'ml-0' : 'ml-0'
+      }`}>
+        {/* Toolbar */}
+        <div className="flex-none border-b p-4 relative"> {/* Added relative for absolute positioning context */}
+          {/* Sidebar Toggle Button */}
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-2 rounded hover:bg-gray-100"
+            className={`absolute p-2 rounded hover:bg-gray-100 transition-all duration-300 ${
+              sidebarOpen ? 'left-[20px]' : 'left-4'
+            }`}
+            aria-label={sidebarOpen ? 'Hide sidebar' : 'Show sidebar'}
           >
-            <ChevronLeft className={`transform transition-transform ${!sidebarOpen && 'rotate-180'}`} />
+            <ChevronLeft className={`transform transition-transform duration-300 ${
+              !sidebarOpen ? 'rotate-180' : ''
+            }`} />
           </button>
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={() => changePage(-1)}
-              className="p-2 rounded hover:bg-gray-100 disabled:opacity-50"
-              disabled={pageNum <= 1}
-            >
-              <ChevronLeft />
-            </button>
-            <span>
-              Page {pageNum} of {numPages || '--'}
-            </span>
-            <button
-              onClick={() => changePage(1)}
-              className="p-2 rounded hover:bg-gray-100 disabled:opacity-50"
-              disabled={!numPages || pageNum >= numPages}
-            >
-              <ChevronRight />
-            </button>
-          </div>
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={() => adjustZoom(-0.1)}
-              className="p-2 rounded hover:bg-gray-100"
-            >
-              <Minus size={20} />
-            </button>
-            <span>{(scale * 100).toFixed(0)}%</span>
-            <button
-              onClick={() => adjustZoom(0.1)}
-              className="p-2 rounded hover:bg-gray-100"
-            >
-              <Plus size={20} />
-            </button>
-          </div>
-          <div className="border-l pl-4 ml-4">
-            <button
-              onClick={() => setSelectionMode(!selectionMode)}
-              className={`p-2 rounded hover:bg-gray-100 ${selectionMode ? 'bg-blue-100' : ''}`}
-              title="Selection Tool"
-            >
-              <MousePointer size={20} />
-            </button>
+
+          {/* Centered Tools */}
+          <div className="flex items-center justify-center max-w-3xl mx-auto w-full">
+            {/* Page Navigation */}
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => changePage(-1)}
+                className="p-2 rounded hover:bg-gray-100 disabled:opacity-50"
+                disabled={pageNum <= 1}
+              >
+                <ChevronLeft />
+              </button>
+              <div className="flex items-center space-x-1">
+                <span>Page</span>
+                <input
+                  type="text"
+                  value={pageInput}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setPageInput(value); // Update the input value immediately
+                    
+                    // Only update page if it's a valid number
+                    const newPage = parseInt(value);
+                    if (!isNaN(newPage) && newPage > 0 && newPage <= (numPages || 0)) {
+                      setPageNum(newPage);
+                    }
+                  }}
+                  onBlur={() => {
+                    // On blur, ensure we have a valid value
+                    const newPage = parseInt(pageInput);
+                    if (isNaN(newPage) || newPage < 1) {
+                      setPageNum(1);
+                      setPageInput('1');
+                    } else if (newPage > (numPages || 0)) {
+                      setPageNum(numPages || 1);
+                      setPageInput(String(numPages || 1));
+                    } else {
+                      setPageInput(String(newPage));
+                    }
+                  }}
+                  className="w-12 px-1 py-0.5 border rounded text-center focus:outline-none focus:border-blue-500"
+                />
+                <span>of {numPages || '--'}</span>
+              </div>
+              <button
+                onClick={() => changePage(1)}
+                className="p-2 rounded hover:bg-gray-100 disabled:opacity-50"
+                disabled={!numPages || pageNum >= numPages}
+              >
+                <ChevronRight />
+              </button>
+            </div>
+
+            {/* Zoom Controls */}
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => adjustZoom(-0.1)}
+                className="p-2 rounded hover:bg-gray-100"
+              >
+                <Minus size={20} />
+              </button>
+              <div className="flex items-center">
+                <input
+                  type="text" // Changed to text type for better control
+                  value={zoomInput}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setZoomInput(value); // Update the input value immediately
+                    
+                    // Only update scale if it's a valid number
+                    const newZoom = parseInt(value);
+                    if (!isNaN(newZoom) && newZoom >= 25 && newZoom <= 500) {
+                      setScale(newZoom / 100);
+                    }
+                  }}
+                  onBlur={() => {
+                    // On blur, ensure we have a valid value
+                    const newZoom = parseInt(zoomInput);
+                    if (isNaN(newZoom) || newZoom < 25) {
+                      setScale(0.25);
+                      setZoomInput('25');
+                    } else if (newZoom > 500) {
+                      setScale(5);
+                      setZoomInput('500');
+                    } else {
+                      setZoomInput(String(Math.round(newZoom)));
+                    }
+                  }}
+                  className="w-12 px-1 py-0.5 border rounded text-center focus:outline-none focus:border-blue-500"
+                />
+                <span className="ml-1">%</span>
+              </div>
+              <button
+                onClick={() => adjustZoom(0.1)}
+                className="p-2 rounded hover:bg-gray-100"
+              >
+                <Plus size={20} />
+              </button>
+            </div>
+
+            {/* Selection Tool */}
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => setSelectionMode(!selectionMode)}
+                className={`p-2 rounded hover:bg-gray-100 ${selectionMode ? 'bg-blue-100' : ''}`}
+                title="Selection Tool"
+              >
+                <MousePointer size={20} />
+              </button>
+              <button
+                onClick={() => setIsImageBarOpen(!isImageBarOpen)}
+                className={`p-2 rounded hover:bg-gray-100 ${isImageBarOpen ? 'bg-blue-100' : ''}`}
+                title="Captured Images"
+              >
+                <MessageSquare size={20} />
+              </button>
+            </div>
           </div>
           <ImagePreviewBar
             isOpen={isImageBarOpen}
@@ -539,87 +680,163 @@ const PDFReader = () => {
           />
         </div>
 
-        {/* PDF Viewer - Change to overflow-auto */}
-        <div className="flex-1 overflow-auto">
+        {/* PDF View Area */}
+        <div className={`flex-1 overflow-auto transition-all duration-300`}>
           <div className="flex justify-center p-4">
-            {loading && (
+            {loading ? (
               <div className="flex items-center justify-center h-64">
                 <div className="text-gray-500">Loading PDF...</div>
               </div>
-            )}
-            <div className="relative">
-              <canvas
-                ref={canvasRef}
-                className="shadow-lg bg-white"
-              />
-              <canvas
-                ref={overlayCanvasRef}
-                className="absolute top-0 left-0"
-                onMouseDown={handleMouseDown}
-                onMouseMove={handleOverlayMouseMove}
-                onMouseUp={handleMouseUp}
-                onMouseLeave={() => setHoveredSelection(null)}
-                onClick={handleOverlayClick}
-                style={{ cursor: selectionMode ? 'crosshair' : 'default' }}
-              />
-            </div>
-            {!pdfDoc && !loading && (
-              <div className="flex items-center justify-center h-64 bg-white rounded-lg shadow w-full max-w-2xl">
-                <p className="text-gray-500">Please select a PDF file</p>
+            ) : !pdfDoc ? (
+              <div 
+                className={`flex flex-col items-center justify-center h-64 bg-white rounded-lg shadow w-full max-w-2xl
+                  ${isDragging ? 'border-2 border-blue-500 border-dashed bg-blue-50' : 'border-2 border-dashed border-gray-200'}`}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+              >
+                <p className="text-gray-500 mb-2">
+                  {isDragging ? 'Drop PDF here' : 'Please select a PDF file'}
+                </p>
+                <p className="text-sm text-gray-400">
+                  or drag and drop a PDF file here
+                </p>
+                <label className="mt-4">
+                  <button 
+                    onClick={() => (document.querySelector('input[type="file"]') as HTMLInputElement)?.click()}
+                    className="py-2 px-4 rounded-full text-sm font-semibold bg-blue-50 text-blue-700 hover:bg-blue-100"
+                  >
+                    Select PDF File
+                  </button>
+                  <input
+                    type="file"
+                    accept=".pdf"
+                    onChange={(e) => e.target.files?.[0] && loadPDF(e.target.files[0])}
+                    className="hidden"
+                  />
+                </label>
+              </div>
+            ) : (
+              <div className="relative">
+                <canvas
+                  ref={canvasRef}
+                  className="shadow-lg bg-white"
+                />
+                <canvas
+                  ref={overlayCanvasRef}
+                  className="absolute top-0 left-0"
+                  onMouseDown={handleMouseDown}
+                  onMouseMove={handleMouseMove}
+                  onMouseUp={handleMouseUp}
+                  onMouseLeave={() => setHoveredSelection(null)}
+                  onClick={handleOverlayClick}
+                  style={{ cursor: selectionMode ? 'crosshair' : 'default' }}
+                />
               </div>
             )}
           </div>
         </div>
       </div>
 
-      {/* Chat Panel */}
-      <div className={`fixed right-0 top-0 h-screen w-96 bg-white shadow-lg transform transition-transform duration-300 ${isChatOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-        <div className="flex flex-col h-full">
-          {/* Chat Header */}
-          <div className="flex-none p-4 border-b flex justify-between items-center">
-            <h3 className="font-semibold">AI Analysis</h3>
-            <button
-              onClick={() => setIsChatOpen(false)}
-              className="p-2 hover:bg-gray-100 rounded"
-            >
-              <X size={20} />
-            </button>
-          </div>
+      {/* AI Analysis Panel */}
+      <div 
+        className="flex flex-col scroll-hidden bg-white border-l relative select-none"
+        style={{ width: `${analysisPanelWidth}px` }}
+      >
+        {/* Resize Handle */}
+        <div
+          className="absolute left-[-8px] top-0 bottom-0 w-4 cursor-ew-resize group flex items-center justify-center"
+          onMouseDown={() => setIsResizing(true)}
+        >
+          {/* Thick Background Line */}
+          <div className="absolute inset-y-0 left-[50%] w-[8px] bg-gray-200 transform -translate-x-1/2" />
+          
+          {/* Grip Icon */}
+          <GripVertical 
+            size={24} 
+            className="relative z-10 text-gray-400 group-hover:text-blue-500 transition-colors"
+          />
+        </div>
 
-          {/* Chat Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {/* Chat Header */}
+        <div className="flex-none p-4 border-b">
+          <h3 className="font-semibold">AI Analysis</h3>
+        </div>
+
+        {/* Chat Messages Container */}
+        <div className="flex-1 scroll-y p-4">
+          <div className="space-y-2">
             {aiResponses.map(response => (
-              <div key={response.id} className="bg-blue-50 rounded-lg p-4">
-                <ImageAnalyzer 
-                  key={response.id}
-                  image={response.text} // Pass the text to ImageAnalyzer
-                />
-                <p className="text-xs text-gray-500 mt-2">
+              <div 
+                key={response.id} 
+                className={`rounded-lg p-3 ${
+                  response.role === 'user' 
+                    ? 'bg-gray-100 ml-8' 
+                    : 'bg-blue-50 mr-8'
+                }`}
+              >
+                <div className="max-h-[300px] overflow-y-auto custom-scrollbar">
+                  {response.imageData ? (
+                    <ImageAnalyzer 
+                      key={response.id}
+                      image={response.text}
+                    />
+                  ) : (
+                    <ReactMarkdown
+                      remarkPlugins={[remarkMath]}
+                      rehypePlugins={[rehypeKatex]}
+                      className="prose prose-sm max-w-none"
+                      components={{
+                        p: ({node, ...props}) => <p className="mb-2" {...props} />,
+                        a: ({node, ...props}) => <a className="text-blue-600 hover:underline" {...props} />,
+                        code: ({node, inline, ...props}: {
+                          node?: any;
+                          inline?: boolean;
+                          children?: React.ReactNode;
+                        } & Omit<ComponentPropsWithoutRef<'code'>, 'children'>): JSX.Element => (
+                          inline 
+                            ? <code className="bg-gray-100 px-1 rounded" {...props} />
+                            : <code className="block bg-gray-100 p-2 rounded" {...props} />
+                        ),
+                      }}
+                    >
+                      {response.text}
+                    </ReactMarkdown>
+                  )}
+                </div>
+                <p className="text-xs text-gray-500 mt-1">
                   {response.timestamp.toLocaleTimeString()}
                 </p>
               </div>
             ))}
             {isAnalyzing && (
-              <div className="bg-gray-50 rounded-lg p-4">
-                <p className="text-sm text-gray-500">Analyzing selection...</p>
+              <div className="bg-gray-50 rounded-lg p-3 mr-8">
+                <p className="text-sm text-gray-500">Analyzing...</p>
               </div>
             )}
           </div>
         </div>
+
+        {/* Chat Input */}
+        <div className="flex-none p-4 border-t">
+          <form onSubmit={handleChatSubmit} className="flex gap-2">
+            <input
+              type="text"
+              value={chatInput}
+              onChange={(e) => setChatInput(e.target.value)}
+              placeholder="Ask a follow-up question..."
+              className="flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+            />
+            <button
+              type="submit"
+              disabled={!chatInput.trim()}
+              className="p-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 disabled:opacity-50 disabled:hover:bg-blue-500 transition-colors"
+            >
+              <Send size={20} />
+            </button>
+          </form>
+        </div>
       </div>
-
-      {/* Chat Toggle Button */}
-      <button
-        onClick={() => setIsChatOpen(true)}
-        className={`fixed right-4 bottom-4 p-4 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition-opacity duration-300 ${isChatOpen ? 'opacity-0' : 'opacity-100'}`}
-      >
-        <MessageSquare size={24} />
-      </button>
-
-      {/* Add ImageAnalyzer after your PDF viewer */}
-      {currentImage && (
-        <ImageAnalyzer image={currentImage} />
-      )}
     </div>
   );
 };

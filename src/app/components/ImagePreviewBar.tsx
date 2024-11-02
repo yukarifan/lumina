@@ -22,13 +22,6 @@ export function ImagePreviewBar({
 }: ImagePreviewBarProps) {
   return (
     <div className="relative">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className={`p-2 rounded hover:bg-gray-100 ${isOpen ? 'bg-blue-100' : ''}`}
-        title="View Captured Images"
-      >
-        <ImageIcon size={20} />
-      </button>
 
       {isOpen && (
         <div className="absolute top-12 right-0 bg-white shadow-lg rounded-lg p-4 w-[500px] z-50">
