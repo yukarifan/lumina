@@ -73,4 +73,20 @@ export function generateHeatmapData(
     pageNumber,
     regions
   };
+}
+
+export async function loadSelectionsFromFile(): Promise<StudentHighlight[]> {
+  try {
+    console.log('Fetching selections from API...');
+    const response = await fetch('/api/getSelections');
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    console.log('Loaded selections:', data.selections);
+    return data.selections;
+  } catch (error) {
+    console.error('Error loading selections:', error);
+    return [];
+  }
 } 

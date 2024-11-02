@@ -8,7 +8,7 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import { ImagePreviewBar } from '@/app/components/ImagePreviewBar';
 import { StudentHighlight, HeatmapData } from '@/types/highlights';
-import { generateHeatmapData, saveSelectionToFile } from '@/utils/syntheticData';
+import { generateHeatmapData, saveSelectionToFile, loadSelectionsFromFile } from '@/utils/syntheticData';
 import { HeatmapOverlay } from '@/app/components/HeatmapOverlay';
 
 interface Selection {
@@ -841,24 +841,26 @@ const PDFReader = () => {
 
   // Instead, we'll just use the actual selections for the heatmap
   useEffect(() => {
-    if (canvasRef.current) {
-      const currentPageSelections = selections[pageNum] || [];
-      const data = generateHeatmapData(
-        currentPageSelections.map(sel => ({
-          id: sel.id || crypto.randomUUID(),
-          studentId: studentId,
-          pageNumber: pageNum,
-          selection: sel,
-          question: '',
-          timestamp: new Date()
-        })),
-        pageNum,
-        canvasRef.current.width,
-        canvasRef.current.height
-      );
-      setHeatmapData(data);
-    }
-  }, [pageNum, selections, canvasRef.current?.width, canvasRef.current?.height]);
+    const loadAndGenerateHeatmap = async () => {
+      console.log('Loading heatmap data for page:', pageNum);
+      if (canvasRef.current) {
+        const fileSelections = await loadSelectionsFromFile();
+        console.log('Filtered selections:', fileSelections.filter(sel => sel.pageNumber === pageNum));
+        
+        const data = generateHeatmapData(
+          fileSelections,
+          pageNum,
+          canvasRef.current.width,
+          canvasRef.current.height
+        );
+        console.log('Generated heatmap data:', data);
+        setHeatmapData(data);
+      }
+    };
+    
+    loadAndGenerateHeatmap();
+  }, [pageNum]);
+
 
   return (
     <div className="fixed inset-0 flex no-scroll select-none">
@@ -1100,13 +1102,12 @@ const PDFReader = () => {
                   }}
                   onClick={handleOverlayClick}
                 />
-                {showHeatmap && heatmapData && (
-                  <HeatmapOverlay
-                    heatmapData={heatmapData}
-                    width={canvasRef.current?.width || 0}
-                    height={canvasRef.current?.height || 0}
-                  />
-                )}
+                <HeatmapOverlay 
+                  width={canvasRef.current?.width || 0}
+                  height={canvasRef.current?.height || 0}
+                  pageNum={pageNum}
+                  visible={showHeatmap}
+                />
               </div>
             )}
           </div>
