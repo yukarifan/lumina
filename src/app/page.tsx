@@ -1,8 +1,11 @@
 "use client";
 import React, { useEffect, useRef, useState } from 'react';
-import { ChevronLeft, ChevronRight, Plus, Minus, MousePointer, MessageSquare, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, Minus, MousePointer, MessageSquare, X, Layers } from 'lucide-react';
 import { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
 import { ImageAnalyzer } from '@/app/components/ImageAnalyzer';
+import { StudentHighlight, HeatmapData } from '@/types/highlights';
+import { generateSyntheticHighlights, generateHeatmapData } from '@/utils/syntheticData';
+import { HeatmapOverlay } from '@/app/components/HeatmapOverlay';
 
 interface Selection {
   id?: string;
@@ -35,6 +38,10 @@ const PDFReader = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [currentImage, setCurrentImage] = useState<string | null>(null);
+  const [studentId] = useState(`student_${crypto.randomUUID()}`); // Simulated student ID
+  const [showHeatmap, setShowHeatmap] = useState(false);
+  const [syntheticHighlights, setSyntheticHighlights] = useState<StudentHighlight[]>([]);
+  const [heatmapData, setHeatmapData] = useState<HeatmapData | null>(null);
 
   useEffect(() => {
   const loadPdfJs = async () => {
@@ -395,6 +402,26 @@ const PDFReader = () => {
     }
   };
 
+  useEffect(() => {
+    if (pdfDoc && numPages) {
+      const highlights = generateSyntheticHighlights(numPages);
+      setSyntheticHighlights(highlights);
+    }
+  }, [pdfDoc, numPages]);
+
+  // Add another useEffect to update heatmap data when page changes
+  useEffect(() => {
+    if (canvasRef.current && syntheticHighlights.length > 0) {
+      const data = generateHeatmapData(
+        syntheticHighlights,
+        pageNum,
+        canvasRef.current.width,
+        canvasRef.current.height
+      );
+      setHeatmapData(data);
+    }
+  }, [pageNum, syntheticHighlights, canvasRef.current?.width, canvasRef.current?.height]);
+
   return (
     <div className="flex h-screen bg-gray-100 overflow-hidden">
       {/* Sidebar */}
@@ -489,6 +516,15 @@ const PDFReader = () => {
               <MousePointer size={20} />
             </button>
           </div>
+          <div className="border-l pl-4 ml-4">
+            <button
+              onClick={() => setShowHeatmap(!showHeatmap)}
+              className={`p-2 rounded hover:bg-gray-100 ${showHeatmap ? 'bg-red-100' : ''}`}
+              title="Toggle Heatmap"
+            >
+              <Layers size={20} />
+            </button>
+          </div>
         </div>
 
         {/* PDF Viewer - Change to overflow-auto */}
@@ -514,6 +550,13 @@ const PDFReader = () => {
                 onClick={handleOverlayClick}
                 style={{ cursor: selectionMode ? 'crosshair' : 'default' }}
               />
+              {showHeatmap && heatmapData && (
+                <HeatmapOverlay
+                  heatmapData={heatmapData}
+                  width={canvasRef.current?.width || 0}
+                  height={canvasRef.current?.height || 0}
+                />
+              )}
             </div>
             {!pdfDoc && !loading && (
               <div className="flex items-center justify-center h-64 bg-white rounded-lg shadow w-full max-w-2xl">
