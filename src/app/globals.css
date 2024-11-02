@@ -133,3 +133,33 @@ input[type="number"]::-webkit-outer-spin-button {
 input[type="number"] {
   -moz-appearance: textfield; /* Firefox */
 }
+
+@keyframes deleteButtonIn {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes deleteButtonOut {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+.delete-button-enter {
+  animation: deleteButtonIn 0.2s ease-out forwards;
+}
+
+.delete-button-exit {
+  animation: deleteButtonOut 0.2s ease-in forwards;
+}

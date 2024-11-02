@@ -132,6 +132,10 @@ const PDFReader = () => {
     // Set the same dimensions for overlay canvas
     const overlayCanvas = overlayCanvasRef.current;
     if (overlayCanvas) {
+      overlayCanvas.style.position = 'absolute';
+      overlayCanvas.style.top = '0';
+      overlayCanvas.style.left = '0';
+      overlayCanvas.style.zIndex = '50'; // High z-index to ensure it's on top
       overlayCanvas.height = viewport.height;
       overlayCanvas.width = viewport.width;
     }
@@ -188,25 +192,32 @@ const PDFReader = () => {
         // Only show delete button on hover
         if (selection.id && hoveredSelection === selection.id) {
           const btnSize = 24;
-          const btnX = x + absWidth - btnSize - 8;
-          const btnY = y + 8;
+          const scaledX = x;
+          const scaledY = y;
+          const btnX = scaledX + absWidth - btnSize - 8;
+          const btnY = scaledY + 8;
           
           context.save();
           context.globalAlpha = 0.9;
           
+          // Enhanced shadow effect
           context.shadowColor = 'rgba(0, 0, 0, 0.3)';
           context.shadowBlur = 8;
           context.shadowOffsetX = 2;
           context.shadowOffsetY = 2;
           
+          // Draw circular background
           context.beginPath();
           context.arc(btnX + btnSize/2, btnY + btnSize/2, btnSize/2, 0, Math.PI * 2);
-          context.fillStyle = 'rgba(255, 68, 68, 0.9)'; // Red background
+          context.fillStyle = 'rgba(255, 68, 68, 0.9)';
           context.fill();
           
+          // Draw X icon
           context.strokeStyle = 'white';
           context.lineWidth = 2.5;
           context.lineCap = 'round';
+          
+          // Draw X lines
           context.beginPath();
           context.moveTo(btnX + 8, btnY + 8);
           context.lineTo(btnX + btnSize - 8, btnY + btnSize - 8);
@@ -262,70 +273,89 @@ const PDFReader = () => {
   const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!selectionMode) return;
     
-    const { x, y } = getScaledCoordinates(e.clientX, e.clientY);
-    
+    const rect = overlayCanvasRef.current?.getBoundingClientRect();
+    if (!rect) return;
+
+    // Get mouse coordinates relative to canvas
+    const x = (e.clientX - rect.left) / scale;
+    const y = (e.clientY - rect.top) / scale;
+
+    // If we're hovering over a delete button, don't start a new selection
+    if (hoveredSelection) {
+      const selection = selections[pageNum]?.find(sel => sel.id === hoveredSelection);
+      if (selection) {
+        const width = selection.end.x - selection.start.x;
+        const btnSize = 24;
+        const btnX = selection.start.x + Math.abs(width) - btnSize - 8;
+        const btnY = selection.start.y + 8;
+
+        // Check if click is within delete button
+        const distance = Math.sqrt(
+          Math.pow(x - (btnX + btnSize/2), 2) + 
+          Math.pow(y - (btnY + btnSize/2), 2)
+        );
+
+        if (distance <= btnSize/2) {
+          return; // Don't start selection if clicking delete button
+        }
+      }
+    }
+
     setIsSelecting(true);
-    setCurrentSelection({ start: { x, y }, end: { x, y } });
+    setCurrentSelection({
+      id: crypto.randomUUID(),
+      start: { x, y },
+      end: { x, y }
+    });
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!isSelecting || !selectionMode || !currentSelection) return;
-    
-    const { x, y } = getScaledCoordinates(e.clientX, e.clientY);
-    
-    setCurrentSelection(prev => prev ? { ...prev, end: { x, y } } : null);
-  };
+    const rect = overlayCanvasRef.current?.getBoundingClientRect();
+    if (!rect) return;
 
-  const checkOverlap = (sel1: Selection, sel2: Selection) => {
-    // Normalize coordinates to handle negative widths/heights
-    const sel1X = Math.min(sel1.start.x, sel1.end.x);
-    const sel1Y = Math.min(sel1.start.y, sel1.end.y);
-    const sel1Width = Math.abs(sel1.end.x - sel1.start.x);
-    const sel1Height = Math.abs(sel1.end.y - sel1.start.y);
+    const x = (e.clientX - rect.left) / scale;
+    const y = (e.clientY - rect.top) / scale;
 
-    const sel2X = Math.min(sel2.start.x, sel2.end.x);
-    const sel2Y = Math.min(sel2.start.y, sel2.end.y);
-    const sel2Width = Math.abs(sel2.end.x - sel2.start.x);
-    const sel2Height = Math.abs(sel2.end.y - sel2.start.y);
+    // Update current selection if drawing
+    if (isSelecting && currentSelection) {
+      setCurrentSelection(prev => ({
+        ...prev!,
+        end: { x, y }
+      }));
+    }
 
-    return !(sel1X + sel1Width < sel2X || 
-            sel2X + sel2Width < sel1X || 
-            sel1Y + sel1Height < sel2Y || 
-            sel2Y + sel2Height < sel1Y);
+    // Check for hover over selections
+    const hoveredId = (selections[pageNum] || []).find(selection => {
+      const selX = Math.min(selection.start.x, selection.end.x);
+      const selY = Math.min(selection.start.y, selection.end.y);
+      const selWidth = Math.abs(selection.end.x - selection.start.x);
+      const selHeight = Math.abs(selection.end.y - selection.start.y);
+
+      return x >= selX && x <= selX + selWidth && y >= selY && y <= selY + selHeight;
+    })?.id || null;
+
+    setHoveredSelection(hoveredId);
+    drawSelectionOverlay();
   };
 
   const handleMouseUp = () => {
-    if (!selectionMode || !currentSelection) return;
-    
-    // Calculate selection dimensions
+    if (!isSelecting || !currentSelection) return;
+
+    // Only add selection if it has some size
     const width = Math.abs(currentSelection.end.x - currentSelection.start.x);
     const height = Math.abs(currentSelection.end.y - currentSelection.start.y);
     
-    // Minimum size threshold (adjust these values as needed)
-    const MIN_WIDTH = 20;  // minimum 20 pixels width
-    const MIN_HEIGHT = 20; // minimum 20 pixels height
-    
-    // Check if selection is too small
-    if (width < MIN_WIDTH || height < MIN_HEIGHT) {
-      console.log('Selection too small:', { width, height });
-      setIsSelecting(false);
-      setCurrentSelection(null);
-      return;
-    }
-
-    const hasOverlap = (selections[pageNum] || []).some(existing => 
-      checkOverlap(existing, currentSelection)
-    );
-    
-    if (!hasOverlap) {
-      const newSelection = { ...currentSelection, id: crypto.randomUUID() };
+    if (width > 5 && height > 5) {
+      // Add selection to state
       setSelections(prev => ({
         ...prev,
-        [pageNum]: [...(prev[pageNum] || []), newSelection]
+        [pageNum]: [...(prev[pageNum] || []), currentSelection]
       }));
-      analyzeSelection(newSelection);
+
+      // Start analysis in the background
+      analyzeSelection(currentSelection);
     }
-    
+
     setIsSelecting(false);
     setCurrentSelection(null);
   };
@@ -418,7 +448,6 @@ const PDFReader = () => {
 
     if (distance <= btnSize/2) {
       deleteSelection(hoveredSelection);
-      setHoveredSelection(null);
     }
   };
 
@@ -577,6 +606,58 @@ const PDFReader = () => {
       }]);
     }
   };
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isResizing) return;
+      
+      // Get window width for boundary checking
+      const windowWidth = window.innerWidth;
+      
+      // Calculate new width while respecting boundaries
+      const minWidth = 300;
+      const maxWidth = Math.min(800, windowWidth - 100); // Leave some space on screen
+      const newWidth = Math.max(minWidth, Math.min(maxWidth, windowWidth - e.clientX));
+      
+      // Update width with requestAnimationFrame for smoother resizing
+      requestAnimationFrame(() => {
+        setAnalysisPanelWidth(newWidth);
+      });
+    };
+
+    const handleMouseUp = () => {
+      document.body.style.cursor = 'default';
+      document.body.style.userSelect = 'auto';
+      setIsResizing(false);
+    };
+
+    const handleMouseDown = () => {
+      document.body.style.cursor = 'ew-resize';
+      document.body.style.userSelect = 'none';
+      setIsResizing(true);
+    };
+
+    // Add resize handle element
+    const resizeHandle = document.querySelector('.resize-handle');
+    if (resizeHandle) {
+      resizeHandle.addEventListener('mousedown', handleMouseDown);
+    }
+
+    // Add document-level event listeners
+    if (isResizing) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    }
+
+    return () => {
+      // Clean up all event listeners
+      if (resizeHandle) {
+        resizeHandle.removeEventListener('mousedown', handleMouseDown);
+      }
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isResizing]);
 
   return (
     <div className="fixed inset-0 flex no-scroll select-none">
@@ -792,13 +873,13 @@ const PDFReader = () => {
                 />
                 <canvas
                   ref={overlayCanvasRef}
-                  className="absolute top-0 left-0"
+                  className="absolute top-0 left-0 pointer-events-auto"
+                  style={{ zIndex: 50 }}
                   onMouseDown={handleMouseDown}
                   onMouseMove={handleMouseMove}
                   onMouseUp={handleMouseUp}
-                  onMouseLeave={() => setHoveredSelection(null)}
+                  onMouseLeave={handleMouseUp}
                   onClick={handleOverlayClick}
-                  style={{ cursor: selectionMode ? 'crosshair' : 'default' }}
                 />
               </div>
             )}
@@ -809,20 +890,25 @@ const PDFReader = () => {
       {/* AI Analysis Panel */}
       <div 
         className="flex flex-col scroll-hidden bg-white border-l relative select-none"
-        style={{ width: `${analysisPanelWidth}px` }}
+        style={{ 
+          width: `${analysisPanelWidth}px`,
+          transition: isResizing ? 'none' : 'width 0.2s ease-in-out'
+        }}
       >
         {/* Resize Handle */}
         <div
-          className="absolute left-[-8px] top-0 bottom-0 w-4 cursor-ew-resize group flex items-center justify-center"
-          onMouseDown={() => setIsResizing(true)}
+          className="resize-handle absolute left-[-8px] top-0 bottom-0 w-4 cursor-ew-resize z-50 hover:opacity-100 opacity-50 transition-opacity"
+          style={{
+            touchAction: 'none', // Prevent touch events from interfering
+          }}
         >
-          {/* Thick Background Line */}
-          <div className="absolute inset-y-0 left-[50%] w-[8px] bg-gray-200 transform -translate-x-1/2" />
+          {/* Visual indicator for resize handle */}
+          <div className="absolute inset-y-0 left-[50%] w-[4px] bg-gray-200 transform -translate-x-1/2 rounded-full" />
           
           {/* Grip Icon */}
           <GripVertical 
-            size={24} 
-            className="relative z-10 text-gray-400 group-hover:text-blue-500 transition-colors"
+            size={20} 
+            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gray-400"
           />
         </div>
 
