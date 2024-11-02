@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, Plus, Minus, MousePointer, MessageSquare, X } from 'lucide-react';
 import { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
+import { ImageAnalyzer } from '@/app/components/ImageAnalyzer';
 
 interface Selection {
   id?: string;
@@ -33,6 +34,7 @@ const PDFReader = () => {
   const [aiResponses, setAiResponses] = useState<AIResponse[]>([]);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [currentImage, setCurrentImage] = useState<string | null>(null);
 
   useEffect(() => {
   const loadPdfJs = async () => {
@@ -540,7 +542,10 @@ const PDFReader = () => {
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
             {aiResponses.map(response => (
               <div key={response.id} className="bg-blue-50 rounded-lg p-4">
-                <p className="text-sm text-gray-800">{response.text}</p>
+                <ImageAnalyzer 
+                  key={response.id}
+                  image={response.text} // Pass the text to ImageAnalyzer
+                />
                 <p className="text-xs text-gray-500 mt-2">
                   {response.timestamp.toLocaleTimeString()}
                 </p>
@@ -562,6 +567,11 @@ const PDFReader = () => {
       >
         <MessageSquare size={24} />
       </button>
+
+      {/* Add ImageAnalyzer after your PDF viewer */}
+      {currentImage && (
+        <ImageAnalyzer image={currentImage} />
+      )}
     </div>
   );
 };
