@@ -3,8 +3,15 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, Plus, Minus, MousePointer } from 'lucide-react';
 import { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
 
+interface Selection {
+  id?: string;
+  start: { x: number; y: number };
+  end: { x: number; y: number };
+}
+
 const PDFReader = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const overlayCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const [pdfDoc, setPdfDoc] = useState<PDFDocumentProxy | null>(null);
   const [pageNum, setPageNum] = useState(1);
   const [numPages, setNumPages] = useState<number | null>(null);
@@ -12,10 +19,11 @@ const PDFReader = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [thumbnails, setThumbnails] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const [selections, setSelections] = useState<Selection[]>([]);
+  const [currentSelection, setCurrentSelection] = useState<Selection | null>(null);
   const [isSelecting, setIsSelecting] = useState(false);
-  const [selectionStart, setSelectionStart] = useState<{ x: number; y: number } | null>(null);
-  const [selectionEnd, setSelectionEnd] = useState<{ x: number; y: number } | null>(null);
   const [selectionMode, setSelectionMode] = useState(false);
+  const [hoveredSelection, setHoveredSelection] = useState<string | null>(null);
 
   useEffect(() => {
   const loadPdfJs = async () => {
@@ -89,28 +97,100 @@ const PDFReader = () => {
     canvas.height = viewport.height;
     canvas.width = viewport.width;
 
+    // Set the same dimensions for overlay canvas
+    const overlayCanvas = overlayCanvasRef.current;
+    if (overlayCanvas) {
+      overlayCanvas.height = viewport.height;
+      overlayCanvas.width = viewport.width;
+    }
+
     const renderContext = {
       canvasContext: context,
       viewport: viewport
     };
 
     await page.render(renderContext).promise;
+    drawSelectionOverlay(); // Draw selection overlay after rendering PDF
+  };
 
-    // Draw selection rectangle if exists
-    if (selectionStart && selectionEnd && context) {
-      context.strokeStyle = '#0066cc';
-      context.lineWidth = 2;
-      const width = selectionEnd.x - selectionStart.x;
-      const height = selectionEnd.y - selectionStart.y;
-      context.strokeRect(selectionStart.x, selectionStart.y, width, height);
+  // Add this new function to handle overlay drawing
+  const drawSelectionOverlay = () => {
+    const overlayCanvas = overlayCanvasRef.current;
+    if (!overlayCanvas) return;
+    const context = overlayCanvas.getContext('2d');
+    if (!context) return;
+
+    context.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+
+    if (selectionMode) {
+      context.fillStyle = 'rgba(0, 0, 0, 0.5)';
+      context.fillRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+
+      [...selections, currentSelection].filter(Boolean).forEach(selection => {
+        if (!selection) return;
+        
+        const width = selection.end.x - selection.start.x;
+        const height = selection.end.y - selection.start.y;
+        const x = width >= 0 ? selection.start.x : selection.end.x;
+        const y = height >= 0 ? selection.start.y : selection.end.y;
+        const absWidth = Math.abs(width);
+        const absHeight = Math.abs(height);
+
+        context.clearRect(x, y, absWidth, absHeight);
+        context.strokeStyle = '#0066cc';
+        context.lineWidth = 2;
+        context.strokeRect(x, y, absWidth, absHeight);
+
+        // Only show delete button on hover
+        if (selection.id && hoveredSelection === selection.id) {
+          const btnSize = 24;
+          const btnX = x + absWidth - btnSize - 8;
+          const btnY = y + 8;
+          
+          // Add fade-in animation using globalAlpha
+          context.save();
+          context.globalAlpha = 0.9; // Slightly transparent for better visual
+          
+          // Add shadow
+          context.shadowColor = 'rgba(0, 0, 0, 0.3)';
+          context.shadowBlur = 8;
+          context.shadowOffsetX = 2;
+          context.shadowOffsetY = 2;
+          
+          // Draw button background
+          context.beginPath();
+          context.arc(btnX + btnSize/2, btnY + btnSize/2, btnSize/2, 0, Math.PI * 2);
+          context.fillStyle = '#ff4444';
+          context.fill();
+          
+          // Draw X symbol
+          context.strokeStyle = 'white';
+          context.lineWidth = 2.5;
+          context.lineCap = 'round';
+          context.beginPath();
+          context.moveTo(btnX + 8, btnY + 8);
+          context.lineTo(btnX + btnSize - 8, btnY + btnSize - 8);
+          context.moveTo(btnX + btnSize - 8, btnY + 8);
+          context.lineTo(btnX + 8, btnY + btnSize - 8);
+          context.stroke();
+          
+          context.restore();
+        }
+      });
     }
   };
 
+  // Update useEffect to only call drawSelectionOverlay for selection updates
+  useEffect(() => {
+    drawSelectionOverlay();
+  }, [selections, currentSelection, selectionMode]);
+
+  // Separate useEffect for PDF rendering
   useEffect(() => {
     if (pdfDoc) {
       renderPage(pageNum);
     }
-  }, [pageNum, scale, pdfDoc, selectionStart, selectionEnd]);
+  }, [pageNum, scale, pdfDoc]);
 
   const changePage = (offset: number) => {
     const newPage = pageNum + offset;
@@ -136,12 +216,11 @@ const PDFReader = () => {
     const y = e.clientY - rect.top;
     
     setIsSelecting(true);
-    setSelectionStart({ x, y });
-    setSelectionEnd({ x, y });
+    setCurrentSelection({ start: { x, y }, end: { x, y } });
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!isSelecting || !selectionMode) return;
+    if (!isSelecting || !selectionMode || !currentSelection) return;
     
     const rect = canvasRef.current?.getBoundingClientRect();
     if (!rect) return;
@@ -149,12 +228,81 @@ const PDFReader = () => {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
     
-    setSelectionEnd({ x, y });
+    setCurrentSelection(prev => prev ? { ...prev, end: { x, y } } : null);
   };
 
   const handleMouseUp = () => {
-    if (!selectionMode) return;
+    if (!selectionMode || !currentSelection) return;
     setIsSelecting(false);
+    setSelections(prev => [...prev, { ...currentSelection, id: crypto.randomUUID() }]);
+    setCurrentSelection(null);
+  };
+
+  // Add a clear selections button to the toolbar
+  const clearSelections = () => {
+    setSelections([]);
+    setCurrentSelection(null);
+  };
+
+  const handleOverlayMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (isSelecting) {
+      handleMouseMove(e);
+      return;
+    }
+
+    const rect = overlayCanvasRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    // Check if mouse is over any selection
+    const hoveredId = selections.find(selection => {
+      const width = selection.end.x - selection.start.x;
+      const height = selection.end.y - selection.start.y;
+      const selX = width >= 0 ? selection.start.x : selection.end.x;
+      const selY = height >= 0 ? selection.start.y : selection.end.y;
+      const selWidth = Math.abs(width);
+      const selHeight = Math.abs(height);
+
+      return x >= selX && x <= selX + selWidth && y >= selY && y <= selY + selHeight;
+    })?.id || null;
+
+    setHoveredSelection(hoveredId);
+  };
+
+  const deleteSelection = (idToDelete: string) => {
+    setSelections(prev => prev.filter(sel => sel.id !== idToDelete));
+    setHoveredSelection(null);
+  };
+
+  // Add click handler for delete button
+  const handleOverlayClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (!hoveredSelection) return;
+
+    const rect = overlayCanvasRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    // Find the hovered selection
+    const selection = selections.find(sel => sel.id === hoveredSelection);
+    if (!selection) return;
+
+    // Calculate delete button position
+    const width = selection.end.x - selection.start.x;
+    const height = selection.end.y - selection.start.y;
+    const selX = width >= 0 ? selection.start.x : selection.end.x;
+    const absWidth = Math.abs(width);
+    const btnSize = 24; // Match the size used in drawSelectionOverlay
+    const btnX = selX + absWidth - btnSize - 8;
+    const btnY = height >= 0 ? selection.start.y : selection.end.y;
+
+    // Check if click is within delete button
+    if (x >= btnX && x <= btnX + btnSize && y >= btnY && y <= btnY + btnSize) {
+      deleteSelection(hoveredSelection);
+    }
   };
 
   return (
@@ -260,15 +408,22 @@ const PDFReader = () => {
               <div className="text-gray-500">Loading PDF...</div>
             </div>
           )}
-          <canvas
-            ref={canvasRef}
-            className="shadow-lg bg-white"
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
-            style={{ cursor: selectionMode ? 'crosshair' : 'default' }}
-          />
+          <div className="relative">
+            <canvas
+              ref={canvasRef}
+              className="shadow-lg bg-white"
+            />
+            <canvas
+              ref={overlayCanvasRef}
+              className="absolute top-0 left-0"
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleOverlayMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={() => setHoveredSelection(null)}
+              onClick={handleOverlayClick}
+              style={{ cursor: selectionMode ? 'crosshair' : 'default' }}
+            />
+          </div>
           {!pdfDoc && !loading && (
             <div className="flex items-center justify-center h-64 bg-white rounded-lg shadow w-full max-w-2xl">
               <p className="text-gray-500">Please select a PDF file</p>
