@@ -565,9 +565,99 @@ const PDFReader = () => {
       role: 'user'
     };
 
+    // Add user message to UI
     setAiResponses(prev => [...prev, userMessage]);
     setChatInput('');
+
+    try {
+      // Get previous messages for context
+      const messageHistory = aiResponses.map(msg => ({
+        role: msg.role,
+        content: msg.text
+      }));
+
+      // Make API call
+      const response = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          question: chatInput,
+          history: messageHistory
+        })
+      });
+
+      const data = await response.json();
+
+      // Add AI response to UI
+      setAiResponses(prev => [...prev, {
+        id: crypto.randomUUID(),
+        text: data.analysis,
+        timestamp: new Date(),
+        role: 'assistant'
+      }]);
+    } catch (error) {
+      console.error('Error getting AI response:', error);
+      // Optionally add error message to UI
+      setAiResponses(prev => [...prev, {
+        id: crypto.randomUUID(),
+        text: "Sorry, I couldn't process your request. Please try again.",
+        timestamp: new Date(),
+        role: 'assistant'
+      }]);
+    }
   };
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isResizing) return;
+      
+      // Get window width for boundary checking
+      const windowWidth = window.innerWidth;
+      
+      // Calculate new width while respecting boundaries
+      const minWidth = 300;
+      const maxWidth = Math.min(800, windowWidth - 100); // Leave some space on screen
+      const newWidth = Math.max(minWidth, Math.min(maxWidth, windowWidth - e.clientX));
+      
+      // Update width with requestAnimationFrame for smoother resizing
+      requestAnimationFrame(() => {
+        setAnalysisPanelWidth(newWidth);
+      });
+    };
+
+    const handleMouseUp = () => {
+      document.body.style.cursor = 'default';
+      document.body.style.userSelect = 'auto';
+      setIsResizing(false);
+    };
+
+    const handleMouseDown = () => {
+      document.body.style.cursor = 'ew-resize';
+      document.body.style.userSelect = 'none';
+      setIsResizing(true);
+    };
+
+    // Add resize handle element
+    const resizeHandle = document.querySelector('.resize-handle');
+    if (resizeHandle) {
+      resizeHandle.addEventListener('mousedown', handleMouseDown);
+    }
+
+    // Add document-level event listeners
+    if (isResizing) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    }
+
+    return () => {
+      // Clean up all event listeners
+      if (resizeHandle) {
+        resizeHandle.removeEventListener('mousedown', handleMouseDown);
+      }
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isResizing]);
 
   return (
     <div className="fixed inset-0 flex no-scroll select-none">
@@ -800,20 +890,25 @@ const PDFReader = () => {
       {/* AI Analysis Panel */}
       <div 
         className="flex flex-col scroll-hidden bg-white border-l relative select-none"
-        style={{ width: `${analysisPanelWidth}px` }}
+        style={{ 
+          width: `${analysisPanelWidth}px`,
+          transition: isResizing ? 'none' : 'width 0.2s ease-in-out'
+        }}
       >
         {/* Resize Handle */}
         <div
-          className="absolute left-[-8px] top-0 bottom-0 w-4 cursor-ew-resize group flex items-center justify-center"
-          onMouseDown={() => setIsResizing(true)}
+          className="resize-handle absolute left-[-8px] top-0 bottom-0 w-4 cursor-ew-resize z-50 hover:opacity-100 opacity-50 transition-opacity"
+          style={{
+            touchAction: 'none', // Prevent touch events from interfering
+          }}
         >
-          {/* Thick Background Line */}
-          <div className="absolute inset-y-0 left-[50%] w-[8px] bg-gray-200 transform -translate-x-1/2" />
+          {/* Visual indicator for resize handle */}
+          <div className="absolute inset-y-0 left-[50%] w-[4px] bg-gray-200 transform -translate-x-1/2 rounded-full" />
           
           {/* Grip Icon */}
           <GripVertical 
-            size={24} 
-            className="relative z-10 text-gray-400 group-hover:text-blue-500 transition-colors"
+            size={20} 
+            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gray-400"
           />
         </div>
 
