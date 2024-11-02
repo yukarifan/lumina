@@ -1,12 +1,12 @@
 "use client";
 import React, { useEffect, useRef, useState, JSX, ComponentPropsWithoutRef } from 'react';
-import { ChevronLeft, ChevronRight, Plus, Minus, MousePointer, MessageSquare, X, GripVertical, Send } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, Minus, MousePointer, GalleryVerticalEnd, X, GripVertical, Send } from 'lucide-react';
 import { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
 import { ImageAnalyzer } from '@/app/components/ImageAnalyzer';
 import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
-import 'katex/dist/katex.min.css';
+import { ImagePreviewBar } from '@/app/components/ImagePreviewBar';
 
 interface Selection {
   id?: string;
@@ -31,6 +31,7 @@ const PDFReader = () => {
   const [numPages, setNumPages] = useState<number | null>(null);
   const [scale, setScale] = useState(1.0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isImageBarOpen, setIsImageBarOpen] = useState(false);
   const [thumbnails, setThumbnails] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [selections, setSelections] = useState<{ [pageNum: number]: Selection[] }>({});
@@ -41,11 +42,19 @@ const PDFReader = () => {
   const [aiResponses, setAiResponses] = useState<AIResponse[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [currentImage, setCurrentImage] = useState<string | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [zoomInput, setZoomInput] = useState(String(Math.round(scale * 100)));
+  const [capturedImages, setCapturedImages] = useState<Array<{
+    id: string;
+    data: string;
+    timestamp: Date;
+    analysis?: string;
+    summary?: string;
+  }>>([]);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const [pageInput, setPageInput] = useState(String(pageNum));
+  const [zoomInput, setZoomInput] = useState('100');
+  const [isDragging, setIsDragging] = useState(false);
   const [chatInput, setChatInput] = useState('');
-  const [analysisPanelWidth, setAnalysisPanelWidth] = useState(384); // 384px = 96rem (default width)
+  const [analysisPanelWidth, setAnalysisPanelWidth] = useState(400);
   const [isResizing, setIsResizing] = useState(false);
 
   useEffect(() => {
@@ -244,7 +253,9 @@ const PDFReader = () => {
   const adjustZoom = (delta: number) => {
     setScale(prevScale => {
       const newScale = prevScale + delta;
-      return Math.min(Math.max(0.5, newScale), 2.0);
+      const clampedScale = Math.min(Math.max(0.5, newScale), 2.0);
+      setZoomInput(String(Math.round(clampedScale * 100))); // Update zoom input
+      return clampedScale;
     });
   };
 
@@ -445,49 +456,75 @@ const PDFReader = () => {
     if (!canvasRef.current) return;
     
     setIsAnalyzing(true);
+    const imageId = crypto.randomUUID();
+    
     try {
       const tempCanvas = document.createElement('canvas');
       const context = tempCanvas.getContext('2d');
       if (!context) return;
 
-      // Calculate scaled dimensions
+      // Calculate dimensions
       const width = Math.abs(selection.end.x - selection.start.x);
       const height = Math.abs(selection.end.y - selection.start.y);
       const x = Math.min(selection.start.x, selection.end.x);
       const y = Math.min(selection.start.y, selection.end.y);
 
-      // Set canvas size to the unscaled dimensions
+      // Set canvas size
       tempCanvas.width = width;
       tempCanvas.height = height;
 
-      // Copy the selected region, taking scale into account
+      // Copy the selected region
       context.drawImage(
         canvasRef.current,
         x * scale, y * scale, width * scale, height * scale,
         0, 0, width, height
       );
 
-      // Convert to base64
       const imageData = tempCanvas.toDataURL('image/png');
+      
+      // Add image with temporary state
+      setCapturedImages(prev => [...prev, { 
+        id: imageId, 
+        data: imageData,
+        timestamp: new Date()
+      }]);
 
-      // Send to API
-      const response = await fetch('/api/analyze', {
+      // Get analysis
+      const analysisResponse = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ image: imageData })
       });
 
-      const data = await response.json();
+      const analysisData = await analysisResponse.json();
       
-      // Add response to chat
+      // Get summary
+      const summaryResponse = await fetch('/api/summarize', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: analysisData.analysis })
+      });
+
+      const summaryData = await summaryResponse.json();
+      
+      // Update image with both analysis and summary
+      setCapturedImages(prev => prev.map(img => 
+        img.id === imageId 
+          ? { 
+              ...img, 
+              analysis: analysisData.analysis,
+              summary: summaryData.summary
+            }
+          : img
+      ));
+
       setAiResponses(prev => [...prev, {
         id: crypto.randomUUID(),
-        text: data.analysis,
+        text: analysisData.analysis,
         timestamp: new Date(),
-        imageData: imageData,
-        parentId: aiResponses[aiResponses.length - 1]?.id,
         role: 'assistant'
       }]);
+      setIsChatOpen(true);
     } catch (error) {
       console.error('Error analyzing selection:', error);
     } finally {
@@ -495,117 +532,42 @@ const PDFReader = () => {
     }
   };
 
-  // Add these drag and drop handlers
+  const handleDeleteImage = (imageId: string) => {
+    setCapturedImages(prev => prev.filter(img => img.id !== imageId));
+  };
+
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
-    e.stopPropagation();
     setIsDragging(true);
   };
 
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleDragLeave = () => {
     setIsDragging(false);
   };
 
-  const handleDrop = async (e: React.DragEvent) => {
+  const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
-    e.stopPropagation();
     setIsDragging(false);
-
-    const files = Array.from(e.dataTransfer.files);
-    const pdfFile = files.find(file => file.type === 'application/pdf');
-
-    if (pdfFile) {
-      await loadPDF(pdfFile);
-    } else {
-      // Optionally show an error message for non-PDF files
-      alert('Please drop a PDF file');
+    const file = e.dataTransfer.files[0];
+    if (file?.type === 'application/pdf') {
+      loadPDF(file);
     }
   };
-
-  // Add this useEffect to update input when scale changes from buttons
-  useEffect(() => {
-    setZoomInput(String(Math.round(scale * 100)));
-  }, [scale]);
-
-  // Add this useEffect to update input when pageNum changes from buttons
-  useEffect(() => {
-    setPageInput(String(pageNum));
-  }, [pageNum]);
 
   const handleChatSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!chatInput.trim()) return;
 
-    const question = chatInput.trim();
-    setChatInput('');
-    setIsAnalyzing(true);
-
-    // Add user's message to the chat immediately
     const userMessage: AIResponse = {
       id: crypto.randomUUID(),
-      text: question,
+      text: chatInput,
       timestamp: new Date(),
-      parentId: aiResponses[aiResponses.length - 1]?.id,
       role: 'user'
     };
+
     setAiResponses(prev => [...prev, userMessage]);
-
-    try {
-      const history = aiResponses.map(r => ({
-        role: r.role === 'user' ? 'user' as const : 'assistant' as const,
-        content: r.text
-      }));
-
-      const response = await fetch('/api/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          question,
-          history,
-        })
-      });
-
-      const data = await response.json();
-      console.log('Received image analysis response:', data);
-      
-      // Add AI response to chat
-      setAiResponses(prev => [...prev, {
-        id: crypto.randomUUID(),
-        text: data.analysis,
-        timestamp: new Date(),
-        parentId: userMessage.id,
-        role: 'assistant'
-      }]);
-    } catch (error) {
-      console.error('Error sending follow-up:', error);
-    } finally {
-      setIsAnalyzing(false);
-    }
+    setChatInput('');
   };
-
-  const handleResize = (e: MouseEvent) => {
-    if (!isResizing) return;
-    
-    // Calculate new width based on mouse position
-    const newWidth = window.innerWidth - e.clientX;
-    // Set minimum and maximum widths
-    const clampedWidth = Math.min(Math.max(300, newWidth), 800);
-    setAnalysisPanelWidth(clampedWidth);
-  };
-
-  // Add useEffect to handle mouse events during resize
-  useEffect(() => {
-    if (isResizing) {
-      window.addEventListener('mousemove', handleResize);
-      window.addEventListener('mouseup', () => setIsResizing(false));
-    }
-    return () => {
-      window.removeEventListener('mousemove', handleResize);
-      window.removeEventListener('mouseup', () => setIsResizing(false));
-    };
-  }, [isResizing]);
 
   return (
     <div className="fixed inset-0 flex no-scroll select-none">
@@ -752,7 +714,7 @@ const PDFReader = () => {
             </div>
 
             {/* Selection Tool */}
-            <div className="flex items-center">
+            <div className="flex items-center space-x-2">
               <button
                 onClick={() => setSelectionMode(!selectionMode)}
                 className={`p-2 rounded hover:bg-gray-100 ${selectionMode ? 'bg-blue-100' : ''}`}
@@ -760,8 +722,21 @@ const PDFReader = () => {
               >
                 <MousePointer size={20} />
               </button>
+              <button
+                onClick={() => setIsImageBarOpen(!isImageBarOpen)}
+                className={`p-2 rounded hover:bg-gray-100 ${isImageBarOpen ? 'bg-blue-100' : ''}`}
+                title="Captured Images"
+              >
+                <GalleryVerticalEnd size={20} />
+              </button>
             </div>
           </div>
+          <ImagePreviewBar
+            isOpen={isImageBarOpen}
+            setIsOpen={setIsImageBarOpen}
+            images={capturedImages}
+            onDeleteImage={handleDeleteImage}
+          />
         </div>
 
         {/* PDF View Area */}
