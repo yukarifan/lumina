@@ -29,8 +29,14 @@ export async function POST(request: Request) {
       max_tokens: 300,
     });
 
+    const analysis = response.choices[0]?.message?.content || "No analysis available";
+    
+    // Log the response to terminal
+    console.log('OpenAI Response:', analysis);
+
     return NextResponse.json({ 
-      analysis: response.choices[0]?.message?.content || "No analysis available" 
+      analysis,
+      timestamp: new Date().toISOString()
     });
     
   } catch (error) {
