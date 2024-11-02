@@ -1,101 +1,214 @@
-import Image from "next/image";
+"use client";
+import React, { useEffect, useRef, useState } from 'react';
+import { ChevronLeft, ChevronRight, Plus, Minus } from 'lucide-react';
+import { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
 
-export default function Home() {
+const PDFReader = () => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [pdfDoc, setPdfDoc] = useState<PDFDocumentProxy | null>(null);
+  const [pageNum, setPageNum] = useState(1);
+  const [numPages, setNumPages] = useState<number | null>(null);
+  const [scale, setScale] = useState(1.0);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [thumbnails, setThumbnails] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+  const loadPdfJs = async () => {
+    try {
+      const pdfjsLib = await import('pdfjs-dist');
+      const pdfjsWorker = (await import('pdfjs-dist/build/pdf.worker.mjs')).default;
+      // @ts-ignore
+      pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
+      return pdfjsLib;
+    } catch (error) {
+      console.warn('PDF.js worker initialization warning:', error);
+      return await import('pdfjs-dist');
+    }
+  };
+
+  loadPdfJs();
+}, []);
+
+  const loadPDF = async (file: File) => {
+    setLoading(true);
+    try {
+      const pdfjsLib = await import('pdfjs-dist');
+      const fileReader = new FileReader();
+
+      fileReader.onload = async function(this: FileReader) {
+        const typedarray = new Uint8Array(this.result as ArrayBuffer);
+        const doc = await pdfjsLib.getDocument(typedarray).promise;
+        setPdfDoc(doc);
+        setNumPages(doc.numPages);
+        setPageNum(1);
+
+        // 生成缩略图
+        const thumbnailsArray = [];
+        for (let i = 1; i <= doc.numPages; i++) {
+          const page = await doc.getPage(i);
+          const viewport = page.getViewport({ scale: 0.2 });
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d');
+          if (!context) return;
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+          await page.render({
+            canvasContext: context,
+            viewport: viewport
+          }).promise;
+          thumbnailsArray.push(canvas.toDataURL());
+        }
+        setThumbnails(thumbnailsArray);
+
+        renderPage(1, doc);
+      };
+
+      fileReader.readAsArrayBuffer(file);
+    } catch (error) {
+      console.error('Error loading PDF:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const renderPage = async (num: number, doc: PDFDocumentProxy | null = pdfDoc) => {
+    if (!doc) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const context = canvas.getContext('2d');
+    if (!context) return;
+
+    const page = await doc.getPage(num);
+    const viewport = page.getViewport({ scale });
+    canvas.height = viewport.height;
+    canvas.width = viewport.width;
+
+    const renderContext = {
+      canvasContext: context,
+      viewport: viewport
+    };
+
+    await page.render(renderContext).promise;
+  };
+
+  useEffect(() => {
+    if (pdfDoc) {
+      renderPage(pageNum);
+    }
+  }, [pageNum, scale, pdfDoc]);
+
+  const changePage = (offset: number) => {
+    const newPage = pageNum + offset;
+    if (numPages && newPage >= 1 && newPage <= numPages) {
+      setPageNum(newPage);
+    }
+  };
+
+  const adjustZoom = (delta: number) => {
+    setScale(prevScale => {
+      const newScale = prevScale + delta;
+      return Math.min(Math.max(0.5, newScale), 2.0);
+    });
+  };
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="flex h-screen bg-gray-100">
+      {/* Sidebar */}
+      <div className={`${sidebarOpen ? 'w-64' : 'w-0'} bg-white shadow-lg transition-all duration-300 overflow-hidden`}>
+        <div className="p-4">
+          <input
+            type="file"
+            accept=".pdf"
+            onChange={(e) => e.target.files?.[0] && loadPDF(e.target.files[0])}
+            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+          />
+          <div className="mt-4 space-y-2 overflow-auto" style={{ maxHeight: 'calc(100vh - 100px)' }}>
+            {thumbnails.map((thumbnail, index) => (
+              <div
+                key={index}
+                onClick={() => setPageNum(index + 1)}
+                className={`p-2 cursor-pointer rounded ${pageNum === index + 1 ? 'bg-blue-100' : 'hover:bg-gray-100'}`}
+              >
+                <img
+                  src={thumbnail}
+                  alt={`Page ${index + 1}`}
+                  className="w-full border border-gray-200 rounded"
+                />
+                <div className="text-center text-sm mt-1">Page {index + 1}</div>
+              </div>
+            ))}
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+      </div>
+
+      {/* Main content */}
+      <div className="flex-1 overflow-auto">
+        {/* Toolbar */}
+        <div className="sticky top-0 bg-white shadow-sm p-4 flex items-center space-x-4">
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="p-2 rounded hover:bg-gray-100"
+          >
+            <ChevronLeft className={`transform transition-transform ${!sidebarOpen && 'rotate-180'}`} />
+          </button>
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => changePage(-1)}
+              className="p-2 rounded hover:bg-gray-100 disabled:opacity-50"
+              disabled={pageNum <= 1}
+            >
+              <ChevronLeft />
+            </button>
+            <span>
+              Page {pageNum} of {numPages || '--'}
+            </span>
+            <button
+              onClick={() => changePage(1)}
+              className="p-2 rounded hover:bg-gray-100 disabled:opacity-50"
+              disabled={!numPages || pageNum >= numPages}
+            >
+              <ChevronRight />
+            </button>
+          </div>
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => adjustZoom(-0.1)}
+              className="p-2 rounded hover:bg-gray-100"
+            >
+              <Minus size={20} />
+            </button>
+            <span>{(scale * 100).toFixed(0)}%</span>
+            <button
+              onClick={() => adjustZoom(0.1)}
+              className="p-2 rounded hover:bg-gray-100"
+            >
+              <Plus size={20} />
+            </button>
+          </div>
+        </div>
+
+        {/* PDF Viewer */}
+        <div className="flex justify-center p-4">
+          {loading && (
+            <div className="flex items-center justify-center h-64">
+              <div className="text-gray-500">Loading PDF...</div>
+            </div>
+          )}
+          <canvas
+            ref={canvasRef}
+            className="shadow-lg bg-white"
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          {!pdfDoc && !loading && (
+            <div className="flex items-center justify-center h-64 bg-white rounded-lg shadow w-full max-w-2xl">
+              <p className="text-gray-500">请选择一个PDF文件</p>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
-}
+};
+
+export default PDFReader;
