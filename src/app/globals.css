@@ -101,3 +101,35 @@ body {
   height: 0;
   width: 0;
 }
+
+/* Add these styles for drag and drop visual feedback */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.border-dashed {
+  transition: all 0.2s ease;
+}
+
+.border-dashed.border-blue-500 {
+  animation: pulse 1.5s infinite;
+}
+
+/* Remove number input spinners */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
+}

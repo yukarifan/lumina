@@ -34,6 +34,9 @@ const PDFReader = () => {
   const [aiResponses, setAiResponses] = useState<AIResponse[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [currentImage, setCurrentImage] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [zoomInput, setZoomInput] = useState(String(Math.round(scale * 100)));
+  const [pageInput, setPageInput] = useState(String(pageNum));
 
   useEffect(() => {
   const loadPdfJs = async () => {
@@ -402,29 +405,53 @@ const PDFReader = () => {
     }
   };
 
+  // Add these drag and drop handlers
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDrop = async (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const files = Array.from(e.dataTransfer.files);
+    const pdfFile = files.find(file => file.type === 'application/pdf');
+
+    if (pdfFile) {
+      await loadPDF(pdfFile);
+    } else {
+      // Optionally show an error message for non-PDF files
+      alert('Please drop a PDF file');
+    }
+  };
+
+  // Add this useEffect to update input when scale changes from buttons
+  useEffect(() => {
+    setZoomInput(String(Math.round(scale * 100)));
+  }, [scale]);
+
+  // Add this useEffect to update input when pageNum changes from buttons
+  useEffect(() => {
+    setPageInput(String(pageNum));
+  }, [pageNum]);
+
   return (
     <div className="fixed inset-0 flex no-scroll">
       {/* Left Sidebar - Thumbnails */}
-      <div className="w-64 border-r bg-gray-50 scroll-y">
-        <div className="p-4">
-          <label className="block">
-            <span className="sr-only">Choose PDF file</span>
-            <div className="relative">
-              <button 
-                onClick={() => (document.querySelector('input[type="file"]') as HTMLInputElement)?.click()}
-                className="w-full py-2 px-4 rounded-full text-sm font-semibold bg-blue-50 text-blue-700 hover:bg-blue-100"
-              >
-                Select PDF File
-              </button>
-              <input
-                type="file"
-                accept=".pdf"
-                onChange={(e) => e.target.files?.[0] && loadPDF(e.target.files[0])}
-                className="hidden"
-              />
-            </div>
-          </label>
-          <div className="mt-4 overflow-auto">
+      <div className={`transition-all duration-300 ${
+        sidebarOpen ? 'w-64' : 'w-0'
+      } border-r bg-gray-50 scroll-y overflow-hidden`}>
+        <div className="p-4 w-64"> {/* Fixed width container for content */}
+          <div className="overflow-auto">
             {thumbnails.map((thumbnail, index) => (
               <div
                 key={index}
@@ -444,16 +471,27 @@ const PDFReader = () => {
       </div>
 
       {/* Main PDF Viewer */}
-      <div className="flex-1 flex flex-col scroll-hidden">
+      <div className={`flex-1 flex flex-col scroll-hidden transition-all duration-300 ${
+        sidebarOpen ? 'ml-0' : 'ml-0'
+      }`}>
         {/* Toolbar */}
-        <div className="flex-none border-b p-4">
-          <div className="flex items-center space-x-4">
-            <button
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="p-2 rounded hover:bg-gray-100"
-            >
-              <ChevronLeft className={`transform transition-transform ${!sidebarOpen && 'rotate-180'}`} />
-            </button>
+        <div className="flex-none border-b p-4 relative"> {/* Added relative for absolute positioning context */}
+          {/* Sidebar Toggle Button */}
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className={`absolute p-2 rounded hover:bg-gray-100 transition-all duration-300 ${
+              sidebarOpen ? 'left-[20px]' : 'left-4'
+            }`}
+            aria-label={sidebarOpen ? 'Hide sidebar' : 'Show sidebar'}
+          >
+            <ChevronLeft className={`transform transition-transform duration-300 ${
+              !sidebarOpen ? 'rotate-180' : ''
+            }`} />
+          </button>
+
+          {/* Centered Tools */}
+          <div className="flex items-center justify-center max-w-3xl mx-auto w-full">
+            {/* Page Navigation */}
             <div className="flex items-center space-x-2">
               <button
                 onClick={() => changePage(-1)}
@@ -462,9 +500,38 @@ const PDFReader = () => {
               >
                 <ChevronLeft />
               </button>
-              <span>
-                Page {pageNum} of {numPages || '--'}
-              </span>
+              <div className="flex items-center space-x-1">
+                <span>Page</span>
+                <input
+                  type="text"
+                  value={pageInput}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setPageInput(value); // Update the input value immediately
+                    
+                    // Only update page if it's a valid number
+                    const newPage = parseInt(value);
+                    if (!isNaN(newPage) && newPage > 0 && newPage <= (numPages || 0)) {
+                      setPageNum(newPage);
+                    }
+                  }}
+                  onBlur={() => {
+                    // On blur, ensure we have a valid value
+                    const newPage = parseInt(pageInput);
+                    if (isNaN(newPage) || newPage < 1) {
+                      setPageNum(1);
+                      setPageInput('1');
+                    } else if (newPage > (numPages || 0)) {
+                      setPageNum(numPages || 1);
+                      setPageInput(String(numPages || 1));
+                    } else {
+                      setPageInput(String(newPage));
+                    }
+                  }}
+                  className="w-12 px-1 py-0.5 border rounded text-center focus:outline-none focus:border-blue-500"
+                />
+                <span>of {numPages || '--'}</span>
+              </div>
               <button
                 onClick={() => changePage(1)}
                 className="p-2 rounded hover:bg-gray-100 disabled:opacity-50"
@@ -473,6 +540,8 @@ const PDFReader = () => {
                 <ChevronRight />
               </button>
             </div>
+
+            {/* Zoom Controls */}
             <div className="flex items-center space-x-2">
               <button
                 onClick={() => adjustZoom(-0.1)}
@@ -480,7 +549,37 @@ const PDFReader = () => {
               >
                 <Minus size={20} />
               </button>
-              <span>{(scale * 100).toFixed(0)}%</span>
+              <div className="flex items-center">
+                <input
+                  type="text" // Changed to text type for better control
+                  value={zoomInput}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setZoomInput(value); // Update the input value immediately
+                    
+                    // Only update scale if it's a valid number
+                    const newZoom = parseInt(value);
+                    if (!isNaN(newZoom) && newZoom >= 25 && newZoom <= 500) {
+                      setScale(newZoom / 100);
+                    }
+                  }}
+                  onBlur={() => {
+                    // On blur, ensure we have a valid value
+                    const newZoom = parseInt(zoomInput);
+                    if (isNaN(newZoom) || newZoom < 25) {
+                      setScale(0.25);
+                      setZoomInput('25');
+                    } else if (newZoom > 500) {
+                      setScale(5);
+                      setZoomInput('500');
+                    } else {
+                      setZoomInput(String(Math.round(newZoom)));
+                    }
+                  }}
+                  className="w-12 px-1 py-0.5 border rounded text-center focus:outline-none focus:border-blue-500"
+                />
+                <span className="ml-1">%</span>
+              </div>
               <button
                 onClick={() => adjustZoom(0.1)}
                 className="p-2 rounded hover:bg-gray-100"
@@ -488,7 +587,9 @@ const PDFReader = () => {
                 <Plus size={20} />
               </button>
             </div>
-            <div className="border-l pl-4 ml-4">
+
+            {/* Selection Tool */}
+            <div className="flex items-center">
               <button
                 onClick={() => setSelectionMode(!selectionMode)}
                 className={`p-2 rounded hover:bg-gray-100 ${selectionMode ? 'bg-blue-100' : ''}`}
@@ -501,32 +602,57 @@ const PDFReader = () => {
         </div>
 
         {/* PDF View Area */}
-        <div className="flex-1 scroll-y">
+        <div className={`flex-1 overflow-auto transition-all duration-300`}>
           <div className="flex justify-center p-4">
-            {loading && (
+            {loading ? (
               <div className="flex items-center justify-center h-64">
                 <div className="text-gray-500">Loading PDF...</div>
               </div>
-            )}
-            <div className="relative">
-              <canvas
-                ref={canvasRef}
-                className="shadow-lg bg-white"
-              />
-              <canvas
-                ref={overlayCanvasRef}
-                className="absolute top-0 left-0"
-                onMouseDown={handleMouseDown}
-                onMouseMove={handleMouseMove}
-                onMouseUp={handleMouseUp}
-                onMouseLeave={() => setHoveredSelection(null)}
-                onClick={handleOverlayClick}
-                style={{ cursor: selectionMode ? 'crosshair' : 'default' }}
-              />
-            </div>
-            {!pdfDoc && !loading && (
-              <div className="flex items-center justify-center h-64 bg-white rounded-lg shadow w-full max-w-2xl">
-                <p className="text-gray-500">Please select a PDF file</p>
+            ) : !pdfDoc ? (
+              <div 
+                className={`flex flex-col items-center justify-center h-64 bg-white rounded-lg shadow w-full max-w-2xl
+                  ${isDragging ? 'border-2 border-blue-500 border-dashed bg-blue-50' : 'border-2 border-dashed border-gray-200'}`}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+              >
+                <p className="text-gray-500 mb-2">
+                  {isDragging ? 'Drop PDF here' : 'Please select a PDF file'}
+                </p>
+                <p className="text-sm text-gray-400">
+                  or drag and drop a PDF file here
+                </p>
+                <label className="mt-4">
+                  <button 
+                    onClick={() => (document.querySelector('input[type="file"]') as HTMLInputElement)?.click()}
+                    className="py-2 px-4 rounded-full text-sm font-semibold bg-blue-50 text-blue-700 hover:bg-blue-100"
+                  >
+                    Select PDF File
+                  </button>
+                  <input
+                    type="file"
+                    accept=".pdf"
+                    onChange={(e) => e.target.files?.[0] && loadPDF(e.target.files[0])}
+                    className="hidden"
+                  />
+                </label>
+              </div>
+            ) : (
+              <div className="relative">
+                <canvas
+                  ref={canvasRef}
+                  className="shadow-lg bg-white"
+                />
+                <canvas
+                  ref={overlayCanvasRef}
+                  className="absolute top-0 left-0"
+                  onMouseDown={handleMouseDown}
+                  onMouseMove={handleMouseMove}
+                  onMouseUp={handleMouseUp}
+                  onMouseLeave={() => setHoveredSelection(null)}
+                  onClick={handleOverlayClick}
+                  style={{ cursor: selectionMode ? 'crosshair' : 'default' }}
+                />
               </div>
             )}
           </div>
