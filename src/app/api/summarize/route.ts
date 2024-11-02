@@ -1,14 +1,11 @@
-import OpenAI from 'openai';
 import { NextResponse } from 'next/server';
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
 
 export async function POST(request: Request) {
   try {
     const { text } = await request.json();
     
+
+
     const response = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
@@ -28,9 +25,7 @@ ${text}`,
       max_tokens: 50,
     });
 
-    return NextResponse.json({ 
-      summary: response.choices[0]?.message?.content || "No summary available" 
-    });
+    return NextResponse.json({ summary: mockSummary });
     
   } catch (error) {
     console.error('Error in summarize API:', error);

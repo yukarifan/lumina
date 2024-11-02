@@ -1,33 +1,24 @@
-import OpenAI from 'openai';
 import { NextResponse } from 'next/server';
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
-interface ChatMessage {
-  role: "assistant" | "user";
-  content: string;
-}
-
-// Helper function to process the response text
-const processLatexDelimiters = (text: string) => {
-  return text
-    // Replace \( \) with $ $
-    .replace(/\\\((.*?)\\\)/g, '$$$1$$')
-    // Replace \[ \] with $ $
-    .replace(/\\\[(.*?)\\\]/g, '$$$1$$')
-    // Replace $$ $$ with $ $
-    .replace(/\$\$(.*?)\$\$/g, '$$$1$$');
-};
 
 export async function POST(request: Request) {
   try {
-    const { image, question, history }: { 
-      image?: string; 
-      question?: string; 
-      history?: ChatMessage[];
-    } = await request.json();
+    // Log the raw request body for debugging
+    const rawBody = await request.text();
+    // console.log('Raw request body:', rawBody);
+
+    // Try to parse the body
+    let body;
+    try {
+      body = rawBody ? JSON.parse(rawBody) : {};
+    } catch (parseError) {
+      console.error('Failed to parse request body:', parseError);
+      return NextResponse.json({ 
+        error: 'Invalid JSON in request body',
+        details: parseError instanceof Error ? parseError.message : String(parseError)
+      }, { status: 400 });
+    }
+
+    const { image, question } = body;
     
     // Base message for image analysis
     const baseMessage = question 
@@ -63,12 +54,11 @@ export async function POST(request: Request) {
 
     const analysis = processLatexDelimiters(response.choices[0].message.content || '');
     
-    // console.log('Original response:', response.choices[0].message.content);
-    // console.log('Processed response:', analysis);
-
-    return new Response(JSON.stringify({ analysis }));
   } catch (error) {
     console.error('Error in analyze route:', error);
-    return new Response(JSON.stringify({ error: 'Failed to analyze image' }), { status: 500 });
+    return NextResponse.json({ 
+      error: 'Failed to analyze image',
+      details: error instanceof Error ? error.message : String(error)
+    }, { status: 500 });
   }
 } 

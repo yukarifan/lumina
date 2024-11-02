@@ -8,7 +8,7 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import { ImagePreviewBar } from '@/app/components/ImagePreviewBar';
 import { StudentHighlight, HeatmapData } from '@/types/highlights';
-import { generateSyntheticHighlights, generateRandomSyntheticHighlights, generateHeatmapData } from '@/utils/syntheticData';
+import { generateHeatmapData, saveSelectionToFile, loadSelectionsFromFile } from '@/utils/syntheticData';
 import { HeatmapOverlay } from '@/app/components/HeatmapOverlay';
 
 interface Selection {
@@ -66,7 +66,6 @@ const PDFReader = () => {
   }>({});
   const [studentId] = useState(`student_${crypto.randomUUID()}`); // Simulated student ID
   const [showHeatmap, setShowHeatmap] = useState(false);
-  const [syntheticHighlights, setSyntheticHighlights] = useState<StudentHighlight[]>([]);
   const [heatmapData, setHeatmapData] = useState<HeatmapData | null>(null);
 
   useEffect(() => {
@@ -363,6 +362,18 @@ const PDFReader = () => {
         ...prev,
         [pageNum]: [...(prev[pageNum] || []), currentSelection]
       }));
+
+      // Save selection to file
+      const highlight: StudentHighlight = {
+        id: currentSelection.id || crypto.randomUUID(),
+        studentId: studentId,
+        pageNumber: pageNum,
+        selection: currentSelection,
+        question: '', // You can add question handling here if needed
+        timestamp: new Date()
+      };
+      
+      saveSelectionToFile(highlight);
 
       // Start analysis in the background
       analyzeSelection(currentSelection);
@@ -827,25 +838,29 @@ const PDFReader = () => {
       document.removeEventListener('mouseup', handleMouseUp);
     };
   }, [isResizing]);
-  useEffect(() => {
-    if (pdfDoc && numPages) {
-      const highlights = generateSyntheticHighlights(numPages);
-      setSyntheticHighlights(highlights);
-    }
-  }, [pdfDoc, numPages]);
 
-  // Add another useEffect to update heatmap data when page changes
+  // Instead, we'll just use the actual selections for the heatmap
   useEffect(() => {
-    if (canvasRef.current && syntheticHighlights.length > 0) {
-      const data = generateHeatmapData(
-        syntheticHighlights,
-        pageNum,
-        canvasRef.current.width,
-        canvasRef.current.height
-      );
-      setHeatmapData(data);
-    }
-  }, [pageNum, syntheticHighlights, canvasRef.current?.width, canvasRef.current?.height]);
+    const loadAndGenerateHeatmap = async () => {
+      console.log('Loading heatmap data for page:', pageNum);
+      if (canvasRef.current) {
+        const fileSelections = await loadSelectionsFromFile();
+        console.log('Filtered selections:', fileSelections.filter(sel => sel.pageNumber === pageNum));
+        
+        const data = generateHeatmapData(
+          fileSelections,
+          pageNum,
+          canvasRef.current.width,
+          canvasRef.current.height
+        );
+        console.log('Generated heatmap data:', data);
+        setHeatmapData(data);
+      }
+    };
+    
+    loadAndGenerateHeatmap();
+  }, [pageNum]);
+
 
   return (
     <div className="fixed inset-0 flex no-scroll select-none">
@@ -1087,13 +1102,12 @@ const PDFReader = () => {
                   }}
                   onClick={handleOverlayClick}
                 />
-                {showHeatmap && heatmapData && (
-                  <HeatmapOverlay
-                    heatmapData={heatmapData}
-                    width={canvasRef.current?.width || 0}
-                    height={canvasRef.current?.height || 0}
-                  />
-                )}
+                <HeatmapOverlay 
+                  width={canvasRef.current?.width || 0}
+                  height={canvasRef.current?.height || 0}
+                  pageNum={pageNum}
+                  visible={showHeatmap}
+                />
               </div>
             )}
           </div>
