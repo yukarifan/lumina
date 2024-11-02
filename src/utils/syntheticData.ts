@@ -33,6 +33,10 @@ export function generateHeatmapData(
   const regions: HeatmapData['regions'] = [];
   const gridSize = 20;
   
+  // Calculate scale factors
+  const scaleX = canvasWidth / PAGE_WIDTH;
+  const scaleY = canvasHeight / PAGE_HEIGHT;
+  
   // Create grid to accumulate highlight counts
   const grid: number[][] = Array(Math.ceil(canvasHeight / gridSize))
     .fill(0)
@@ -42,10 +46,20 @@ export function generateHeatmapData(
   highlights
     .filter(h => h.pageNumber === pageNumber)
     .forEach(highlight => {
-      const startGridX = Math.floor(highlight.selection.start.x / gridSize);
-      const startGridY = Math.floor(highlight.selection.start.y / gridSize);
-      const endGridX = Math.floor(highlight.selection.end.x / gridSize);
-      const endGridY = Math.floor(highlight.selection.end.y / gridSize);
+      // Scale the coordinates
+      const scaledStart = {
+        x: highlight.selection.start.x * scaleX,
+        y: highlight.selection.start.y * scaleY
+      };
+      const scaledEnd = {
+        x: highlight.selection.end.x * scaleX,
+        y: highlight.selection.end.y * scaleY
+      };
+      
+      const startGridX = Math.floor(scaledStart.x / gridSize);
+      const startGridY = Math.floor(scaledStart.y / gridSize);
+      const endGridX = Math.floor(scaledEnd.x / gridSize);
+      const endGridY = Math.floor(scaledEnd.y / gridSize);
       
       for (let y = startGridY; y <= endGridY; y++) {
         for (let x = startGridX; x <= endGridX; x++) {
