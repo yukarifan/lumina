@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState, JSX, ComponentPropsWithoutRef } from 'react';
-import { ChevronLeft, ChevronRight, Plus, Minus, MousePointer, MessageSquare, X, GripVertical } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, Minus, MousePointer, MessageSquare, X, GripVertical, Send } from 'lucide-react';
 import { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
 import { ImageAnalyzer } from '@/app/components/ImageAnalyzer';
 import ReactMarkdown from 'react-markdown';
@@ -30,10 +30,10 @@ const PDFReader = () => {
   const [pageNum, setPageNum] = useState(1);
   const [numPages, setNumPages] = useState<number | null>(null);
   const [scale, setScale] = useState(1.0);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [thumbnails, setThumbnails] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
-  const [selections, setSelections] = useState<Selection[]>([]);
+  const [selections, setSelections] = useState<{ [pageNum: number]: Selection[] }>({});
   const [currentSelection, setCurrentSelection] = useState<Selection | null>(null);
   const [isSelecting, setIsSelecting] = useState(false);
   const [selectionMode, setSelectionMode] = useState(false);
@@ -149,7 +149,9 @@ const PDFReader = () => {
       context.fillStyle = 'rgba(0, 0, 0, 0.5)';
       context.fillRect(0, 0, overlayCanvas.width, overlayCanvas.height);
 
-      [...selections, currentSelection].filter(Boolean).forEach(selection => {
+      // Get selections for current page
+      const currentPageSelections = selections[pageNum] || [];
+      [...currentPageSelections, currentSelection].filter(Boolean).forEach(selection => {
         if (!selection) return;
         
         // Scale the coordinates
@@ -284,11 +286,16 @@ const PDFReader = () => {
   const handleMouseUp = () => {
     if (!selectionMode || !currentSelection) return;
     
-    const hasOverlap = selections.some(existing => checkOverlap(existing, currentSelection));
+    const hasOverlap = (selections[pageNum] || []).some(existing => 
+      checkOverlap(existing, currentSelection)
+    );
     
     if (!hasOverlap) {
       const newSelection = { ...currentSelection, id: crypto.randomUUID() };
-      setSelections(prev => [...prev, newSelection]);
+      setSelections(prev => ({
+        ...prev,
+        [pageNum]: [...(prev[pageNum] || []), newSelection]
+      }));
       analyzeSelection(newSelection);
     }
     
@@ -298,7 +305,10 @@ const PDFReader = () => {
 
   // Add a clear selections button to the toolbar
   const clearSelections = () => {
-    setSelections([]);
+    setSelections(prev => ({
+      ...prev,
+      [pageNum]: []
+    }));
     setCurrentSelection(null);
   };
 
@@ -314,8 +324,8 @@ const PDFReader = () => {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    // Check if mouse is over any selection
-    const hoveredId = selections.find(selection => {
+    // Check if mouse is over any selection on current page
+    const hoveredId = (selections[pageNum] || []).find(selection => {
       const width = selection.end.x - selection.start.x;
       const height = selection.end.y - selection.start.y;
       const selX = width >= 0 ? selection.start.x : selection.end.x;
@@ -330,7 +340,10 @@ const PDFReader = () => {
   };
 
   const deleteSelection = (idToDelete: string) => {
-    setSelections(prev => prev.filter(sel => sel.id !== idToDelete));
+    setSelections(prev => ({
+      ...prev,
+      [pageNum]: (prev[pageNum] || []).filter(sel => sel.id !== idToDelete)
+    }));
     setHoveredSelection(null);
   };
 
@@ -345,7 +358,7 @@ const PDFReader = () => {
     const y = e.clientY - rect.top;
 
     // Find the hovered selection
-    const selection = selections.find(sel => sel.id === hoveredSelection);
+    const selection = (selections[pageNum] || []).find(sel => sel.id === hoveredSelection);
     if (!selection) return;
 
     // Calculate delete button position
@@ -837,9 +850,9 @@ const PDFReader = () => {
             <button
               type="submit"
               disabled={!chatInput.trim()}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50"
+              className="p-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 disabled:opacity-50 disabled:hover:bg-blue-500 transition-colors"
             >
-              Send
+              <Send size={20} />
             </button>
           </form>
         </div>
