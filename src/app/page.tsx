@@ -1,12 +1,15 @@
 "use client";
 import React, { useEffect, useRef, useState, JSX, ComponentPropsWithoutRef } from 'react';
-import { ChevronLeft, ChevronRight, Plus, Minus, MousePointer, GalleryVerticalEnd, X, GripVertical, Send } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, Minus, MousePointer, GalleryVerticalEnd, X, GripVertical, Send, Layers } from 'lucide-react';
 import { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
 import { ImageAnalyzer } from '@/app/components/ImageAnalyzer';
 import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import { ImagePreviewBar } from '@/app/components/ImagePreviewBar';
+import { StudentHighlight, HeatmapData } from '@/types/highlights';
+import { generateSyntheticHighlights, generateRandomSyntheticHighlights, generateHeatmapData } from '@/utils/syntheticData';
+import { HeatmapOverlay } from '@/app/components/HeatmapOverlay';
 
 interface Selection {
   id?: string;
@@ -56,6 +59,10 @@ const PDFReader = () => {
   const [chatInput, setChatInput] = useState('');
   const [analysisPanelWidth, setAnalysisPanelWidth] = useState(400);
   const [isResizing, setIsResizing] = useState(false);
+  const [studentId] = useState(`student_${crypto.randomUUID()}`); // Simulated student ID
+  const [showHeatmap, setShowHeatmap] = useState(false);
+  const [syntheticHighlights, setSyntheticHighlights] = useState<StudentHighlight[]>([]);
+  const [heatmapData, setHeatmapData] = useState<HeatmapData | null>(null);
 
   useEffect(() => {
   const loadPdfJs = async () => {
@@ -658,6 +665,25 @@ const PDFReader = () => {
       document.removeEventListener('mouseup', handleMouseUp);
     };
   }, [isResizing]);
+  useEffect(() => {
+    if (pdfDoc && numPages) {
+      const highlights = generateSyntheticHighlights(numPages);
+      setSyntheticHighlights(highlights);
+    }
+  }, [pdfDoc, numPages]);
+
+  // Add another useEffect to update heatmap data when page changes
+  useEffect(() => {
+    if (canvasRef.current && syntheticHighlights.length > 0) {
+      const data = generateHeatmapData(
+        syntheticHighlights,
+        pageNum,
+        canvasRef.current.width,
+        canvasRef.current.height
+      );
+      setHeatmapData(data);
+    }
+  }, [pageNum, syntheticHighlights, canvasRef.current?.width, canvasRef.current?.height]);
 
   return (
     <div className="fixed inset-0 flex no-scroll select-none">
@@ -812,21 +838,25 @@ const PDFReader = () => {
               >
                 <MousePointer size={20} />
               </button>
-              <button
-                onClick={() => setIsImageBarOpen(!isImageBarOpen)}
-                className={`p-2 rounded hover:bg-gray-100 ${isImageBarOpen ? 'bg-blue-100' : ''}`}
-                title="Captured Images"
-              >
-                <GalleryVerticalEnd size={20} />
-              </button>
+              <div className="flex items-center">
+                <ImagePreviewBar
+                  isOpen={isImageBarOpen}
+                  setIsOpen={setIsImageBarOpen}
+                  images={capturedImages}
+                  onDeleteImage={handleDeleteImage}
+                />
+                <div className="border-l pl-4 ml-4">
+                  <button
+                    onClick={() => setShowHeatmap(!showHeatmap)}
+                    className={`p-2 rounded hover:bg-gray-100 ${showHeatmap ? 'bg-red-100' : ''}`}
+                    title="Toggle Heatmap"
+                  >
+                    <Layers size={20} />
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
-          <ImagePreviewBar
-            isOpen={isImageBarOpen}
-            setIsOpen={setIsImageBarOpen}
-            images={capturedImages}
-            onDeleteImage={handleDeleteImage}
-          />
         </div>
 
         {/* PDF View Area */}
@@ -874,13 +904,26 @@ const PDFReader = () => {
                 <canvas
                   ref={overlayCanvasRef}
                   className="absolute top-0 left-0 pointer-events-auto"
-                  style={{ zIndex: 50 }}
+                  style={{ 
+                    zIndex: 50,
+                    cursor: selectionMode ? 'crosshair' : 'default'
+                  }}
                   onMouseDown={handleMouseDown}
                   onMouseMove={handleMouseMove}
                   onMouseUp={handleMouseUp}
-                  onMouseLeave={handleMouseUp}
+                  onMouseLeave={() => {
+                    handleMouseUp();
+                    setHoveredSelection(null);
+                  }}
                   onClick={handleOverlayClick}
                 />
+                {showHeatmap && heatmapData && (
+                  <HeatmapOverlay
+                    heatmapData={heatmapData}
+                    width={canvasRef.current?.width || 0}
+                    height={canvasRef.current?.height || 0}
+                  />
+                )}
               </div>
             )}
           </div>
