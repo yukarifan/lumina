@@ -56,6 +56,9 @@ const PDFReader = () => {
   const [chatInput, setChatInput] = useState('');
   const [analysisPanelWidth, setAnalysisPanelWidth] = useState(400);
   const [isResizing, setIsResizing] = useState(false);
+  const [conversations, setConversations] = useState<{
+    [imageId: string]: AIResponse[];
+  }>({});
 
   useEffect(() => {
   const loadPdfJs = async () => {
@@ -451,12 +454,15 @@ const PDFReader = () => {
     }
   };
 
-  // Update the analyzeSelection function to handle scaling
+  // Modify analyzeSelection function
   const analyzeSelection = async (selection: Selection) => {
     if (!canvasRef.current) return;
     
     setIsAnalyzing(true);
     const imageId = crypto.randomUUID();
+    
+    // Clear existing chat responses immediately when starting a new capture
+    setAiResponses([]);
     
     try {
       const tempCanvas = document.createElement('canvas');
@@ -482,14 +488,7 @@ const PDFReader = () => {
 
       const imageData = tempCanvas.toDataURL('image/png');
       
-      // Add image with temporary state
-      setCapturedImages(prev => [...prev, { 
-        id: imageId, 
-        data: imageData,
-        timestamp: new Date()
-      }]);
-
-      // Get analysis
+      // Create initial conversation
       const analysisResponse = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -497,8 +496,6 @@ const PDFReader = () => {
       });
 
       const analysisData = await analysisResponse.json();
-      
-      // Get summary
       const summaryResponse = await fetch('/api/summarize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -507,29 +504,46 @@ const PDFReader = () => {
 
       const summaryData = await summaryResponse.json();
       
-      // Update image with both analysis and summary
-      setCapturedImages(prev => prev.map(img => 
-        img.id === imageId 
-          ? { 
-              ...img, 
-              analysis: analysisData.analysis,
-              summary: summaryData.summary
-            }
-          : img
-      ));
-
-      setAiResponses(prev => [...prev, {
+      // Create initial response for the new conversation
+      const initialResponse: AIResponse = {
         id: crypto.randomUUID(),
         text: analysisData.analysis,
         timestamp: new Date(),
+        imageData: imageData,
         role: 'assistant'
+      };
+
+      // Update conversations state
+      setConversations(prev => ({
+        ...prev,
+        [imageId]: [initialResponse]
+      }));
+
+      // Update captured images
+      setCapturedImages(prev => [...prev, { 
+        id: imageId, 
+        data: imageData,
+        timestamp: new Date(),
+        analysis: analysisData.analysis,
+        summary: summaryData.summary,
+        conversationId: imageId
       }]);
+
+      // Set the new response and open chat
+      setAiResponses([initialResponse]);
       setIsChatOpen(true);
     } catch (error) {
       console.error('Error analyzing selection:', error);
     } finally {
       setIsAnalyzing(false);
     }
+  };
+
+  // Add handler for image click
+  const handleImageClick = (imageId: string) => {
+    const conversation = conversations[imageId] || [];
+    setAiResponses(conversation);
+    setIsChatOpen(true);
   };
 
   const handleDeleteImage = (imageId: string) => {
@@ -554,9 +568,14 @@ const PDFReader = () => {
     }
   };
 
+  // Modify handleChatSubmit to save responses to the current conversation
   const handleChatSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!chatInput.trim()) return;
+
+    const currentImageId = aiResponses[0]?.imageData ? 
+      capturedImages.find(img => img.data === aiResponses[0].imageData)?.id : 
+      null;
 
     const userMessage: AIResponse = {
       id: crypto.randomUUID(),
@@ -565,7 +584,6 @@ const PDFReader = () => {
       role: 'user'
     };
 
-    // Add user message to UI
     setAiResponses(prev => [...prev, userMessage]);
     setChatInput('');
 
@@ -588,13 +606,22 @@ const PDFReader = () => {
 
       const data = await response.json();
 
-      // Add AI response to UI
-      setAiResponses(prev => [...prev, {
+      const aiMessage: AIResponse = {
         id: crypto.randomUUID(),
         text: data.analysis,
         timestamp: new Date(),
         role: 'assistant'
-      }]);
+      };
+
+      setAiResponses(prev => [...prev, aiMessage]);
+
+      // Update conversation if we're in one
+      if (currentImageId) {
+        setConversations(prev => ({
+          ...prev,
+          [currentImageId]: [...prev[currentImageId], userMessage, aiMessage]
+        }));
+      }
     } catch (error) {
       console.error('Error getting AI response:', error);
       // Optionally add error message to UI
@@ -826,6 +853,7 @@ const PDFReader = () => {
             setIsOpen={setIsImageBarOpen}
             images={capturedImages}
             onDeleteImage={handleDeleteImage}
+            onImageClick={handleImageClick}
           />
         </div>
 

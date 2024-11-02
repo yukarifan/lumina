@@ -10,15 +10,18 @@ interface ImagePreviewBarProps {
     timestamp?: Date; 
     analysis?: string;
     summary?: string;
+    conversationId?: string;
   }[];
   onDeleteImage: (id: string) => void;
+  onImageClick: (id: string) => void;
 }
 
 export function ImagePreviewBar({
   isOpen,
   setIsOpen,
   images,
-  onDeleteImage
+  onDeleteImage,
+  onImageClick
 }: ImagePreviewBarProps) {
   return (
     <div className="relative">
@@ -37,7 +40,11 @@ export function ImagePreviewBar({
           
           <div className="space-y-4 max-h-[500px] overflow-y-auto">
             {images.map((img) => (
-              <div key={img.id} className="border rounded-lg p-3 space-y-2">
+              <div 
+                key={img.id} 
+                className="border rounded-lg p-3 space-y-2 cursor-pointer hover:bg-gray-50 transition-colors"
+                onClick={() => onImageClick(img.id)}
+              >
                 <div className="flex justify-between items-start">
                   <div className="w-1/2">
                     <img 
