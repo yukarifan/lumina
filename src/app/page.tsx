@@ -231,10 +231,35 @@ const PDFReader = () => {
     setCurrentSelection(prev => prev ? { ...prev, end: { x, y } } : null);
   };
 
+  const checkOverlap = (sel1: Selection, sel2: Selection) => {
+    // Normalize coordinates to handle negative widths/heights
+    const sel1X = Math.min(sel1.start.x, sel1.end.x);
+    const sel1Y = Math.min(sel1.start.y, sel1.end.y);
+    const sel1Width = Math.abs(sel1.end.x - sel1.start.x);
+    const sel1Height = Math.abs(sel1.end.y - sel1.start.y);
+
+    const sel2X = Math.min(sel2.start.x, sel2.end.x);
+    const sel2Y = Math.min(sel2.start.y, sel2.end.y);
+    const sel2Width = Math.abs(sel2.end.x - sel2.start.x);
+    const sel2Height = Math.abs(sel2.end.y - sel2.start.y);
+
+    return !(sel1X + sel1Width < sel2X || 
+            sel2X + sel2Width < sel1X || 
+            sel1Y + sel1Height < sel2Y || 
+            sel2Y + sel2Height < sel1Y);
+  };
+
   const handleMouseUp = () => {
     if (!selectionMode || !currentSelection) return;
+    
+    // Check if the new selection overlaps with any existing selection
+    const hasOverlap = selections.some(existing => checkOverlap(existing, currentSelection));
+    
+    if (!hasOverlap) {
+      setSelections(prev => [...prev, { ...currentSelection, id: crypto.randomUUID() }]);
+    }
+    
     setIsSelecting(false);
-    setSelections(prev => [...prev, { ...currentSelection, id: crypto.randomUUID() }]);
     setCurrentSelection(null);
   };
 
