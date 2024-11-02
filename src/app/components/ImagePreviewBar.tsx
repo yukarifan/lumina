@@ -24,7 +24,7 @@ export function ImagePreviewBar({
     <div className="relative">
 
       {isOpen && (
-        <div className="absolute top-12 right-0 bg-white shadow-lg rounded-lg p-4 w-[500px] z-50">
+        <div className="absolute top-12 right-0 bg-white shadow-lg rounded-lg p-4 w-[500px] z-[60]">
           <div className="flex justify-between items-center mb-3">
             <h3 className="font-semibold text-sm">Captured Images & Analysis</h3>
             <button
