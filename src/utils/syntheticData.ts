@@ -12,15 +12,50 @@ const PAGE_HEIGHT = 800;
 const BASE_HIGHLIGHTS: number[][][] = [
   // Page 1 patterns
   [
-    [20, 520, 320, 500, 8], 
-    [400, 350, 550, 370, 6], 
+    [20, 520, 320, 500, 8],
+    [400, 350, 550, 370, 6],
   ],
   // Page 2 patterns
   [
-    [60, 50, 500, 5, 14],  
+    [60, 50, 500, 5, 14],
     [400, 100, 550, 150, 12],
   ],
-  // Add more pages as needed...
+  // Page 3 patterns
+  [
+    [50, 600, 500, 580, 10],
+    [100, 400, 450, 380, 8],
+    [20, 320, 300, 20, 5],
+  ],
+  // Page 4 patterns
+  [
+    [40, 700, 560, 680, 12],
+    [80, 500, 520, 480, 7],
+    [300, 300, 500, 280, 6],
+  ],
+  // Page 5 patterns
+  [
+    [150, 650, 450, 630, 9],
+    [50, 450, 550, 430, 11],
+    [200, 250, 400, 230, 8],
+  ],
+  // Page 6 patterns
+  [
+    [100, 750, 500, 730, 7],
+    [50, 550, 300, 530, 10],
+    [350, 550, 550, 530, 10],
+  ],
+  // Page 7 patterns
+  [
+    [80, 600, 520, 580, 13],
+    [120, 400, 480, 380, 9],
+    [200, 150, 400, 130, 6],
+  ],
+  // Page 8 patterns
+  [
+    [50, 700, 550, 680, 8],
+    [100, 500, 500, 480, 12],
+    [150, 200, 450, 180, 7],
+  ]
 ];
 
 // Helper function to generate a variant of a base box
@@ -28,15 +63,16 @@ function generateVariant(
   baseBox: number[],
   maxWidth: number = PAGE_WIDTH,
   maxHeight: number = PAGE_HEIGHT,
-  variance: number = 100
+  xVariance: number = 200,
+  yVariance: number = 125
 ): [number, number, number, number] {
   const [baseStartX, baseStartY, baseEndX, baseEndY] = baseBox;
   
-  // Generate random offsets within variance range
-  const startXOffset = (Math.random() - 0.5) * variance;
-  const startYOffset = (Math.random() - 0.5) * variance;
-  const endXOffset = (Math.random() - 0.5) * variance;
-  const endYOffset = (Math.random() - 0.5) * variance;
+  // Generate random offsets with separate X and Y variances
+  const startXOffset = (Math.random() - 0.5) * xVariance;
+  const startYOffset = (Math.random() - 0.5) * yVariance;
+  const endXOffset = (Math.random() - 0.5) * xVariance;
+  const endYOffset = (Math.random() - 0.5) * yVariance;
   
   // Apply offsets and ensure within bounds
   const startX = Math.max(0, Math.min(maxWidth, baseStartX + startXOffset));
@@ -45,6 +81,26 @@ function generateVariant(
   const endY = maxHeight - Math.max(0, Math.min(maxHeight, baseEndY + endYOffset));
   
   return [startX, startY, endX, endY];
+}
+
+function generateRandomWord(length: number = 5): string {
+  const vowels = 'aeiou';
+  const consonants = 'bcdfghjklmnpqrstvwxyz';
+  let word = '';
+  
+  for (let i = 0; i < length; i++) {
+    if (i % 2 === 0) {
+      word += consonants[Math.floor(Math.random() * consonants.length)];
+    } else {
+      word += vowels[Math.floor(Math.random() * vowels.length)];
+    }
+  }
+  return word;
+}
+
+function generateRandomQuestion(): string {
+  const words = Array.from({ length: 9 }, () => generateRandomWord());
+  return `${words.join(' ')}?`;
 }
 
 export function generateSyntheticHighlights(pageCount: number = 8): StudentHighlight[] {
@@ -72,6 +128,7 @@ export function generateSyntheticHighlights(pageCount: number = 8): StudentHighl
             start: { x: startX, y: startY },
             end: { x: endX, y: endY }
           },
+          question: generateRandomQuestion(),
           timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000)
         });
       }
@@ -104,6 +161,7 @@ export function generateRandomSyntheticHighlights(pageCount: number): StudentHig
           start: { x: startX, y: startY },
           end: { x: startX + width, y: startY + height }
         },
+        question: generateRandomQuestion(),
         timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000) // Random time in last week
       });
     }

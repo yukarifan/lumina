@@ -6,6 +6,7 @@ export interface StudentHighlight {
     start: { x: number; y: number };
     end: { x: number; y: number };
   };
+  question: string;
   timestamp: Date;
 }
 
