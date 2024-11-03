@@ -8,7 +8,7 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import { ImagePreviewBar } from '@/app/components/ImagePreviewBar';
 import { StudentHighlight, HeatmapData } from '@/types/highlights';
-import { generateHeatmapData, saveSelectionToFile, loadSelectionsFromFile } from '@/utils/syntheticData';
+import { generateHeatmapData, loadSelectionsFromFile } from '@/utils/syntheticData';
 import { HeatmapOverlay } from '@/app/components/HeatmapOverlay';
 import { ConfirmationModal } from '@/app/components/ConfirmationModal';
 
@@ -400,7 +400,7 @@ const PDFReader = () => {
         timestamp: new Date()
       };
       
-      saveSelectionToFile(highlight);
+      // saveSelectionToFile(highlight);
 
       // Start analysis in the background
       analyzeSelection(currentSelection);
