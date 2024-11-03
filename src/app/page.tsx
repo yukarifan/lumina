@@ -1031,7 +1031,7 @@ const PDFReader = () => {
                     onChange={(e) => e.target.files?.[0] && handlePdfUpload(e.target.files[0])}
                     className="hidden"
                   />
-                  <span className="px-4 py-2 bg-blue-500 text-white rounded-md text-sm hover:bg-blue-600 transition-colors">
+                  <span className="px-4 py-2 bg-[rgb(37,187,187)] text-white rounded-md text-sm hover:bg-[rgb(33,168,168)] transition-colors">
                     Browse Files
                   </span>
                 </label>
@@ -1291,7 +1291,7 @@ const PDFReader = () => {
                 <label className="mt-4">
                   <button 
                     onClick={() => (document.querySelector('input[type="file"]') as HTMLInputElement)?.click()}
-                    className="py-2 px-4 rounded-full text-sm font-semibold bg-blue-50 text-blue-700 hover:bg-blue-100"
+                    className="py-2 px-4 rounded-full text-sm font-semibold bg-[rgb(37,187,187)] text-white hover:bg-[rgb(33,168,168)] disabled:opacity-50"
                   >
                     Select PDF File
                   </button>
@@ -1447,7 +1447,7 @@ const PDFReader = () => {
             <button
               type="submit"
               disabled={!chatInput.trim()}
-              className="p-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 disabled:opacity-50 disabled:hover:bg-blue-500 transition-colors"
+              className="p-2 rounded-lg bg-[rgb(37,187,187)] text-white hover:bg-[rgb(33,168,168)] disabled:opacity-50 disabled:hover:bg-[rgb(37,187,187)] transition-colors"
             >
               <Send size={20} />
             </button>
