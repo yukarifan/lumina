@@ -54,7 +54,7 @@ npm run dev
 - **Styling**: Tailwind CSS
 - **PDF Processing**: PDF.js
 - **Math Rendering**: KaTeX
-- **AI Integration**: OpenAI GPT-4
+- **AI Integration**: OpenAI GPT-4o
 - **Authentication**: Custom auth system
 
 ## Project Structure
@@ -71,8 +71,6 @@ src/
 ## Development
 
 - Use `npm run dev` for development with hot-reload
-- Use `npm run build` for production builds
-- Use `npm run lint` for code linting
 
 ## Contributing
 
