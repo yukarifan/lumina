@@ -29,7 +29,7 @@ export function ImagePreviewBar({
     <div className="relative">
       <div 
         className={`
-          absolute top-12 right-0 bg-white shadow-lg rounded-lg p-4 w-[500px] z-[60]
+          absolute top-12 left-1/2 -translate-x-1/2 bg-white shadow-lg rounded-lg p-4 w-[700px] z-[60]
           transform transition-all duration-300 ease-in-out
           ${isOpen ? 'translate-y-0 opacity-100' : 'translate-y-[-20px] opacity-0 pointer-events-none'}
         `}
@@ -60,9 +60,26 @@ export function ImagePreviewBar({
                   />
                 </div>
                 <div className="w-1/2 pl-3">
-                  <div className="text-sm text-gray-700 whitespace-pre-wrap">
-                    {img.summary || img.analysis || 'Analysis not available'}
-                  </div>
+                  {img.summary ? (
+                    <div className="text-sm space-y-1">
+                      {img.summary.split('. ').map((point, index) => (
+                        <div 
+                          key={index} 
+                          className={`${
+                            point.startsWith('Topic:') 
+                              ? 'text-blue-600 font-medium' 
+                              : 'text-purple-600'
+                          }`}
+                        >
+                          {point}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-sm text-gray-700 whitespace-pre-wrap">
+                      {img.analysis || 'Analysis not available'}
+                    </div>
+                  )}
                   {img.timestamp && (
                     <div className="text-xs text-gray-500 mt-2">
                       {img.timestamp.toLocaleString()}
