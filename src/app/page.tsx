@@ -13,6 +13,7 @@ import { HeatmapOverlay } from '@/app/components/HeatmapOverlay';
 import { ConfirmationModal } from '@/app/components/ConfirmationModal';
 import { HintBulb } from './components/HintBulb';
 import { PDFBulbs, BulbInfo } from '@/types/bulbs';
+import { LoadingSpinner } from './components/LoadingSpinner';
 
 interface Selection {
   id?: string;
@@ -646,6 +647,9 @@ const PDFReader = () => {
     setAiResponses(prev => [...prev, userMessage]);
     setChatInput('');
 
+    // Add this line to show loading spinner
+    setIsAnalyzing(true);
+
     try {
       // Get previous messages for context
       const messageHistory = aiResponses.map(msg => ({
@@ -676,20 +680,17 @@ const PDFReader = () => {
 
       // Update conversation if we have a current image
       if (currentImageId) {
-        // Update conversations state
         setConversations(prev => ({
           ...prev,
           [currentImageId]: updatedResponses
         }));
 
-        // Update captured images with new conversation
         setCapturedImages(prev => prev.map(img => 
           img.id === currentImageId 
             ? { ...img, conversation: updatedResponses }
             : img
         ));
 
-        // Update the summary with the new conversation
         await updateImageSummary(currentImageId, updatedResponses);
       }
     } catch (error) {
@@ -700,6 +701,9 @@ const PDFReader = () => {
         timestamp: new Date(),
         role: 'assistant'
       }]);
+    } finally {
+      // Add this line to hide loading spinner
+      setIsAnalyzing(false);
     }
   };
 
@@ -1424,7 +1428,7 @@ const PDFReader = () => {
             ))}
             {isAnalyzing && (
               <div className="bg-gray-50 rounded-lg p-3 mr-8">
-                <p className="text-sm text-gray-500">Analyzing...</p>
+                <LoadingSpinner />
               </div>
             )}
           </div>

@@ -163,3 +163,186 @@ input[type="number"] {
 .delete-button-exit {
   animation: deleteButtonOut 0.2s ease-in forwards;
 }
+
+.loading-spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.three-body {
+  --uib-size: 35px;
+  --uib-speed: 0.8s;
+  --uib-color: #06b6d4;  /* Changed to match your Lumina color */
+  position: relative;
+  display: inline-block;
+  height: var(--uib-size);
+  width: var(--uib-size);
+  animation: spin78236 calc(var(--uib-speed) * 2.5) infinite linear;
+}
+
+.three-body__dot {
+  position: absolute;
+  height: 100%;
+  width: 30%;
+}
+
+.three-body__dot:after {
+  content: '';
+  position: absolute;
+  height: 0%;
+  width: 100%;
+  padding-bottom: 100%;
+  background-color: var(--uib-color);
+  border-radius: 50%;
+}
+
+.three-body__dot:nth-child(1) {
+  bottom: 5%;
+  left: 0;
+  transform: rotate(60deg);
+  transform-origin: 50% 85%;
+}
+
+.three-body__dot:nth-child(1)::after {
+  bottom: 0;
+  left: 0;
+  animation: wobble1 var(--uib-speed) infinite ease-in-out;
+  animation-delay: calc(var(--uib-speed) * -0.3);
+}
+
+.three-body__dot:nth-child(2) {
+  bottom: 5%;
+  right: 0;
+  transform: rotate(-60deg);
+  transform-origin: 50% 85%;
+}
+
+.three-body__dot:nth-child(2)::after {
+  bottom: 0;
+  left: 0;
+  animation: wobble1 var(--uib-speed) infinite calc(var(--uib-speed) * -0.15) ease-in-out;
+}
+
+.three-body__dot:nth-child(3) {
+  bottom: -5%;
+  left: 0;
+  transform: translateX(116.666%);
+}
+
+.three-body__dot:nth-child(3)::after {
+  top: 0;
+  left: 0;
+  animation: wobble2 var(--uib-speed) infinite ease-in-out;
+}
+
+@keyframes spin78236 {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes wobble1 {
+  0%, 100% {
+    transform: translateY(0%) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-66%) scale(0.65);
+    opacity: 0.8;
+  }
+}
+
+@keyframes wobble2 {
+  0%, 100% {
+    transform: translateY(0%) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(66%) scale(0.65);
+    opacity: 0.8;
+  }
+}
+
+.orbit {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  animation: rotate 8s linear infinite;
+}
+
+.floating-point {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background-color: #06b6d4;
+  border-radius: 50%;
+}
+
+.center-point {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  background-color: #06b6d4;
+  border-radius: 50%;
+}
+
+.point1 {
+  animation: float1 3s ease-in-out infinite;
+}
+
+.point2 {
+  animation: float2 3.5s ease-in-out infinite;
+}
+
+.point3 {
+  animation: float3 2.8s ease-in-out infinite;
+}
+
+.point4 {
+  animation: float4 3.2s ease-in-out infinite;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes float1 {
+  0%, 100% { transform: translate(15px, 15px); }
+  25% { transform: translate(20px, 10px); }
+  50% { transform: translate(25px, 15px); }
+  75% { transform: translate(20px, 20px); }
+}
+
+@keyframes float2 {
+  0%, 100% { transform: translate(45px, 15px); }
+  25% { transform: translate(40px, 20px); }
+  50% { transform: translate(35px, 15px); }
+  75% { transform: translate(40px, 10px); }
+}
+
+@keyframes float3 {
+  0%, 100% { transform: translate(15px, 45px); }
+  25% { transform: translate(20px, 40px); }
+  50% { transform: translate(25px, 45px); }
+  75% { transform: translate(20px, 50px); }
+}
+
+@keyframes float4 {
+  0%, 100% { transform: translate(45px, 45px); }
+  25% { transform: translate(40px, 50px); }
+  50% { transform: translate(35px, 45px); }
+  75% { transform: translate(40px, 40px); }
+}

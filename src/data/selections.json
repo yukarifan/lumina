@@ -1,416 +1,3019 @@
 [
   {
-    "id": "55be82d9-0772-495e-9909-9864690292a6",
-    "studentId": "student_5755fd9a-70bb-47f5-b0be-b4fe3d476cff",
+    "id": "65d5204c-7ce7-4fad-aab6-9b8623942034",
+    "studentId": "student_54b3ef07-08fc-4545-8899-2a942fd8bf12",
     "pageNumber": 1,
     "selection": {
-      "id": "55be82d9-0772-495e-9909-9864690292a6",
+      "id": "65d5204c-7ce7-4fad-aab6-9b8623942034",
       "start": {
-        "x": 37,
-        "y": 36.19999694824219
+        "x": 54.340240478515625,
+        "y": 33.954856872558594
       },
       "end": {
-        "x": 544,
-        "y": 244.1999969482422
+        "x": 295.3402404785156,
+        "y": 238.9548568725586
       }
     },
-    "timestamp": "2024-11-02T23:27:00.876Z"
+    "question": "",
+    "timestamp": "2024-11-03T02:00:11.995Z"
   },
   {
-    "id": "9fc68b59-4552-4220-8f79-548aedd669dd",
-    "studentId": "student_5755fd9a-70bb-47f5-b0be-b4fe3d476cff",
+    "id": "7cbcf374-aaf8-45dd-a58d-55ad1be20e73",
+    "studentId": "synthetic_student_bb401962",
     "pageNumber": 1,
     "selection": {
-      "id": "9fc68b59-4552-4220-8f79-548aedd669dd",
       "start": {
-        "x": 11,
-        "y": 253.79999923706055
+        "x": 17.808404884813356,
+        "y": 0
       },
       "end": {
-        "x": 322,
-        "y": 313.79999923706055
+        "x": 302.9456938251484,
+        "y": 239.95889594782767
       }
     },
-    "timestamp": "2024-11-02T23:27:06.643Z"
+    "question": "What are the practical applications of this?",
+    "timestamp": "2024-11-02T15:52:51.737Z"
   },
   {
-    "id": "83f3f8d5-a19f-4137-9831-63c20947fa70",
-    "studentId": "student_5755fd9a-70bb-47f5-b0be-b4fe3d476cff",
+    "id": "3191b638-9b66-4a6b-9599-ef3272231571",
+    "studentId": "synthetic_student_5b5e9fa7",
     "pageNumber": 1,
     "selection": {
-      "id": "83f3f8d5-a19f-4137-9831-63c20947fa70",
       "start": {
-        "x": 339,
-        "y": 254.79999923706055
+        "x": 24.571417540141486,
+        "y": 0
       },
       "end": {
-        "x": 606,
-        "y": 644.7999992370605
+        "x": 330.15087636083814,
+        "y": 308.36684072746925
       }
     },
-    "timestamp": "2024-11-02T23:27:15.232Z"
+    "question": "Is this formula always applicable?",
+    "timestamp": "2024-11-02T19:10:42.047Z"
   },
   {
-    "id": "81f83352-59d6-4776-a8b4-95a8b833d170",
-    "studentId": "student_5755fd9a-70bb-47f5-b0be-b4fe3d476cff",
+    "id": "9f6b15eb-d21c-487d-bb3e-5b58ee9c494f",
+    "studentId": "synthetic_student_53b5af5f",
     "pageNumber": 1,
     "selection": {
-      "id": "81f83352-59d6-4776-a8b4-95a8b833d170",
       "start": {
-        "x": 298,
-        "y": 323.79999923706055
+        "x": 46.77498008828458,
+        "y": 22.162874016206317
       },
       "end": {
-        "x": 27,
-        "y": 649.7999992370605
+        "x": 325.24664849532746,
+        "y": 338.29937522610845
       }
     },
-    "timestamp": "2024-11-02T23:27:18.907Z"
+    "question": "Is this formula always applicable?",
+    "timestamp": "2024-11-02T08:10:44.679Z"
   },
   {
-    "id": "65d644f0-c6f1-42e4-933d-106e973fb17d",
-    "studentId": "student_5755fd9a-70bb-47f5-b0be-b4fe3d476cff",
+    "id": "19a0b700-d3f6-4d30-a3e6-137207cbcf2f",
+    "studentId": "student_54b3ef07-08fc-4545-8899-2a942fd8bf12",
+    "pageNumber": 1,
+    "selection": {
+      "id": "19a0b700-d3f6-4d30-a3e6-137207cbcf2f",
+      "start": {
+        "x": 346.3402404785156,
+        "y": 73.9548568725586
+      },
+      "end": {
+        "x": 551.3402404785156,
+        "y": 224.9548568725586
+      }
+    },
+    "question": "",
+    "timestamp": "2024-11-03T02:00:14.951Z"
+  },
+  {
+    "id": "46b097ca-f24d-47a6-9a89-2096e71ba93c",
+    "studentId": "synthetic_student_84466a2d",
+    "pageNumber": 1,
+    "selection": {
+      "start": {
+        "x": 319.00100119901543,
+        "y": 34.64426246729245
+      },
+      "end": {
+        "x": 583.6123613659068,
+        "y": 296.7413131960909
+      }
+    },
+    "question": "Is this formula always applicable?",
+    "timestamp": "2024-11-02T13:36:09.004Z"
+  },
+  {
+    "id": "27d8eec2-3c6f-49f0-9f9d-e7d66474511b",
+    "studentId": "student_54b3ef07-08fc-4545-8899-2a942fd8bf12",
+    "pageNumber": 1,
+    "selection": {
+      "id": "27d8eec2-3c6f-49f0-9f9d-e7d66474511b",
+      "start": {
+        "x": 332.3402404785156,
+        "y": 245.9548568725586
+      },
+      "end": {
+        "x": 610.3402404785156,
+        "y": 620.9548568725586
+      }
+    },
+    "question": "",
+    "timestamp": "2024-11-03T02:00:17.561Z"
+  },
+  {
+    "id": "9fd79d8b-2365-42f2-bf72-1fad49ac2b25",
+    "studentId": "synthetic_student_e3b0acfc",
+    "pageNumber": 1,
+    "selection": {
+      "start": {
+        "x": 319.7254609789547,
+        "y": 108.79202295632302
+      },
+      "end": {
+        "x": 610.4676612892733,
+        "y": 713.4028494356892
+      }
+    },
+    "question": "What are the practical applications of this?",
+    "timestamp": "2024-11-02T19:36:05.114Z"
+  },
+  {
+    "id": "5b90ddbf-5446-464f-b2f0-003368a108fe",
+    "studentId": "student_7e909c7d-4561-469a-b93f-c05697f242d8",
     "pageNumber": 2,
     "selection": {
-      "id": "65d644f0-c6f1-42e4-933d-106e973fb17d",
+      "id": "5b90ddbf-5446-464f-b2f0-003368a108fe",
       "start": {
-        "x": 359,
-        "y": 619
+        "x": 63.340240478515625,
+        "y": 246.9548568725586
       },
       "end": {
-        "x": 596,
-        "y": 727
+        "x": 611.3402404785156,
+        "y": 347.9548568725586
       }
     },
-    "timestamp": "2024-11-02T23:27:24.422Z"
+    "question": "",
+    "timestamp": "2024-11-03T02:04:41.341Z"
   },
   {
-    "id": "bd1b3a5d-2391-4120-a851-4733e92a07d4",
-    "studentId": "student_5755fd9a-70bb-47f5-b0be-b4fe3d476cff",
+    "id": "ff2ad58d-631e-4c28-8a52-b2ac5f8f3331",
+    "studentId": "synthetic_student_2bce432e",
+    "pageNumber": 2,
+    "selection": {
+      "start": {
+        "x": 45.54939694341667,
+        "y": 176.7570792239419
+      },
+      "end": {
+        "x": 657.5642668708444,
+        "y": 447.81614836843653
+      }
+    },
+    "question": "Why is this important?",
+    "timestamp": "2024-11-02T02:57:39.102Z"
+  },
+  {
+    "id": "47f244c3-e185-4a04-a9fa-0d50c7041201",
+    "studentId": "synthetic_student_0e9d2282",
+    "pageNumber": 2,
+    "selection": {
+      "start": {
+        "x": 38.39440218815671,
+        "y": 199.08871186688603
+      },
+      "end": {
+        "x": 632.7532047290805,
+        "y": 370.8610131539103
+      }
+    },
+    "question": "What are the key assumptions here?",
+    "timestamp": "2024-11-03T00:11:49.702Z"
+  },
+  {
+    "id": "12b908df-7af7-483e-8473-5f6f794224ab",
+    "studentId": "synthetic_student_b2f49e56",
+    "pageNumber": 2,
+    "selection": {
+      "start": {
+        "x": 22.66742488010069,
+        "y": 151.00259507978575
+      },
+      "end": {
+        "x": 650.5592129899662,
+        "y": 355.71746300180854
+      }
+    },
+    "question": "Could you provide more examples?",
+    "timestamp": "2024-11-02T06:22:37.713Z"
+  },
+  {
+    "id": "2eb7fce6-ceff-45fd-b44c-0119daf9bb17",
+    "studentId": "synthetic_student_62b8a709",
+    "pageNumber": 2,
+    "selection": {
+      "start": {
+        "x": 41.66216741502862,
+        "y": 191.13848264640717
+      },
+      "end": {
+        "x": 656.1787335206471,
+        "y": 416.0756310269081
+      }
+    },
+    "question": "Is this formula always applicable?",
+    "timestamp": "2024-11-02T12:52:47.755Z"
+  },
+  {
+    "id": "0d30ab79-4079-41e8-9fbb-1b1035c6d03b",
+    "studentId": "synthetic_student_f0f6f260",
+    "pageNumber": 2,
+    "selection": {
+      "start": {
+        "x": 33.52522531569885,
+        "y": 152.11790579787288
+      },
+      "end": {
+        "x": 620.6526680535892,
+        "y": 404.9269242541036
+      }
+    },
+    "question": "How does this connect to other topics?",
+    "timestamp": "2024-11-02T15:59:10.582Z"
+  },
+  {
+    "id": "f254fc20-be90-476b-8362-0bde7deabad0",
+    "studentId": "synthetic_student_0aa9c348",
+    "pageNumber": 2,
+    "selection": {
+      "start": {
+        "x": 26.396053332090972,
+        "y": 102.28207933987949
+      },
+      "end": {
+        "x": 641.233351607815,
+        "y": 491.3644119388876
+      }
+    },
+    "question": "Why is this important?",
+    "timestamp": "2024-11-02T16:45:41.648Z"
+  },
+  {
+    "id": "a814bde9-1d24-4846-bdda-fba983586a5f",
+    "studentId": "synthetic_student_765d013d",
+    "pageNumber": 2,
+    "selection": {
+      "start": {
+        "x": 54.739361943637505,
+        "y": 188.15131934747637
+      },
+      "end": {
+        "x": 656.1852772167744,
+        "y": 374.21516149141934
+      }
+    },
+    "question": "Could you provide more examples?",
+    "timestamp": "2024-11-02T14:08:04.689Z"
+  },
+  {
+    "id": "6fc762f5-dff9-4675-a3cb-411bd1fe860c",
+    "studentId": "student_f17699a7-4d28-4517-aad5-c8cada7a2257",
+    "pageNumber": 2,
+    "selection": {
+      "id": "6fc762f5-dff9-4675-a3cb-411bd1fe860c",
+      "start": {
+        "x": 10.340240478515625,
+        "y": 660.9548568725586
+      },
+      "end": {
+        "x": 592.3402404785156,
+        "y": 784.9548568725586
+      }
+    },
+    "question": "",
+    "timestamp": "2024-11-03T02:05:19.056Z"
+  },
+  {
+    "id": "2202f3df-f22b-480b-ab39-6e3d036b242c",
+    "studentId": "synthetic_student_bb2191ae",
+    "pageNumber": 2,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 658.0895206225686
+      },
+      "end": {
+        "x": 613.7646718176126,
+        "y": 885.6249339620026
+      }
+    },
+    "question": "What are the key assumptions here?",
+    "timestamp": "2024-11-02T06:32:39.117Z"
+  },
+  {
+    "id": "5d7ab147-0aa3-4226-b50b-3d8275e05c96",
+    "studentId": "synthetic_student_d8ef4c4d",
+    "pageNumber": 2,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 584.772570461867
+      },
+      "end": {
+        "x": 600.1839720054506,
+        "y": 854.3112720451579
+      }
+    },
+    "question": "Is this formula always applicable?",
+    "timestamp": "2024-11-02T09:22:55.340Z"
+  },
+  {
+    "id": "03d49220-8037-42a3-a6ad-89bb5de1c26a",
+    "studentId": "synthetic_student_a6393e46",
+    "pageNumber": 2,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 611.8961589168762
+      },
+      "end": {
+        "x": 624.6664092805586,
+        "y": 809.1878799070973
+      }
+    },
+    "question": "Is this formula always applicable?",
+    "timestamp": "2024-11-02T02:42:50.786Z"
+  },
+  {
+    "id": "159d3c1f-5387-4b45-aa60-b7c3ecde969c",
+    "studentId": "synthetic_student_e0ba9e8b",
+    "pageNumber": 2,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 592.0308673699276
+      },
+      "end": {
+        "x": 639.4371952563934,
+        "y": 923.6592415658185
+      }
+    },
+    "question": "How does this relate to the previous chapter?",
+    "timestamp": "2024-11-02T04:16:14.879Z"
+  },
+  {
+    "id": "8b361dd2-2898-48fd-b45a-b0e0c369832c",
+    "studentId": "synthetic_student_2e35f75e",
+    "pageNumber": 2,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 630.1743531465581
+      },
+      "end": {
+        "x": 624.0315458827984,
+        "y": 839.2521870828803
+      }
+    },
+    "question": "Can you explain this concept in simpler terms?",
+    "timestamp": "2024-11-02T06:00:25.134Z"
+  },
+  {
+    "id": "5b66c88c-d83a-462a-a5c1-f800c09e7401",
+    "studentId": "student_05a59e40-a146-4363-92b6-8c35e29b7a04",
+    "pageNumber": 2,
+    "selection": {
+      "id": "5b66c88c-d83a-462a-a5c1-f800c09e7401",
+      "start": {
+        "x": 10.340240478515625,
+        "y": 477.9548568725586
+      },
+      "end": {
+        "x": 600.3402404785156,
+        "y": 786.9548568725586
+      }
+    },
+    "question": "",
+    "timestamp": "2024-11-03T02:05:50.289Z"
+  },
+  {
+    "id": "f059b1a5-d32c-456c-abb9-0ecf6edfb588",
+    "studentId": "synthetic_student_fbbd983b",
+    "pageNumber": 2,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 353.7299748963192
+      },
+      "end": {
+        "x": 634.2216872405016,
+        "y": 843.129078226585
+      }
+    },
+    "question": "What are the practical applications of this?",
+    "timestamp": "2024-11-02T05:14:25.348Z"
+  },
+  {
+    "id": "4c9301be-b6ba-4327-ba1b-68bb25a1fd73",
+    "studentId": "synthetic_student_2161a035",
+    "pageNumber": 2,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 437.847684456345
+      },
+      "end": {
+        "x": 646.6972557446884,
+        "y": 791.2179184201119
+      }
+    },
+    "question": "What are the key assumptions here?",
+    "timestamp": "2024-11-02T18:02:38.015Z"
+  },
+  {
+    "id": "4a5ea571-75d9-411d-b50a-3eea9b642439",
+    "studentId": "synthetic_student_33695414",
+    "pageNumber": 2,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 465.2443752508668
+      },
+      "end": {
+        "x": 641.6429102820204,
+        "y": 791.5535713580681
+      }
+    },
+    "question": "How does this connect to other topics?",
+    "timestamp": "2024-11-02T19:21:41.947Z"
+  },
+  {
+    "id": "8b55c6dc-ac2f-409d-b0d4-e6ad0a381b45",
+    "studentId": "synthetic_student_f3429393",
+    "pageNumber": 2,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 458.3157064463947
+      },
+      "end": {
+        "x": 643.2606002918363,
+        "y": 820.2502932567766
+      }
+    },
+    "question": "Could you provide more examples?",
+    "timestamp": "2024-11-02T11:34:47.721Z"
+  },
+  {
+    "id": "4b04aa8c-b34e-4d36-bb10-357460ef101f",
+    "studentId": "synthetic_student_22bd2dee",
+    "pageNumber": 2,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 397.500830005412
+      },
+      "end": {
+        "x": 605.4060856443832,
+        "y": 830.4359657852697
+      }
+    },
+    "question": "How does this connect to other topics?",
+    "timestamp": "2024-11-02T07:41:48.877Z"
+  },
+  {
+    "id": "a03e2e30-e1d5-4d4f-8c17-84d8fe625ddc",
+    "studentId": "synthetic_student_d84114d0",
+    "pageNumber": 2,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 445.4615862191575
+      },
+      "end": {
+        "x": 616.029267478101,
+        "y": 800.953957327781
+      }
+    },
+    "question": "How does this relate to the previous chapter?",
+    "timestamp": "2024-11-02T05:19:18.393Z"
+  },
+  {
+    "id": "fe046856-1cad-46c5-aea0-40309983dc54",
+    "studentId": "synthetic_student_9a14801f",
+    "pageNumber": 2,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 432.71781368947154
+      },
+      "end": {
+        "x": 602.4614328710167,
+        "y": 789.3978891020882
+      }
+    },
+    "question": "What are the key assumptions here?",
+    "timestamp": "2024-11-02T20:43:55.204Z"
+  },
+  {
+    "id": "42f99031-4cf0-4513-b246-3d24d43127a7",
+    "studentId": "synthetic_student_993e0d66",
+    "pageNumber": 2,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 343.7192024989513
+      },
+      "end": {
+        "x": 644.3602926543401,
+        "y": 902.5209213777973
+      }
+    },
+    "question": "How does this relate to the previous chapter?",
+    "timestamp": "2024-11-02T23:25:26.926Z"
+  },
+  {
+    "id": "88b3a678-9054-4126-bbbf-0ae73c1a9592",
+    "studentId": "synthetic_student_b84f6bb5",
+    "pageNumber": 2,
+    "selection": {
+      "start": {
+        "x": 2.503803052547946,
+        "y": 393.1333291159444
+      },
+      "end": {
+        "x": 627.8098528681318,
+        "y": 903.3892257467394
+      }
+    },
+    "question": "What are the practical applications of this?",
+    "timestamp": "2024-11-02T16:25:24.242Z"
+  },
+  {
+    "id": "22bb9d6c-5dc2-4a08-b167-6abfd3a5de16",
+    "studentId": "synthetic_student_091c3162",
+    "pageNumber": 2,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 379.0273403571125
+      },
+      "end": {
+        "x": 636.7821948919628,
+        "y": 862.9510753969083
+      }
+    },
+    "question": "Is this formula always applicable?",
+    "timestamp": "2024-11-02T21:51:06.850Z"
+  },
+  {
+    "id": "4944d177-a24b-4674-bcc8-21032ca5971e",
+    "studentId": "synthetic_student_b60bc26c",
+    "pageNumber": 2,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 370.77869561482925
+      },
+      "end": {
+        "x": 618.6489301887772,
+        "y": 905.0511096023013
+      }
+    },
+    "question": "What are the key assumptions here?",
+    "timestamp": "2024-11-02T10:46:57.905Z"
+  },
+  {
+    "id": "f8b77dcb-c8bf-49f2-84fb-87b67809e18f",
+    "studentId": "synthetic_student_d08b8ca4",
+    "pageNumber": 2,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 381.6471877672712
+      },
+      "end": {
+        "x": 612.1719451681681,
+        "y": 867.0440635216333
+      }
+    },
+    "question": "Why is this important?",
+    "timestamp": "2024-11-02T16:19:42.010Z"
+  },
+  {
+    "id": "5222e324-37d9-4542-83e8-8db4e0ea19dc",
+    "studentId": "student_f262db26-8fbe-4e3e-9d62-c3e2803ee1e9",
+    "pageNumber": 2,
+    "selection": {
+      "id": "5222e324-37d9-4542-83e8-8db4e0ea19dc",
+      "start": {
+        "x": 55.340240478515625,
+        "y": 244.9548568725586
+      },
+      "end": {
+        "x": 604.3402404785156,
+        "y": 343.9548568725586
+      }
+    },
+    "question": "",
+    "timestamp": "2024-11-03T02:06:15.576Z"
+  },
+  {
+    "id": "0190e46e-caa6-471a-a7bb-ad88c633167c",
+    "studentId": "synthetic_student_491085bf",
+    "pageNumber": 2,
+    "selection": {
+      "start": {
+        "x": 10.070963150666678,
+        "y": 226.47312427527456
+      },
+      "end": {
+        "x": 638.080554308242,
+        "y": 356.1272874085547
+      }
+    },
+    "question": "How does this relate to the previous chapter?",
+    "timestamp": "2024-11-02T07:10:09.125Z"
+  },
+  {
+    "id": "506624ef-8f00-4ac7-b907-7bf081955c81",
+    "studentId": "synthetic_student_da548622",
+    "pageNumber": 2,
+    "selection": {
+      "start": {
+        "x": 44.12206934317648,
+        "y": 227.9372611967843
+      },
+      "end": {
+        "x": 618.8052234132645,
+        "y": 476.20978606366737
+      }
+    },
+    "question": "Is this formula always applicable?",
+    "timestamp": "2024-11-02T03:07:45.988Z"
+  },
+  {
+    "id": "24c8adfb-813f-457f-afcc-6e139f7abc74",
+    "studentId": "synthetic_student_02cf5847",
+    "pageNumber": 2,
+    "selection": {
+      "start": {
+        "x": 23.398980113669122,
+        "y": 105.11413980355164
+      },
+      "end": {
+        "x": 632.9722129937844,
+        "y": 473.4592686242513
+      }
+    },
+    "question": "What are the key assumptions here?",
+    "timestamp": "2024-11-02T14:09:59.745Z"
+  },
+  {
+    "id": "ef4843b7-731d-4dd2-9444-00e6166e7d7d",
+    "studentId": "synthetic_student_b51f56fe",
+    "pageNumber": 2,
+    "selection": {
+      "start": {
+        "x": 10.692621777971347,
+        "y": 98.59687859588064
+      },
+      "end": {
+        "x": 623.8084436419551,
+        "y": 369.92966780107105
+      }
+    },
+    "question": "Why is this important?",
+    "timestamp": "2024-11-02T08:54:01.295Z"
+  },
+  {
+    "id": "47279e85-2929-4cd8-8ae8-69272564cd10",
+    "studentId": "synthetic_student_fca891c8",
+    "pageNumber": 2,
+    "selection": {
+      "start": {
+        "x": 44.06776725020286,
+        "y": 170.817796106701
+      },
+      "end": {
+        "x": 651.1189352210556,
+        "y": 354.2474137958243
+      }
+    },
+    "question": "How does this connect to other topics?",
+    "timestamp": "2024-11-02T12:09:07.523Z"
+  },
+  {
+    "id": "7760f052-5ce2-4bcf-8cb2-1cfecb67cf1c",
+    "studentId": "synthetic_student_3f08509c",
+    "pageNumber": 2,
+    "selection": {
+      "start": {
+        "x": 18.3190034159036,
+        "y": 183.1215302945747
+      },
+      "end": {
+        "x": 640.2913030522008,
+        "y": 358.61657637644055
+      }
+    },
+    "question": "Is this formula always applicable?",
+    "timestamp": "2024-11-02T09:15:41.964Z"
+  },
+  {
+    "id": "8c314807-acba-4837-afe7-b4a75217b8b4",
+    "studentId": "synthetic_student_134e1bf8",
+    "pageNumber": 2,
+    "selection": {
+      "start": {
+        "x": 9.15611067065958,
+        "y": 202.56078937098212
+      },
+      "end": {
+        "x": 647.781521067915,
+        "y": 347.2847223875451
+      }
+    },
+    "question": "Could you provide more examples?",
+    "timestamp": "2024-11-02T04:04:09.558Z"
+  },
+  {
+    "id": "f129638e-9d58-4d49-a62c-13e14dfd92fc",
+    "studentId": "synthetic_student_3e0e1390",
+    "pageNumber": 2,
+    "selection": {
+      "start": {
+        "x": 30.873701593581085,
+        "y": 108.64884825028207
+      },
+      "end": {
+        "x": 642.8819050502678,
+        "y": 357.37098438873045
+      }
+    },
+    "question": "Why is this important?",
+    "timestamp": "2024-11-03T01:18:15.314Z"
+  },
+  {
+    "id": "9506a7ce-6a30-4446-ae0a-6307fc22076e",
+    "studentId": "synthetic_student_cf2e425a",
+    "pageNumber": 2,
+    "selection": {
+      "start": {
+        "x": 23.153577287799635,
+        "y": 175.17944496664006
+      },
+      "end": {
+        "x": 634.853224945815,
+        "y": 353.167348853689
+      }
+    },
+    "question": "What are the practical applications of this?",
+    "timestamp": "2024-11-02T12:25:24.308Z"
+  },
+  {
+    "id": "d9a62fcf-af64-4f20-a975-d60037395418",
+    "studentId": "synthetic_student_46cfb08f",
+    "pageNumber": 2,
+    "selection": {
+      "start": {
+        "x": 48.07245018873995,
+        "y": 164.2726464291834
+      },
+      "end": {
+        "x": 606.3199828325071,
+        "y": 347.9311874073063
+      }
+    },
+    "question": "What are the practical applications of this?",
+    "timestamp": "2024-11-02T13:11:21.049Z"
+  },
+  {
+    "id": "7429186a-dc8c-4e1d-810e-27955530156d",
+    "studentId": "student_707f0cf6-cdd1-4958-9b13-15c59eb1ccbb",
     "pageNumber": 3,
     "selection": {
-      "id": "bd1b3a5d-2391-4120-a851-4733e92a07d4",
+      "id": "7429186a-dc8c-4e1d-810e-27955530156d",
       "start": {
-        "x": 304,
-        "y": 501
+        "x": 5.340240478515625,
+        "y": 507.9548568725586
       },
       "end": {
-        "x": 48,
-        "y": 783
+        "x": 283.3402404785156,
+        "y": 766.9548568725586
       }
     },
-    "timestamp": "2024-11-02T23:27:29.033Z"
+    "question": "",
+    "timestamp": "2024-11-03T02:06:43.447Z"
   },
   {
-    "id": "b5223e73-8d0a-4c30-9af2-79f60954d24a",
-    "studentId": "student_5755fd9a-70bb-47f5-b0be-b4fe3d476cff",
+    "id": "c9688738-c24e-4096-8e32-47ad22887f07",
+    "studentId": "synthetic_student_8fde0037",
+    "pageNumber": 3,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 371.28826361701033
+      },
+      "end": {
+        "x": 330.50643975356735,
+        "y": 900.4219347703133
+      }
+    },
+    "question": "Is this formula always applicable?",
+    "timestamp": "2024-11-02T20:53:10.071Z"
+  },
+  {
+    "id": "1188f3fd-e402-4fad-a700-e4a40e7d5552",
+    "studentId": "student_707f0cf6-cdd1-4958-9b13-15c59eb1ccbb",
+    "pageNumber": 3,
+    "selection": {
+      "id": "1188f3fd-e402-4fad-a700-e4a40e7d5552",
+      "start": {
+        "x": 17.340240478515625,
+        "y": 200.9548568725586
+      },
+      "end": {
+        "x": 580.3402404785156,
+        "y": 302.9548568725586
+      }
+    },
+    "question": "",
+    "timestamp": "2024-11-03T02:06:51.716Z"
+  },
+  {
+    "id": "a0985249-6b38-489f-939d-950038f9e19b",
+    "studentId": "synthetic_student_f3fcfad1",
+    "pageNumber": 3,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 57.62885700917701
+      },
+      "end": {
+        "x": 623.9543936003538,
+        "y": 450.93364860888244
+      }
+    },
+    "question": "How does this connect to other topics?",
+    "timestamp": "2024-11-02T06:11:57.964Z"
+  },
+  {
+    "id": "d3087d32-d414-4d0b-9ccb-5ff562f816e2",
+    "studentId": "synthetic_student_db8d43db",
+    "pageNumber": 3,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 82.88255043458304
+      },
+      "end": {
+        "x": 610.7453847235502,
+        "y": 371.5456138764669
+      }
+    },
+    "question": "Can you explain this concept in simpler terms?",
+    "timestamp": "2024-11-02T04:25:59.582Z"
+  },
+  {
+    "id": "93970b7b-72b4-41d8-9fcc-d1b77b6de100",
+    "studentId": "synthetic_student_ac99adff",
+    "pageNumber": 3,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 171.71086317909075
+      },
+      "end": {
+        "x": 596.079056256331,
+        "y": 446.58699905034575
+      }
+    },
+    "question": "Why is this important?",
+    "timestamp": "2024-11-02T23:57:44.806Z"
+  },
+  {
+    "id": "acd28d69-7090-4a9f-a032-4ba4a156cb9a",
+    "studentId": "synthetic_student_65b30dc7",
+    "pageNumber": 3,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 80.9812799890975
+      },
+      "end": {
+        "x": 586.5588392490447,
+        "y": 426.7984194962702
+      }
+    },
+    "question": "How does this connect to other topics?",
+    "timestamp": "2024-11-02T20:26:07.720Z"
+  },
+  {
+    "id": "71fd0840-fea0-42af-9458-8a55a5009a19",
+    "studentId": "synthetic_student_28a34c62",
+    "pageNumber": 3,
+    "selection": {
+      "start": {
+        "x": 16.996375693589385,
+        "y": 158.01591896680335
+      },
+      "end": {
+        "x": 617.632023349349,
+        "y": 361.71330483525037
+      }
+    },
+    "question": "How does this relate to the previous chapter?",
+    "timestamp": "2024-11-02T19:36:24.726Z"
+  },
+  {
+    "id": "2a8b7603-9112-4934-a5f6-de20261729b1",
+    "studentId": "synthetic_student_2d7f7bd0",
+    "pageNumber": 3,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 131.23519751013532
+      },
+      "end": {
+        "x": 589.7586715779188,
+        "y": 397.63686913747676
+      }
+    },
+    "question": "Is this formula always applicable?",
+    "timestamp": "2024-11-02T07:42:34.660Z"
+  },
+  {
+    "id": "697f5a8e-098c-49ae-bcbf-581d82dcbda0",
+    "studentId": "synthetic_student_2e1f185b",
+    "pageNumber": 3,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 69.01222383652805
+      },
+      "end": {
+        "x": 617.8543480722631,
+        "y": 435.5788410292131
+      }
+    },
+    "question": "How does this connect to other topics?",
+    "timestamp": "2024-11-02T19:13:25.049Z"
+  },
+  {
+    "id": "2510f378-9f0f-41d4-9364-1880ab770fc3",
+    "studentId": "synthetic_student_6457f6cb",
+    "pageNumber": 3,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 51.929246530089614
+      },
+      "end": {
+        "x": 595.7886090247011,
+        "y": 404.18638030409363
+      }
+    },
+    "question": "How does this connect to other topics?",
+    "timestamp": "2024-11-02T05:32:08.399Z"
+  },
+  {
+    "id": "7bf016a3-bd90-4cc0-a73a-a60be5e097ac",
+    "studentId": "synthetic_student_56c28d61",
+    "pageNumber": 3,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 54.065297679019636
+      },
+      "end": {
+        "x": 614.7415552188718,
+        "y": 314.52197888554866
+      }
+    },
+    "question": "Could you provide more examples?",
+    "timestamp": "2024-11-02T03:18:03.768Z"
+  },
+  {
+    "id": "56d3026f-5663-44f3-8612-5fa4221269e5",
+    "studentId": "synthetic_student_c94133e3",
+    "pageNumber": 3,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 198.98082058009342
+      },
+      "end": {
+        "x": 613.8086196614291,
+        "y": 399.7486107035851
+      }
+    },
+    "question": "How does this connect to other topics?",
+    "timestamp": "2024-11-02T02:16:25.567Z"
+  },
+  {
+    "id": "6e0aa621-5568-4da9-9aea-78d4cbaee888",
+    "studentId": "synthetic_student_13b55523",
+    "pageNumber": 3,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 156.45387150526497
+      },
+      "end": {
+        "x": 582.6647474694906,
+        "y": 418.4975998419511
+      }
+    },
+    "question": "Why is this important?",
+    "timestamp": "2024-11-03T01:26:21.665Z"
+  },
+  {
+    "id": "f2508c6d-fb57-44f6-a10d-a30be939f9df",
+    "studentId": "student_707f0cf6-cdd1-4958-9b13-15c59eb1ccbb",
+    "pageNumber": 3,
+    "selection": {
+      "id": "f2508c6d-fb57-44f6-a10d-a30be939f9df",
+      "start": {
+        "x": 457.3402404785156,
+        "y": 667.9548568725586
+      },
+      "end": {
+        "x": 606.3402404785156,
+        "y": 728.9548568725586
+      }
+    },
+    "question": "",
+    "timestamp": "2024-11-03T02:06:58.865Z"
+  },
+  {
+    "id": "dee6974d-fc98-40a0-a52c-82d3b58e1545",
+    "studentId": "synthetic_student_e06af0bd",
+    "pageNumber": 3,
+    "selection": {
+      "start": {
+        "x": 447.314417798879,
+        "y": 650.0706747435465
+      },
+      "end": {
+        "x": 612.7832465854731,
+        "y": 819.63715440291
+      }
+    },
+    "question": "What are the practical applications of this?",
+    "timestamp": "2024-11-02T05:23:27.571Z"
+  },
+  {
+    "id": "eb9f00f7-652c-4724-bde0-940223715b71",
+    "studentId": "synthetic_student_95d8d8bb",
+    "pageNumber": 3,
+    "selection": {
+      "start": {
+        "x": 433.3425940322101,
+        "y": 662.2413282417106
+      },
+      "end": {
+        "x": 638.3860449793793,
+        "y": 753.4202601176729
+      }
+    },
+    "question": "What are the practical applications of this?",
+    "timestamp": "2024-11-02T15:08:26.315Z"
+  },
+  {
+    "id": "f752ba81-f93d-4577-b999-55e5875154b6",
+    "studentId": "synthetic_student_aa592f30",
+    "pageNumber": 3,
+    "selection": {
+      "start": {
+        "x": 442.25999446267804,
+        "y": 660.0146024885419
+      },
+      "end": {
+        "x": 629.5583489673654,
+        "y": 762.3830715289762
+      }
+    },
+    "question": "How does this relate to the previous chapter?",
+    "timestamp": "2024-11-02T11:19:51.355Z"
+  },
+  {
+    "id": "48cbeea5-c142-4311-b041-dcc93ad25458",
+    "studentId": "synthetic_student_a8d1ceae",
+    "pageNumber": 3,
+    "selection": {
+      "start": {
+        "x": 436.7558612751652,
+        "y": 528.5284091548374
+      },
+      "end": {
+        "x": 647.747326819407,
+        "y": 845.9552995010181
+      }
+    },
+    "question": "Can you explain this concept in simpler terms?",
+    "timestamp": "2024-11-02T23:13:55.931Z"
+  },
+  {
+    "id": "53adf667-2733-486c-9319-1f3094f5d59c",
+    "studentId": "synthetic_student_99e26c33",
+    "pageNumber": 3,
+    "selection": {
+      "start": {
+        "x": 436.6098493981891,
+        "y": 550.0777297958873
+      },
+      "end": {
+        "x": 639.0036157154468,
+        "y": 807.1916916421239
+      }
+    },
+    "question": "How does this connect to other topics?",
+    "timestamp": "2024-11-02T10:17:55.329Z"
+  },
+  {
+    "id": "3f40814c-71b7-4236-bbc8-9d9e93a0483d",
+    "studentId": "synthetic_student_f252ce96",
+    "pageNumber": 3,
+    "selection": {
+      "start": {
+        "x": 454.7610910463028,
+        "y": 563.8676219212541
+      },
+      "end": {
+        "x": 618.3223506628377,
+        "y": 778.1253605745906
+      }
+    },
+    "question": "Could you provide more examples?",
+    "timestamp": "2024-11-02T10:24:04.960Z"
+  },
+  {
+    "id": "039353f9-15bb-4689-9491-1e6eb942f2d8",
+    "studentId": "synthetic_student_3be23e2f",
+    "pageNumber": 3,
+    "selection": {
+      "start": {
+        "x": 450.57679965688715,
+        "y": 591.0802069146054
+      },
+      "end": {
+        "x": 639.4949786217184,
+        "y": 799.2686501268536
+      }
+    },
+    "question": "Can you explain this concept in simpler terms?",
+    "timestamp": "2024-11-03T01:27:37.318Z"
+  },
+  {
+    "id": "4a6d2f05-aa30-4680-ac1b-9a0e26ee88eb",
+    "studentId": "synthetic_student_3835c030",
+    "pageNumber": 3,
+    "selection": {
+      "start": {
+        "x": 454.1008883508418,
+        "y": 635.0613330457196
+      },
+      "end": {
+        "x": 613.9586442791616,
+        "y": 853.5048202697435
+      }
+    },
+    "question": "Can you explain this concept in simpler terms?",
+    "timestamp": "2024-11-02T05:14:05.837Z"
+  },
+  {
+    "id": "e0ded869-c698-4a6a-b144-004ee87f7eaa",
+    "studentId": "synthetic_student_7fc8c1ee",
+    "pageNumber": 3,
+    "selection": {
+      "start": {
+        "x": 439.7196616266738,
+        "y": 593.2965348260018
+      },
+      "end": {
+        "x": 608.1381526719425,
+        "y": 735.1960655101476
+      }
+    },
+    "question": "What are the key assumptions here?",
+    "timestamp": "2024-11-02T05:11:00.205Z"
+  },
+  {
+    "id": "0d6d1d7d-4abe-43c6-bcdc-5a7756d3352b",
+    "studentId": "synthetic_student_4dfa060a",
+    "pageNumber": 3,
+    "selection": {
+      "start": {
+        "x": 439.79789351004507,
+        "y": 518.1755226954539
+      },
+      "end": {
+        "x": 622.427360972293,
+        "y": 730.8092053514628
+      }
+    },
+    "question": "Is this formula always applicable?",
+    "timestamp": "2024-11-02T02:52:18.552Z"
+  },
+  {
+    "id": "a6cf7021-b1a2-430c-bf6d-f87ab9b5ecd7",
+    "studentId": "synthetic_student_eea1c184",
+    "pageNumber": 3,
+    "selection": {
+      "start": {
+        "x": 408.0559641671274,
+        "y": 568.142391572784
+      },
+      "end": {
+        "x": 614.3909534031557,
+        "y": 769.7278989053276
+      }
+    },
+    "question": "Could you provide more examples?",
+    "timestamp": "2024-11-02T19:56:16.633Z"
+  },
+  {
+    "id": "2cd0691a-15a8-4c2c-85b2-dadbfc01dadf",
+    "studentId": "synthetic_student_15eda3e3",
+    "pageNumber": 3,
+    "selection": {
+      "start": {
+        "x": 432.81793151728164,
+        "y": 632.0271319481388
+      },
+      "end": {
+        "x": 617.187007106259,
+        "y": 814.3982988411183
+      }
+    },
+    "question": "Why is this important?",
+    "timestamp": "2024-11-02T15:00:32.341Z"
+  },
+  {
+    "id": "39f4b7e0-e319-4eb4-af83-9dda4bae994c",
+    "studentId": "synthetic_student_63b4d53e",
+    "pageNumber": 3,
+    "selection": {
+      "start": {
+        "x": 440.1462162138819,
+        "y": 549.5936062506997
+      },
+      "end": {
+        "x": 646.0681747741904,
+        "y": 775.0749994276824
+      }
+    },
+    "question": "What are the key assumptions here?",
+    "timestamp": "2024-11-02T16:21:48.989Z"
+  },
+  {
+    "id": "eb4f3f88-ba43-4355-8885-8e3359e8ee20",
+    "studentId": "student_714b6e6a-517a-4aaf-ae0c-c564a42f9fdb",
     "pageNumber": 4,
     "selection": {
-      "id": "b5223e73-8d0a-4c30-9af2-79f60954d24a",
+      "id": "eb4f3f88-ba43-4355-8885-8e3359e8ee20",
       "start": {
-        "x": 594,
-        "y": 425.1999969482422
+        "x": 11.340240478515625,
+        "y": 170.9548568725586
       },
       "end": {
-        "x": 12,
-        "y": 167.1999969482422
+        "x": 590.3402404785156,
+        "y": 408.9548568725586
       }
     },
-    "timestamp": "2024-11-02T23:27:34.096Z"
+    "question": "",
+    "timestamp": "2024-11-03T02:07:41.141Z"
   },
   {
-    "id": "aae5e1f8-2dc6-48c8-b8d5-246d7dd54e6e",
-    "studentId": "student_5755fd9a-70bb-47f5-b0be-b4fe3d476cff",
+    "id": "fccd2ffd-6b69-45ba-94c5-ebe71f2d6834",
+    "studentId": "synthetic_student_cbc7fe2f",
     "pageNumber": 4,
     "selection": {
-      "id": "aae5e1f8-2dc6-48c8-b8d5-246d7dd54e6e",
       "start": {
-        "x": 11,
-        "y": 18.199996948242188
+        "x": 0,
+        "y": 111.72915666441526
       },
       "end": {
-        "x": 547,
-        "y": 154.1999969482422
+        "x": 638.421783344186,
+        "y": 550.5794872934827
       }
     },
-    "timestamp": "2024-11-02T23:27:35.451Z"
+    "question": "What are the key assumptions here?",
+    "timestamp": "2024-11-02T23:44:16.280Z"
   },
   {
-    "id": "987fc9fa-db0f-4c53-881d-85eb3bbed168",
-    "studentId": "student_5755fd9a-70bb-47f5-b0be-b4fe3d476cff",
+    "id": "9f728cd3-71b0-442c-9f38-f4b9162a9ae2",
+    "studentId": "synthetic_student_cafdb052",
+    "pageNumber": 4,
+    "selection": {
+      "start": {
+        "x": 1.7823982736316424,
+        "y": 69.11895304228919
+      },
+      "end": {
+        "x": 612.0928658677082,
+        "y": 499.51335616501706
+      }
+    },
+    "question": "What are the key assumptions here?",
+    "timestamp": "2024-11-02T08:41:54.704Z"
+  },
+  {
+    "id": "1ec11e86-4aac-4081-974d-597566113ef6",
+    "studentId": "synthetic_student_bb7b0f02",
+    "pageNumber": 4,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 97.49785224032378
+      },
+      "end": {
+        "x": 609.9214849090056,
+        "y": 435.0281674007294
+      }
+    },
+    "question": "How does this relate to the previous chapter?",
+    "timestamp": "2024-11-03T01:37:05.994Z"
+  },
+  {
+    "id": "d9932009-d5bc-4e40-8bd4-fe2f11cefaf5",
+    "studentId": "synthetic_student_75727a46",
+    "pageNumber": 4,
+    "selection": {
+      "start": {
+        "x": 8.99655513577294,
+        "y": 55.96337451495967
+      },
+      "end": {
+        "x": 639.449086703738,
+        "y": 555.218088676754
+      }
+    },
+    "question": "How does this connect to other topics?",
+    "timestamp": "2024-11-02T03:28:05.791Z"
+  },
+  {
+    "id": "98101cb8-a69e-4185-9621-3df39f595d5d",
+    "studentId": "synthetic_student_1ccd488a",
+    "pageNumber": 4,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 79.3281618410175
+      },
+      "end": {
+        "x": 629.3869636965624,
+        "y": 411.89468972754577
+      }
+    },
+    "question": "Could you provide more examples?",
+    "timestamp": "2024-11-02T21:00:10.282Z"
+  },
+  {
+    "id": "fdc4b0a5-5b58-496d-bf2c-6a8b58c0bf0a",
+    "studentId": "synthetic_student_40981772",
+    "pageNumber": 4,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 161.06967728128572
+      },
+      "end": {
+        "x": 600.7603262588161,
+        "y": 409.61173241685543
+      }
+    },
+    "question": "How does this relate to the previous chapter?",
+    "timestamp": "2024-11-02T16:14:51.430Z"
+  },
+  {
+    "id": "4a2d2a0f-7274-41a3-b765-29e0cf8b1f62",
+    "studentId": "synthetic_student_ff4c039b",
+    "pageNumber": 4,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 138.16610195548756
+      },
+      "end": {
+        "x": 638.8997662240641,
+        "y": 545.0930961361349
+      }
+    },
+    "question": "Can you explain this concept in simpler terms?",
+    "timestamp": "2024-11-02T11:50:42.215Z"
+  },
+  {
+    "id": "cce348a0-ed9d-44a1-b0ac-bd11d4e72fe9",
+    "studentId": "synthetic_student_aadacf22",
+    "pageNumber": 4,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 133.5304795974726
+      },
+      "end": {
+        "x": 630.5753517992914,
+        "y": 505.52046702409376
+      }
+    },
+    "question": "What are the practical applications of this?",
+    "timestamp": "2024-11-02T08:11:43.210Z"
+  },
+  {
+    "id": "dfc4034b-0176-4060-b5e7-74a37714d8bf",
+    "studentId": "synthetic_student_4ce1d5f1",
+    "pageNumber": 4,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 71.73483382492526
+      },
+      "end": {
+        "x": 623.4884087543948,
+        "y": 491.0311063032804
+      }
+    },
+    "question": "Is this formula always applicable?",
+    "timestamp": "2024-11-02T11:22:05.424Z"
+  },
+  {
+    "id": "29569b24-0674-444b-bb9e-d025a8d983c5",
+    "studentId": "student_714b6e6a-517a-4aaf-ae0c-c564a42f9fdb",
+    "pageNumber": 4,
+    "selection": {
+      "id": "29569b24-0674-444b-bb9e-d025a8d983c5",
+      "start": {
+        "x": 17.340240478515625,
+        "y": 556.9548568725586
+      },
+      "end": {
+        "x": 569.3402404785156,
+        "y": 720.9548568725586
+      }
+    },
+    "question": "",
+    "timestamp": "2024-11-03T02:07:47.275Z"
+  },
+  {
+    "id": "84ff3355-63af-451c-b5ff-072d90fa008e",
+    "studentId": "synthetic_student_3c40d2f4",
+    "pageNumber": 4,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 415.2188044681478
+      },
+      "end": {
+        "x": 583.6455539215034,
+        "y": 813.6589232452914
+      }
+    },
+    "question": "Is this formula always applicable?",
+    "timestamp": "2024-11-02T07:27:21.330Z"
+  },
+  {
+    "id": "71cf8e8d-a7c2-4ef6-b53f-1cdf84ae373c",
+    "studentId": "synthetic_student_61b5c6c4",
+    "pageNumber": 4,
+    "selection": {
+      "start": {
+        "x": 11.717426286709745,
+        "y": 455.51976541722115
+      },
+      "end": {
+        "x": 613.4521796269477,
+        "y": 868.5897871660394
+      }
+    },
+    "question": "Can you explain this concept in simpler terms?",
+    "timestamp": "2024-11-02T19:31:58.105Z"
+  },
+  {
+    "id": "ea1d26b7-fb44-479d-a23a-507a182d16dc",
+    "studentId": "synthetic_student_e287dee8",
+    "pageNumber": 4,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 452.4300639797728
+      },
+      "end": {
+        "x": 605.2031804323672,
+        "y": 810.7853200214399
+      }
+    },
+    "question": "How does this connect to other topics?",
+    "timestamp": "2024-11-02T08:52:49.387Z"
+  },
+  {
+    "id": "a071be19-a3b2-4b1a-b523-d0e4e28ff83d",
+    "studentId": "synthetic_student_13d90058",
+    "pageNumber": 4,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 431.30162799497015
+      },
+      "end": {
+        "x": 588.5833261180576,
+        "y": 733.9119941540507
+      }
+    },
+    "question": "What are the practical applications of this?",
+    "timestamp": "2024-11-02T02:35:37.093Z"
+  },
+  {
+    "id": "bba8cb05-d0d1-4d46-ade0-6cf31ad7f99b",
+    "studentId": "synthetic_student_81c8315e",
+    "pageNumber": 4,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 411.9149461777662
+      },
+      "end": {
+        "x": 594.7840196485151,
+        "y": 732.1827519285366
+      }
+    },
+    "question": "Why is this important?",
+    "timestamp": "2024-11-02T21:00:29.621Z"
+  },
+  {
+    "id": "2002b095-83a5-4118-8897-203c075dea80",
+    "studentId": "synthetic_student_b914a9f2",
+    "pageNumber": 4,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 445.8383046470491
+      },
+      "end": {
+        "x": 611.2449111772048,
+        "y": 865.2728941702618
+      }
+    },
+    "question": "What are the practical applications of this?",
+    "timestamp": "2024-11-02T20:17:00.320Z"
+  },
+  {
+    "id": "1f334beb-6417-447c-8406-cefbb6774701",
+    "studentId": "synthetic_student_7a9b2f8c",
+    "pageNumber": 4,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 484.36950342838026
+      },
+      "end": {
+        "x": 613.0982271991282,
+        "y": 862.8792872462489
+      }
+    },
+    "question": "Can you explain this concept in simpler terms?",
+    "timestamp": "2024-11-02T02:36:56.521Z"
+  },
+  {
+    "id": "c8497c74-1767-41cb-a807-79ae32e7dc0d",
+    "studentId": "synthetic_student_46821137",
+    "pageNumber": 4,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 470.7005928453071
+      },
+      "end": {
+        "x": 586.6190171088539,
+        "y": 725.5053460407431
+      }
+    },
+    "question": "What are the practical applications of this?",
+    "timestamp": "2024-11-02T08:18:31.376Z"
+  },
+  {
+    "id": "34248172-c853-47b5-9bc5-c56b97ad88de",
+    "studentId": "synthetic_student_ceee249c",
+    "pageNumber": 4,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 514.5593167124659
+      },
+      "end": {
+        "x": 618.1610711057583,
+        "y": 752.8632652278432
+      }
+    },
+    "question": "What are the key assumptions here?",
+    "timestamp": "2024-11-02T08:10:00.187Z"
+  },
+  {
+    "id": "b56d48d7-509c-4533-a0a7-04f568a63de0",
+    "studentId": "student_714b6e6a-517a-4aaf-ae0c-c564a42f9fdb",
+    "pageNumber": 4,
+    "selection": {
+      "id": "b56d48d7-509c-4533-a0a7-04f568a63de0",
+      "start": {
+        "x": 307.3402404785156,
+        "y": 303.9548568725586
+      },
+      "end": {
+        "x": 594.3402404785156,
+        "y": 395.9548568725586
+      }
+    },
+    "question": "",
+    "timestamp": "2024-11-03T02:07:52.078Z"
+  },
+  {
+    "id": "fc0b183d-01ef-4931-a002-296be689e0a0",
+    "studentId": "synthetic_student_2d8b887d",
+    "pageNumber": 4,
+    "selection": {
+      "start": {
+        "x": 258.58562671377706,
+        "y": 230.76137611936093
+      },
+      "end": {
+        "x": 597.616460947805,
+        "y": 495.47718119515565
+      }
+    },
+    "question": "How does this relate to the previous chapter?",
+    "timestamp": "2024-11-02T23:47:47.726Z"
+  },
+  {
+    "id": "3a3bcde2-714a-49fb-9ee9-d45442e15f6e",
+    "studentId": "synthetic_student_7428032c",
+    "pageNumber": 4,
+    "selection": {
+      "start": {
+        "x": 271.54767195931606,
+        "y": 220.24001769808862
+      },
+      "end": {
+        "x": 625.9126038232464,
+        "y": 455.5979995453601
+      }
+    },
+    "question": "What are the key assumptions here?",
+    "timestamp": "2024-11-02T05:06:21.600Z"
+  },
+  {
+    "id": "26f26bd3-1e29-4ece-9331-104534768f3f",
+    "studentId": "synthetic_student_30b214aa",
+    "pageNumber": 4,
+    "selection": {
+      "start": {
+        "x": 284.68120453044116,
+        "y": 287.26272751998073
+      },
+      "end": {
+        "x": 600.6177598943469,
+        "y": 417.272720952246
+      }
+    },
+    "question": "Why is this important?",
+    "timestamp": "2024-11-02T19:27:38.329Z"
+  },
+  {
+    "id": "9d3f288a-4e87-4920-9317-0736c5db15b3",
+    "studentId": "synthetic_student_de9e4fa2",
+    "pageNumber": 4,
+    "selection": {
+      "start": {
+        "x": 261.42293788575955,
+        "y": 276.35990585737454
+      },
+      "end": {
+        "x": 631.7557954948834,
+        "y": 507.8117379195649
+      }
+    },
+    "question": "Why is this important?",
+    "timestamp": "2024-11-02T04:19:45.375Z"
+  },
+  {
+    "id": "b55abc92-3d61-4887-9a63-7e2fc3dad9ae",
+    "studentId": "synthetic_student_652e106f",
+    "pageNumber": 4,
+    "selection": {
+      "start": {
+        "x": 304.32914926394517,
+        "y": 294.32361709601753
+      },
+      "end": {
+        "x": 597.0791994718111,
+        "y": 518.6255397086546
+      }
+    },
+    "question": "What are the key assumptions here?",
+    "timestamp": "2024-11-02T16:08:10.412Z"
+  },
+  {
+    "id": "b9b028cf-7fd4-4df4-8cc3-0fbaad8c7a24",
+    "studentId": "synthetic_student_23c44f7a",
+    "pageNumber": 4,
+    "selection": {
+      "start": {
+        "x": 305.2680991918955,
+        "y": 276.75541020016277
+      },
+      "end": {
+        "x": 597.4283879336214,
+        "y": 428.2703808772795
+      }
+    },
+    "question": "What are the practical applications of this?",
+    "timestamp": "2024-11-02T07:11:56.279Z"
+  },
+  {
+    "id": "5e475591-7c32-4774-a3a7-95b338f213ea",
+    "studentId": "synthetic_student_10f6f0a9",
+    "pageNumber": 4,
+    "selection": {
+      "start": {
+        "x": 283.98643738888404,
+        "y": 267.3510454819351
+      },
+      "end": {
+        "x": 631.3357107346571,
+        "y": 451.02872379061495
+      }
+    },
+    "question": "Is this formula always applicable?",
+    "timestamp": "2024-11-02T06:06:21.542Z"
+  },
+  {
+    "id": "5c1aba2d-fd94-45fd-944c-28b8d86933a6",
+    "studentId": "synthetic_student_c13ee709",
+    "pageNumber": 4,
+    "selection": {
+      "start": {
+        "x": 285.06509178573094,
+        "y": 184.94866852721336
+      },
+      "end": {
+        "x": 609.4101481085036,
+        "y": 475.6459877872636
+      }
+    },
+    "question": "What are the practical applications of this?",
+    "timestamp": "2024-11-02T10:58:58.231Z"
+  },
+  {
+    "id": "7916d51d-41e2-4f5b-9379-20e176ef283c",
+    "studentId": "synthetic_student_3e32b8d8",
+    "pageNumber": 4,
+    "selection": {
+      "start": {
+        "x": 277.3683637603511,
+        "y": 252.4444733785743
+      },
+      "end": {
+        "x": 641.6209468635557,
+        "y": 526.4744105582321
+      }
+    },
+    "question": "Is this formula always applicable?",
+    "timestamp": "2024-11-02T20:20:56.538Z"
+  },
+  {
+    "id": "e77853f5-a2ba-480c-8198-d3df4b68dc7a",
+    "studentId": "synthetic_student_f1cb44f2",
+    "pageNumber": 4,
+    "selection": {
+      "start": {
+        "x": 302.8685136945309,
+        "y": 293.60617512481303
+      },
+      "end": {
+        "x": 633.7507350844567,
+        "y": 522.3367022592098
+      }
+    },
+    "question": "Could you provide more examples?",
+    "timestamp": "2024-11-02T14:18:20.058Z"
+  },
+  {
+    "id": "16a36aa0-2f01-4fe1-87ca-7d958a1295d3",
+    "studentId": "student_2bbbd927-3586-4bce-a84b-3b4920f95bd1",
+    "pageNumber": 5,
+    "selection": {
+      "id": "16a36aa0-2f01-4fe1-87ca-7d958a1295d3",
+      "start": {
+        "x": 396.3402404785156,
+        "y": 108.9548568725586
+      },
+      "end": {
+        "x": 600.3402404785156,
+        "y": 366.9548568725586
+      }
+    },
+    "question": "",
+    "timestamp": "2024-11-03T02:09:15.064Z"
+  },
+  {
+    "id": "c51a7844-bfd1-4f25-ad42-294b4248a189",
+    "studentId": "synthetic_student_5a3eb6a1",
+    "pageNumber": 5,
+    "selection": {
+      "start": {
+        "x": 363.08173558483554,
+        "y": 67.73572880049133
+      },
+      "end": {
+        "x": 615.5440182206443,
+        "y": 482.8735612524364
+      }
+    },
+    "question": "Is this formula always applicable?",
+    "timestamp": "2024-11-02T02:15:08.784Z"
+  },
+  {
+    "id": "fe895272-003e-43ca-8458-6bf67191838a",
+    "studentId": "synthetic_student_7f9bcea6",
+    "pageNumber": 5,
+    "selection": {
+      "start": {
+        "x": 375.39134822982504,
+        "y": 59.69460851416194
+      },
+      "end": {
+        "x": 626.0314680201008,
+        "y": 483.34391809664544
+      }
+    },
+    "question": "How does this relate to the previous chapter?",
+    "timestamp": "2024-11-02T12:03:05.051Z"
+  },
+  {
+    "id": "71d47387-579a-402b-b27f-169971d77cfe",
+    "studentId": "synthetic_student_196e2ffd",
+    "pageNumber": 5,
+    "selection": {
+      "start": {
+        "x": 371.9978834744879,
+        "y": 8.104293644939759
+      },
+      "end": {
+        "x": 618.6076666813301,
+        "y": 370.3209925961564
+      }
+    },
+    "question": "What are the practical applications of this?",
+    "timestamp": "2024-11-02T18:26:39.717Z"
+  },
+  {
+    "id": "a3c3431b-b3cf-4dd4-84ac-8a64be5cca0e",
+    "studentId": "synthetic_student_f38aa02b",
+    "pageNumber": 5,
+    "selection": {
+      "start": {
+        "x": 359.7308307675284,
+        "y": 0
+      },
+      "end": {
+        "x": 640.0929597506731,
+        "y": 479.0015199838792
+      }
+    },
+    "question": "What are the practical applications of this?",
+    "timestamp": "2024-11-02T09:07:10.575Z"
+  },
+  {
+    "id": "10b70ec6-428d-44ad-b3dc-5077c604e4e6",
+    "studentId": "synthetic_student_903dd084",
+    "pageNumber": 5,
+    "selection": {
+      "start": {
+        "x": 385.10511146674554,
+        "y": 41.1842685016027
+      },
+      "end": {
+        "x": 624.3128125055305,
+        "y": 438.9248091962973
+      }
+    },
+    "question": "How does this connect to other topics?",
+    "timestamp": "2024-11-02T11:38:06.141Z"
+  },
+  {
+    "id": "3cbd75d4-f344-4bc9-af1f-d35461c7d70e",
+    "studentId": "synthetic_student_b4e9e9a7",
+    "pageNumber": 5,
+    "selection": {
+      "start": {
+        "x": 385.13561373476193,
+        "y": 71.84993530616792
+      },
+      "end": {
+        "x": 633.8255081038589,
+        "y": 470.54311271022567
+      }
+    },
+    "question": "Could you provide more examples?",
+    "timestamp": "2024-11-02T02:15:42.798Z"
+  },
+  {
+    "id": "7f10543a-67bc-49d5-a582-169707f0592b",
+    "studentId": "student_2bbbd927-3586-4bce-a84b-3b4920f95bd1",
+    "pageNumber": 5,
+    "selection": {
+      "id": "7f10543a-67bc-49d5-a582-169707f0592b",
+      "start": {
+        "x": 12.340240478515625,
+        "y": 496.9548568725586
+      },
+      "end": {
+        "x": 606.3402404785156,
+        "y": 676.9548568725586
+      }
+    },
+    "question": "",
+    "timestamp": "2024-11-03T02:09:18.511Z"
+  },
+  {
+    "id": "ae9a1108-0130-47b6-86cf-0175c4d89449",
+    "studentId": "synthetic_student_817da98b",
+    "pageNumber": 5,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 425.97565608855814
+      },
+      "end": {
+        "x": 621.7452494273305,
+        "y": 748.7440435166449
+      }
+    },
+    "question": "How does this relate to the previous chapter?",
+    "timestamp": "2024-11-02T04:13:11.723Z"
+  },
+  {
+    "id": "51077da8-6aa6-4b06-a472-7391fdf240ac",
+    "studentId": "synthetic_student_79ec5f43",
+    "pageNumber": 5,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 455.465250858675
+      },
+      "end": {
+        "x": 619.758803882325,
+        "y": 691.0554460861958
+      }
+    },
+    "question": "How does this relate to the previous chapter?",
+    "timestamp": "2024-11-02T20:18:32.602Z"
+  },
+  {
+    "id": "192f7b50-8a51-4d63-bcfd-3687eb3e2be6",
+    "studentId": "synthetic_student_f465d5b0",
+    "pageNumber": 5,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 405.4864095793625
+      },
+      "end": {
+        "x": 619.7766006164894,
+        "y": 729.3199901476397
+      }
+    },
+    "question": "Could you provide more examples?",
+    "timestamp": "2024-11-02T15:16:41.551Z"
+  },
+  {
+    "id": "c51d3c2a-0111-45f2-ac34-288e80dc6e17",
+    "studentId": "synthetic_student_4d693700",
+    "pageNumber": 5,
+    "selection": {
+      "start": {
+        "x": 1.6521509047661205,
+        "y": 439.6448811564436
+      },
+      "end": {
+        "x": 638.4022163788029,
+        "y": 717.0106534976201
+      }
+    },
+    "question": "What are the key assumptions here?",
+    "timestamp": "2024-11-02T04:35:12.411Z"
+  },
+  {
+    "id": "3e2a49ee-57d1-441e-aec9-03ff6ae9ec8c",
+    "studentId": "synthetic_student_ab4b403c",
+    "pageNumber": 5,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 355.6481529197097
+      },
+      "end": {
+        "x": 626.9246518975852,
+        "y": 719.0086554260585
+      }
+    },
+    "question": "What are the key assumptions here?",
+    "timestamp": "2024-11-02T12:25:47.388Z"
+  },
+  {
+    "id": "fa868a11-f697-4f07-ae7f-9ca2d65a2221",
+    "studentId": "synthetic_student_f179ac8a",
+    "pageNumber": 5,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 482.9562266434473
+      },
+      "end": {
+        "x": 607.5823100181321,
+        "y": 784.6321672858853
+      }
+    },
+    "question": "Can you explain this concept in simpler terms?",
+    "timestamp": "2024-11-02T21:29:07.621Z"
+  },
+  {
+    "id": "7f474dc7-7316-42a5-a806-ae38e93d78dd",
+    "studentId": "synthetic_student_c780f2e3",
+    "pageNumber": 5,
+    "selection": {
+      "start": {
+        "x": 0,
+        "y": 431.55388358410136
+      },
+      "end": {
+        "x": 616.7473336498847,
+        "y": 694.5575914797574
+      }
+    },
+    "question": "Could you provide more examples?",
+    "timestamp": "2024-11-03T01:49:10.290Z"
+  },
+  {
+    "id": "779ba695-fa01-44ac-aef8-539229d6770e",
+    "studentId": "student_2bbbd927-3586-4bce-a84b-3b4920f95bd1",
+    "pageNumber": 5,
+    "selection": {
+      "id": "779ba695-fa01-44ac-aef8-539229d6770e",
+      "start": {
+        "x": 182.34024047851562,
+        "y": 264.9548568725586
+      },
+      "end": {
+        "x": 372.3402404785156,
+        "y": 327.9548568725586
+      }
+    },
+    "question": "",
+    "timestamp": "2024-11-03T02:09:23.232Z"
+  },
+  {
+    "id": "12048ef2-505e-460b-aa4f-139cb93230e8",
+    "studentId": "synthetic_student_7b85523f",
+    "pageNumber": 5,
+    "selection": {
+      "start": {
+        "x": 148.44254971894642,
+        "y": 230.28655513764954
+      },
+      "end": {
+        "x": 404.0480828701581,
+        "y": 331.0626360835094
+      }
+    },
+    "question": "How does this connect to other topics?",
+    "timestamp": "2024-11-02T16:54:24.186Z"
+  },
+  {
+    "id": "8fccd555-a8d8-4770-be18-24628a99d6d5",
+    "studentId": "synthetic_student_5f1c0d82",
+    "pageNumber": 5,
+    "selection": {
+      "start": {
+        "x": 180.68585602826155,
+        "y": 130.36109781016984
+      },
+      "end": {
+        "x": 385.3732650601828,
+        "y": 359.86306920556797
+      }
+    },
+    "question": "Why is this important?",
+    "timestamp": "2024-11-02T22:15:29.247Z"
+  },
+  {
+    "id": "f57abcbe-8ea0-4899-9715-cdcf8dc4732b",
+    "studentId": "synthetic_student_c4125596",
+    "pageNumber": 5,
+    "selection": {
+      "start": {
+        "x": 180.22273454951645,
+        "y": 233.39342698399378
+      },
+      "end": {
+        "x": 373.63549247548957,
+        "y": 334.95340575413275
+      }
+    },
+    "question": "Could you provide more examples?",
+    "timestamp": "2024-11-02T07:08:42.240Z"
+  },
+  {
+    "id": "244a4ff8-f63b-43ff-a5f7-d1baa675a33e",
+    "studentId": "synthetic_student_0560cbda",
+    "pageNumber": 5,
+    "selection": {
+      "start": {
+        "x": 155.78383325983108,
+        "y": 233.86788505805012
+      },
+      "end": {
+        "x": 403.38330013736675,
+        "y": 429.62465164620124
+      }
+    },
+    "question": "Could you provide more examples?",
+    "timestamp": "2024-11-02T08:54:44.155Z"
+  },
+  {
+    "id": "65c824df-bb60-4e5a-a0af-bdf8b2470fbc",
+    "studentId": "synthetic_student_2741832e",
+    "pageNumber": 5,
+    "selection": {
+      "start": {
+        "x": 181.1471931306352,
+        "y": 158.19047419918465
+      },
+      "end": {
+        "x": 396.50057670708503,
+        "y": 354.0912470704381
+      }
+    },
+    "question": "How does this connect to other topics?",
+    "timestamp": "2024-11-02T10:19:34.909Z"
+  },
+  {
+    "id": "26c54f25-cfab-4a6a-af1f-d0cc092d0fe5",
+    "studentId": "synthetic_student_0cf75a7b",
+    "pageNumber": 5,
+    "selection": {
+      "start": {
+        "x": 142.30728307756115,
+        "y": 181.2094443377943
+      },
+      "end": {
+        "x": 395.248082972227,
+        "y": 472.02299170029846
+      }
+    },
+    "question": "Is this formula always applicable?",
+    "timestamp": "2024-11-02T17:29:21.920Z"
+  },
+  {
+    "id": "083e1e6a-ff52-4097-a287-326ef0ab5af3",
+    "studentId": "student_2bbbd927-3586-4bce-a84b-3b4920f95bd1",
+    "pageNumber": 5,
+    "selection": {
+      "id": "083e1e6a-ff52-4097-a287-326ef0ab5af3",
+      "start": {
+        "x": 176.34024047851562,
+        "y": 257.9548568725586
+      },
+      "end": {
+        "x": 366.3402404785156,
+        "y": 320.9548568725586
+      }
+    },
+    "question": "",
+    "timestamp": "2024-11-03T02:09:28.530Z"
+  },
+  {
+    "id": "5e4b7e7c-65c0-4df6-8e87-f15d664e83d0",
+    "studentId": "synthetic_student_49888574",
+    "pageNumber": 5,
+    "selection": {
+      "start": {
+        "x": 139.55893596699013,
+        "y": 168.91676188157584
+      },
+      "end": {
+        "x": 394.3969075719594,
+        "y": 433.42488148474007
+      }
+    },
+    "question": "Why is this important?",
+    "timestamp": "2024-11-02T02:14:55.865Z"
+  },
+  {
+    "id": "a78b851e-1a93-4d98-91ec-31fe36576d6f",
+    "studentId": "student_344c4f2c-f45b-4932-bfc3-516477d77a65",
+    "pageNumber": 5,
+    "selection": {
+      "id": "a78b851e-1a93-4d98-91ec-31fe36576d6f",
+      "start": {
+        "x": 427.3402404785156,
+        "y": 93.9548568725586
+      },
+      "end": {
+        "x": 599.3402404785156,
+        "y": 363.9548568725586
+      }
+    },
+    "question": "",
+    "timestamp": "2024-11-03T02:10:06.278Z"
+  },
+  {
+    "id": "05308e5a-b3b5-41f7-9081-f162e8dc2910",
+    "studentId": "synthetic_student_935aeec2",
+    "pageNumber": 5,
+    "selection": {
+      "start": {
+        "x": 383.04361425639894,
+        "y": 2.7032590167384996
+      },
+      "end": {
+        "x": 633.997187025995,
+        "y": 369.5731395145566
+      }
+    },
+    "question": "What are the practical applications of this?",
+    "timestamp": "2024-11-02T13:08:20.464Z"
+  },
+  {
+    "id": "b2f18b52-4621-4641-aff8-bb750ed777e4",
+    "studentId": "synthetic_student_88aefed3",
+    "pageNumber": 5,
+    "selection": {
+      "start": {
+        "x": 395.5861913108338,
+        "y": 2.9609750546576663
+      },
+      "end": {
+        "x": 637.8596228832436,
+        "y": 492.38096501165865
+      }
+    },
+    "question": "Why is this important?",
+    "timestamp": "2024-11-02T11:20:57.197Z"
+  },
+  {
+    "id": "58527e18-a0a2-497e-a30d-ad3c828ba38a",
+    "studentId": "synthetic_student_446e39ec",
+    "pageNumber": 5,
+    "selection": {
+      "start": {
+        "x": 379.1082581530629,
+        "y": 55.03069031998312
+      },
+      "end": {
+        "x": 636.6378293078218,
+        "y": 434.3170585235424
+      }
+    },
+    "question": "Could you provide more examples?",
+    "timestamp": "2024-11-02T07:38:38.848Z"
+  },
+  {
+    "id": "d381565a-69da-46d6-be94-ac8b85c938fb",
+    "studentId": "synthetic_student_94f2e3ba",
+    "pageNumber": 5,
+    "selection": {
+      "start": {
+        "x": 378.5353330423154,
+        "y": 69.53285946855878
+      },
+      "end": {
+        "x": 635.6732257317565,
+        "y": 369.70194750661716
+      }
+    },
+    "question": "Why is this important?",
+    "timestamp": "2024-11-02T06:45:51.014Z"
+  },
+  {
+    "id": "8088ad4f-3a78-4608-849f-0848560e66a7",
+    "studentId": "student_344c4f2c-f45b-4932-bfc3-516477d77a65",
+    "pageNumber": 5,
+    "selection": {
+      "id": "8088ad4f-3a78-4608-849f-0848560e66a7",
+      "start": {
+        "x": 256.3402404785156,
+        "y": 377.9548568725586
+      },
+      "end": {
+        "x": 201.34024047851562,
+        "y": 334.9548568725586
+      }
+    },
+    "question": "",
+    "timestamp": "2024-11-03T02:10:10.985Z"
+  },
+  {
+    "id": "634f02e9-9c95-4750-97b7-6112f2285bd4",
+    "studentId": "synthetic_student_befe1687",
+    "pageNumber": 5,
+    "selection": {
+      "start": {
+        "x": 224.78877699225862,
+        "y": 365.08054046118895
+      },
+      "end": {
+        "x": 228.9656714361643,
+        "y": 479.3138035469883
+      }
+    },
+    "question": "Can you explain this concept in simpler terms?",
+    "timestamp": "2024-11-02T13:26:14.941Z"
+  },
+  {
+    "id": "da2a8927-663e-44b5-ad88-29f842518479",
+    "studentId": "synthetic_student_472d6385",
+    "pageNumber": 5,
+    "selection": {
+      "start": {
+        "x": 254.44456489810128,
+        "y": 323.8808826013601
+      },
+      "end": {
+        "x": 251.15613763199457,
+        "y": 425.6242008173348
+      }
+    },
+    "question": "How does this relate to the previous chapter?",
+    "timestamp": "2024-11-03T01:51:47.531Z"
+  },
+  {
+    "id": "aa3ab321-41b9-464c-9825-c3bf04d2741f",
+    "studentId": "synthetic_student_ca77fe0c",
+    "pageNumber": 5,
+    "selection": {
+      "start": {
+        "x": 254.1908721142432,
+        "y": 373.0954809148331
+      },
+      "end": {
+        "x": 204.2638665050278,
+        "y": 352.4023959744183
+      }
+    },
+    "question": "Can you explain this concept in simpler terms?",
+    "timestamp": "2024-11-02T21:44:52.515Z"
+  },
+  {
+    "id": "8c4b2eb5-32b7-47d1-952d-bca181aacb10",
+    "studentId": "synthetic_student_5814ca39",
+    "pageNumber": 5,
+    "selection": {
+      "start": {
+        "x": 230.0318963098114,
+        "y": 259.71129292894386
+      },
+      "end": {
+        "x": 208.0484775684857,
+        "y": 335.30778047219826
+      }
+    },
+    "question": "How does this connect to other topics?",
+    "timestamp": "2024-11-03T01:08:37.901Z"
+  },
+  {
+    "id": "fd3ca913-09dc-44db-864d-fc85d404efd2",
+    "studentId": "student_47025dad-37f0-468d-8947-3bbd5851e2b7",
+    "pageNumber": 5,
+    "selection": {
+      "id": "fd3ca913-09dc-44db-864d-fc85d404efd2",
+      "start": {
+        "x": 413.3402404785156,
+        "y": 77.9548568725586
+      },
+      "end": {
+        "x": 600.3402404785156,
+        "y": 362.9548568725586
+      }
+    },
+    "question": "",
+    "timestamp": "2024-11-03T02:10:47.175Z"
+  },
+  {
+    "id": "5f75e37d-1750-4b68-86ff-fc0d515a5ee4",
+    "studentId": "synthetic_student_fa5f70b9",
+    "pageNumber": 5,
+    "selection": {
+      "start": {
+        "x": 369.9216398720336,
+        "y": 40.61942079904528
+      },
+      "end": {
+        "x": 619.3449639249384,
+        "y": 382.4164379668833
+      }
+    },
+    "question": "What are the practical applications of this?",
+    "timestamp": "2024-11-02T20:38:30.086Z"
+  },
+  {
+    "id": "66b383fb-de28-4166-8e36-3edc4667f2df",
+    "studentId": "student_86d009a6-2f41-490b-87a3-4ea23916e71d",
     "pageNumber": 6,
     "selection": {
-      "id": "987fc9fa-db0f-4c53-881d-85eb3bbed168",
+      "id": "66b383fb-de28-4166-8e36-3edc4667f2df",
       "start": {
-        "x": 399,
-        "y": 362.1999969482422
+        "x": 351.3402404785156,
+        "y": 443.9548568725586
       },
       "end": {
-        "x": 10,
-        "y": 94.19999694824219
-      }
-    },
-    "timestamp": "2024-11-02T23:27:46.205Z"
-  },
-  {
-    "id": "d7b8fd39-b773-429b-98d4-0b8cf393a46e",
-    "studentId": "student_5755fd9a-70bb-47f5-b0be-b4fe3d476cff",
-    "pageNumber": 1,
-    "selection": {
-      "id": "d7b8fd39-b773-429b-98d4-0b8cf393a46e",
-      "start": {
-        "x": 18,
-        "y": 711
-      },
-      "end": {
-        "x": 300,
-        "y": 339
-      }
-    },
-    "timestamp": "2024-11-02T23:27:54.772Z"
-  },
-  {
-    "id": "7291ef80-80c1-4a5e-b955-2e970a8d661c",
-    "studentId": "student_5755fd9a-70bb-47f5-b0be-b4fe3d476cff",
-    "pageNumber": 2,
-    "selection": {
-      "id": "7291ef80-80c1-4a5e-b955-2e970a8d661c",
-      "start": {
-        "x": 562,
-        "y": 463
-      },
-      "end": {
-        "x": 85,
-        "y": 219
-      }
-    },
-    "timestamp": "2024-11-02T23:28:10.324Z"
-  },
-  {
-    "id": "93db8ffe-a30e-4d17-aba8-199807e250a6",
-    "studentId": "student_263190de-b339-4aa1-b247-c419d4c13968",
-    "pageNumber": 1,
-    "selection": {
-      "id": "93db8ffe-a30e-4d17-aba8-199807e250a6",
-      "start": {
-        "x": 48,
-        "y": 26.199996948242188
-      },
-      "end": {
-        "x": 359,
-        "y": 227.1999969482422
-      }
-    },
-    "timestamp": "2024-11-02T23:31:55.204Z"
-  },
-  {
-    "id": "135fa491-8144-44c7-bd1a-eb9c56c476be",
-    "studentId": "student_02f82841-a872-4003-a85d-2748a4c9d6c4",
-    "pageNumber": 1,
-    "selection": {
-      "id": "135fa491-8144-44c7-bd1a-eb9c56c476be",
-      "start": {
-        "x": 78,
-        "y": 353.1999969482422
-      },
-      "end": {
-        "x": 247,
-        "y": 573.1999969482422
-      }
-    },
-    "timestamp": "2024-11-02T23:38:00.573Z"
-  },
-  {
-    "id": "b31fa8a4-818f-45f2-8e39-8aa522a3807b",
-    "studentId": "student_02f82841-a872-4003-a85d-2748a4c9d6c4",
-    "pageNumber": 2,
-    "selection": {
-      "id": "b31fa8a4-818f-45f2-8e39-8aa522a3807b",
-      "start": {
-        "x": 11.11111111111111,
-        "y": 638.0000008477105
-      },
-      "end": {
-        "x": 603.3333333333334,
-        "y": 795.7777786254883
-      }
-    },
-    "timestamp": "2024-11-02T23:40:23.754Z"
-  },
-  {
-    "id": "51f6ea1b-2a3c-44a6-acd9-51591294023f",
-    "studentId": "student_f4954123-b492-4542-85f1-2e58f1536832",
-    "pageNumber": 3,
-    "selection": {
-      "id": "51f6ea1b-2a3c-44a6-acd9-51591294023f",
-      "start": {
-        "x": 6,
-        "y": 449
-      },
-      "end": {
-        "x": 606,
-        "y": 796
-      }
-    },
-    "timestamp": "2024-11-02T23:59:44.105Z"
-  },
-  {
-    "id": "efc36c03-586d-430d-a347-b93148434243",
-    "studentId": "student_687fdaeb-7ee8-488e-bebb-27fa13253dad",
-    "pageNumber": 4,
-    "selection": {
-      "id": "efc36c03-586d-430d-a347-b93148434243",
-      "start": {
-        "x": 10,
-        "y": 15.199996948242188
-      },
-      "end": {
-        "x": 610,
-        "y": 418.1999969482422
-      }
-    },
-    "timestamp": "2024-11-03T00:02:38.168Z"
-  },
-  {
-    "id": "e3464830-c4a9-4559-9165-55dacbae3668",
-    "studentId": "student_16a6b007-6421-443d-9530-2010b7fa49b6",
-    "pageNumber": 1,
-    "selection": {
-      "id": "e3464830-c4a9-4559-9165-55dacbae3668",
-      "start": {
-        "x": 56.81818181818181,
-        "y": 20.181815407492895
-      },
-      "end": {
-        "x": 563.1818181818181,
-        "y": 241.9999972256747
-      }
-    },
-    "timestamp": "2024-11-03T00:04:53.935Z"
-  },
-  {
-    "id": "e47b510c-c926-444d-ba93-24486da91b53",
-    "studentId": "student_16a6b007-6421-443d-9530-2010b7fa49b6",
-    "pageNumber": 1,
-    "selection": {
-      "id": "e47b510c-c926-444d-ba93-24486da91b53",
-      "start": {
-        "x": 23.18181818181818,
-        "y": 261.0909063165838
-      },
-      "end": {
-        "x": 322.27272727272725,
-        "y": 630.9090909090909
-      }
-    },
-    "timestamp": "2024-11-03T00:06:17.342Z"
-  },
-  {
-    "id": "285307a1-578c-4222-8b51-809fb7426f5e",
-    "studentId": "student_5d754a15-9037-4563-9781-df00d87ef9b3",
-    "pageNumber": 2,
-    "selection": {
-      "id": "285307a1-578c-4222-8b51-809fb7426f5e",
-      "start": {
-        "x": 94.73114013671875,
-        "y": 49.13207244873047
-      },
-      "end": {
-        "x": 516.7311401367188,
-        "y": 256.13207244873047
+        "x": 524.3402404785156,
+        "y": 510.9548568725586
       }
     },
     "question": "",
-    "timestamp": "2024-11-03T00:47:15.009Z"
+    "timestamp": "2024-11-03T02:11:40.255Z"
   },
   {
-    "id": "7c16fa26-4f6f-4833-9a24-e0bf28157c95",
-    "studentId": "student_1aabfadb-120a-48db-8996-3ae0d473cb71",
-    "pageNumber": 1,
+    "id": "c7c7d4be-7d43-43d4-9688-c0e7b33df080",
+    "studentId": "synthetic_student_6d1fda69",
+    "pageNumber": 6,
     "selection": {
-      "id": "7c16fa26-4f6f-4833-9a24-e0bf28157c95",
       "start": {
-        "x": 16.899993896484375,
-        "y": 50.19999694824219
+        "x": 325.32387554681355,
+        "y": 325.06557578540486
       },
       "end": {
-        "x": 437.8999938964844,
-        "y": 304.1999969482422
+        "x": 543.4346669909152,
+        "y": 585.6134264943938
+      }
+    },
+    "question": "How does this connect to other topics?",
+    "timestamp": "2024-11-02T16:33:57.200Z"
+  },
+  {
+    "id": "4afc8ef6-4990-4c13-bb01-9d08e73c740e",
+    "studentId": "synthetic_student_aff4e13b",
+    "pageNumber": 6,
+    "selection": {
+      "start": {
+        "x": 321.0821202498634,
+        "y": 428.2238279489414
+      },
+      "end": {
+        "x": 537.0425312209021,
+        "y": 548.4421859614067
+      }
+    },
+    "question": "How does this relate to the previous chapter?",
+    "timestamp": "2024-11-02T13:34:04.618Z"
+  },
+  {
+    "id": "c19d8731-0184-4839-9abf-8d3c2af174fb",
+    "studentId": "synthetic_student_4531a1ad",
+    "pageNumber": 6,
+    "selection": {
+      "start": {
+        "x": 311.54789101097623,
+        "y": 324.3727074151329
+      },
+      "end": {
+        "x": 536.2739619570923,
+        "y": 623.1306190480176
+      }
+    },
+    "question": "What are the key assumptions here?",
+    "timestamp": "2024-11-02T06:16:08.912Z"
+  },
+  {
+    "id": "0dd2827a-0f9f-4346-99ab-ef3de8b03e7c",
+    "studentId": "student_86d009a6-2f41-490b-87a3-4ea23916e71d",
+    "pageNumber": 6,
+    "selection": {
+      "id": "0dd2827a-0f9f-4346-99ab-ef3de8b03e7c",
+      "start": {
+        "x": 105.34024047851562,
+        "y": 272.9548568725586
+      },
+      "end": {
+        "x": 341.3402404785156,
+        "y": 365.9548568725586
       }
     },
     "question": "",
-    "timestamp": "2024-11-03T01:26:17.361Z"
+    "timestamp": "2024-11-03T02:11:43.093Z"
   },
   {
-    "id": "6f9d785e-5d0c-4aa9-8073-66a3f6429642",
-    "studentId": "student_ccbb156a-19c4-47f7-8aa0-ee80bd647694",
-    "pageNumber": 1,
+    "id": "90e7f741-b576-4585-8e1a-a926df795bb0",
+    "studentId": "synthetic_student_a75e3689",
+    "pageNumber": 6,
     "selection": {
-      "id": "6f9d785e-5d0c-4aa9-8073-66a3f6429642",
       "start": {
-        "x": 41,
-        "y": 17.199996948242188
+        "x": 64.18265627217829,
+        "y": 226.43710318398655
       },
       "end": {
-        "x": 570,
-        "y": 242.1999969482422
+        "x": 369.1935331537262,
+        "y": 429.67117327785326
+      }
+    },
+    "question": "What are the practical applications of this?",
+    "timestamp": "2024-11-02T07:29:58.005Z"
+  },
+  {
+    "id": "21e2fb35-3418-4ceb-9d33-dcceb8021833",
+    "studentId": "synthetic_student_ca259770",
+    "pageNumber": 6,
+    "selection": {
+      "start": {
+        "x": 71.77548704629774,
+        "y": 155.59325210262026
+      },
+      "end": {
+        "x": 388.7094736497527,
+        "y": 459.47162352407184
+      }
+    },
+    "question": "Is this formula always applicable?",
+    "timestamp": "2024-11-02T05:47:25.939Z"
+  },
+  {
+    "id": "126fdb66-7a9c-4437-9625-0cc319e347d2",
+    "studentId": "synthetic_student_c27c5255",
+    "pageNumber": 6,
+    "selection": {
+      "start": {
+        "x": 57.3641319284032,
+        "y": 173.85491347145643
+      },
+      "end": {
+        "x": 376.35540590647634,
+        "y": 434.1480975703241
+      }
+    },
+    "question": "How does this connect to other topics?",
+    "timestamp": "2024-11-02T18:23:36.065Z"
+  },
+  {
+    "id": "b30a4027-1893-4c33-98a1-b2eea8151873",
+    "studentId": "synthetic_student_c270dbc0",
+    "pageNumber": 6,
+    "selection": {
+      "start": {
+        "x": 59.60670834057371,
+        "y": 244.3571704920547
+      },
+      "end": {
+        "x": 388.5246849648417,
+        "y": 378.27747636208863
+      }
+    },
+    "question": "Is this formula always applicable?",
+    "timestamp": "2024-11-02T17:11:39.508Z"
+  },
+  {
+    "id": "a95f72d8-b6e6-4133-8b1d-57c394227d1a",
+    "studentId": "synthetic_student_056c3f9e",
+    "pageNumber": 6,
+    "selection": {
+      "start": {
+        "x": 84.60244665287081,
+        "y": 201.27592445539602
+      },
+      "end": {
+        "x": 374.91983874287,
+        "y": 416.6909061919448
+      }
+    },
+    "question": "Could you provide more examples?",
+    "timestamp": "2024-11-02T04:47:39.632Z"
+  },
+  {
+    "id": "9aafc5cf-a268-4cfc-8f21-1e088bc60bf3",
+    "studentId": "synthetic_student_75a823f5",
+    "pageNumber": 6,
+    "selection": {
+      "start": {
+        "x": 77.523420689577,
+        "y": 125.43819671914414
+      },
+      "end": {
+        "x": 388.12531257944374,
+        "y": 405.32629385620095
+      }
+    },
+    "question": "How does this relate to the previous chapter?",
+    "timestamp": "2024-11-03T00:02:53.001Z"
+  },
+  {
+    "id": "b5a8d146-6f66-4852-8cc5-7e75a997c07f",
+    "studentId": "synthetic_student_1ebacb98",
+    "pageNumber": 6,
+    "selection": {
+      "start": {
+        "x": 80.95667002124058,
+        "y": 145.42176017413
+      },
+      "end": {
+        "x": 356.1776123747953,
+        "y": 492.17545158291995
+      }
+    },
+    "question": "Why is this important?",
+    "timestamp": "2024-11-02T07:10:27.569Z"
+  },
+  {
+    "id": "e6aeafee-df06-4cf7-93e1-fc2f8effb1c7",
+    "studentId": "synthetic_student_5c24beeb",
+    "pageNumber": 6,
+    "selection": {
+      "start": {
+        "x": 82.75189393904186,
+        "y": 203.2506673694009
+      },
+      "end": {
+        "x": 343.3325678116934,
+        "y": 432.0433255512514
+      }
+    },
+    "question": "How does this relate to the previous chapter?",
+    "timestamp": "2024-11-02T21:11:21.754Z"
+  },
+  {
+    "id": "5bd9ff9a-7504-44d8-b45f-11d94723293b",
+    "studentId": "synthetic_student_c76e8a51",
+    "pageNumber": 6,
+    "selection": {
+      "start": {
+        "x": 65.67530554902096,
+        "y": 239.904788724203
+      },
+      "end": {
+        "x": 351.8880737500933,
+        "y": 424.7069003809651
+      }
+    },
+    "question": "Why is this important?",
+    "timestamp": "2024-11-02T13:02:41.659Z"
+  },
+  {
+    "id": "6d82f0f5-471f-4f53-892c-e881e532d2ac",
+    "studentId": "synthetic_student_b7749796",
+    "pageNumber": 6,
+    "selection": {
+      "start": {
+        "x": 76.78142817970217,
+        "y": 151.4645962050632
+      },
+      "end": {
+        "x": 391.0993044336664,
+        "y": 420.15070371750664
+      }
+    },
+    "question": "Could you provide more examples?",
+    "timestamp": "2024-11-02T18:47:08.814Z"
+  },
+  {
+    "id": "0d37a43d-8d62-49e6-9f13-725f319453dd",
+    "studentId": "synthetic_student_d421d702",
+    "pageNumber": 6,
+    "selection": {
+      "start": {
+        "x": 88.92293624068131,
+        "y": 141.14291648545867
+      },
+      "end": {
+        "x": 369.60330356261363,
+        "y": 500.3335568140786
+      }
+    },
+    "question": "What are the key assumptions here?",
+    "timestamp": "2024-11-02T11:45:51.652Z"
+  },
+  {
+    "id": "faca23aa-e1ba-492e-928d-d11ba6e75fc1",
+    "studentId": "synthetic_student_372aa62f",
+    "pageNumber": 6,
+    "selection": {
+      "start": {
+        "x": 84.06891571412325,
+        "y": 124.56293000552418
+      },
+      "end": {
+        "x": 373.5856392731121,
+        "y": 434.1595907122195
+      }
+    },
+    "question": "Can you explain this concept in simpler terms?",
+    "timestamp": "2024-11-02T21:01:06.082Z"
+  },
+  {
+    "id": "1cdcdae9-8415-45c0-ab36-22b1eec842b6",
+    "studentId": "student_86d009a6-2f41-490b-87a3-4ea23916e71d",
+    "pageNumber": 6,
+    "selection": {
+      "id": "1cdcdae9-8415-45c0-ab36-22b1eec842b6",
+      "start": {
+        "x": 593.3402404785156,
+        "y": 146.9548568725586
+      },
+      "end": {
+        "x": 460.3402404785156,
+        "y": 5.954856872558594
       }
     },
     "question": "",
-    "timestamp": "2024-11-03T01:27:59.379Z"
+    "timestamp": "2024-11-03T02:11:50.831Z"
   },
   {
-    "id": "bff68f18-131d-4aa7-ad1c-0769d79c5c73",
-    "studentId": "student_2840eb8d-510b-4123-be74-419d20fe2b87",
-    "pageNumber": 1,
+    "id": "3527ef71-e4c0-4e38-853c-c039a55ddc3a",
+    "studentId": "synthetic_student_cff63b0a",
+    "pageNumber": 6,
     "selection": {
-      "id": "bff68f18-131d-4aa7-ad1c-0769d79c5c73",
       "start": {
-        "x": 60,
-        "y": 34.19999694824219
+        "x": 557.9412471284745,
+        "y": 126.2030433172466
       },
       "end": {
-        "x": 563,
-        "y": 233.1999969482422
+        "x": 495.1620973412527,
+        "y": 130.54929980507862
+      }
+    },
+    "question": "What are the key assumptions here?",
+    "timestamp": "2024-11-02T07:07:37.267Z"
+  },
+  {
+    "id": "ed2e4993-cfba-4231-8e6a-49b99eca8514",
+    "studentId": "synthetic_student_7237d4fb",
+    "pageNumber": 6,
+    "selection": {
+      "start": {
+        "x": 582.2724142392788,
+        "y": 49.04783824513869
+      },
+      "end": {
+        "x": 496.322856154693,
+        "y": 68.06550963356139
+      }
+    },
+    "question": "What are the key assumptions here?",
+    "timestamp": "2024-11-02T19:45:16.380Z"
+  },
+  {
+    "id": "f0aa34a8-2c9f-43ec-925c-9cfa0a4cb4e8",
+    "studentId": "student_9d02c4f4-38c7-45df-a3d3-c4e7816ef0ac",
+    "pageNumber": 6,
+    "selection": {
+      "id": "f0aa34a8-2c9f-43ec-925c-9cfa0a4cb4e8",
+      "start": {
+        "x": 577.3402404785156,
+        "y": 147.9548568725586
+      },
+      "end": {
+        "x": 497.3402404785156,
+        "y": 1.9548568725585938
       }
     },
     "question": "",
-    "timestamp": "2024-11-03T01:30:04.680Z"
+    "timestamp": "2024-11-03T02:12:27.746Z"
   },
   {
-    "id": "86e0eddf-b673-444b-b16d-fa2e757a1f2e",
-    "studentId": "student_f227fb45-e7b3-4995-a7e4-6bbb702cb1eb",
-    "pageNumber": 1,
+    "id": "280fa7d2-1d9e-434f-a2a9-55caf866654b",
+    "studentId": "synthetic_student_01e35e71",
+    "pageNumber": 6,
     "selection": {
-      "id": "86e0eddf-b673-444b-b16d-fa2e757a1f2e",
       "start": {
-        "x": 67,
-        "y": 22.199996948242188
+        "x": 537.8234926825909,
+        "y": 94.39609810734875
       },
       "end": {
-        "x": 531,
-        "y": 266.1999969482422
+        "x": 525.5338156546064,
+        "y": 128.92666333124367
+      }
+    },
+    "question": "What are the practical applications of this?",
+    "timestamp": "2024-11-02T23:58:06.775Z"
+  },
+  {
+    "id": "c1654b06-1ef3-45fb-9439-7b5f34a94bd0",
+    "studentId": "synthetic_student_92014a34",
+    "pageNumber": 6,
+    "selection": {
+      "start": {
+        "x": 529.3622640429217,
+        "y": 41.00637988319029
+      },
+      "end": {
+        "x": 518.5722803228347,
+        "y": 59.14625381909121
+      }
+    },
+    "question": "Why is this important?",
+    "timestamp": "2024-11-03T01:57:09.283Z"
+  },
+  {
+    "id": "6bf166a4-8cc1-4ea2-993c-05a3689170db",
+    "studentId": "synthetic_student_427ff2ad",
+    "pageNumber": 6,
+    "selection": {
+      "start": {
+        "x": 550.4927812885318,
+        "y": 74.22937176108945
+      },
+      "end": {
+        "x": 525.684248193304,
+        "y": 62.40538477598544
+      }
+    },
+    "question": "Can you explain this concept in simpler terms?",
+    "timestamp": "2024-11-02T08:33:33.270Z"
+  },
+  {
+    "id": "7412af4a-a0d7-4dfb-a17b-6a58156f113a",
+    "studentId": "synthetic_student_7d0b3996",
+    "pageNumber": 6,
+    "selection": {
+      "start": {
+        "x": 534.5306143636839,
+        "y": 9.545119327852461
+      },
+      "end": {
+        "x": 526.0387304325716,
+        "y": 32.96225327238512
+      }
+    },
+    "question": "What are the key assumptions here?",
+    "timestamp": "2024-11-02T03:28:06.999Z"
+  },
+  {
+    "id": "b3ee22f7-80db-4419-858d-23effff03212",
+    "studentId": "synthetic_student_d937ff7b",
+    "pageNumber": 6,
+    "selection": {
+      "start": {
+        "x": 534.8199926119639,
+        "y": 114.6580200587052
+      },
+      "end": {
+        "x": 501.66789511476935,
+        "y": 63.35051883870393
+      }
+    },
+    "question": "How does this connect to other topics?",
+    "timestamp": "2024-11-02T11:44:56.505Z"
+  },
+  {
+    "id": "543f42ff-2d48-4d39-aab6-a7e4bacbf5bb",
+    "studentId": "synthetic_student_1a017830",
+    "pageNumber": 6,
+    "selection": {
+      "start": {
+        "x": 539.9260772645516,
+        "y": 133.2602632608013
+      },
+      "end": {
+        "x": 504.60647889607776,
+        "y": 6.150193523222977
+      }
+    },
+    "question": "How does this relate to the previous chapter?",
+    "timestamp": "2024-11-02T15:23:15.681Z"
+  },
+  {
+    "id": "acd1dec5-d1c5-4695-86e7-18f16c9878cd",
+    "studentId": "synthetic_student_cbe09949",
+    "pageNumber": 6,
+    "selection": {
+      "start": {
+        "x": 545.1775802186846,
+        "y": 142.56109778523762
+      },
+      "end": {
+        "x": 528.2673156389753,
+        "y": 136.145978574309
+      }
+    },
+    "question": "Why is this important?",
+    "timestamp": "2024-11-02T19:00:44.960Z"
+  },
+  {
+    "id": "a3fa54ad-363d-401b-b944-cad125b6df3d",
+    "studentId": "student_5cafec49-b3b2-4f4e-9e5c-a2c732c6825e",
+    "pageNumber": 6,
+    "selection": {
+      "id": "a3fa54ad-363d-401b-b944-cad125b6df3d",
+      "start": {
+        "x": 462.3402404785156,
+        "y": 22.954856872558594
+      },
+      "end": {
+        "x": 573.3402404785156,
+        "y": 134.9548568725586
       }
     },
     "question": "",
-    "timestamp": "2024-11-03T01:30:34.480Z"
+    "timestamp": "2024-11-03T02:12:50.244Z"
   },
   {
-    "id": "4d3441c4-8d96-4b7b-9fa0-b743ac4c6979",
-    "studentId": "student_de885e8e-040b-4bf5-bb36-6873c9a9077f",
-    "pageNumber": 1,
+    "id": "d9d31544-cc51-4b74-8bab-b5a379e40658",
+    "studentId": "synthetic_student_78c86408",
+    "pageNumber": 6,
     "selection": {
-      "id": "4d3441c4-8d96-4b7b-9fa0-b743ac4c6979",
       "start": {
-        "x": 88,
-        "y": 68.19999694824219
+        "x": 423.7165657484942,
+        "y": 0
       },
       "end": {
-        "x": 560,
-        "y": 326.1999969482422
+        "x": 584.6904777505263,
+        "y": 276.3847323570136
       }
     },
-    "question": "",
-    "timestamp": "2024-11-03T01:31:59.933Z"
+    "question": "Could you provide more examples?",
+    "timestamp": "2024-11-02T16:00:10.047Z"
+  },
+  {
+    "id": "b254c9f1-cd14-4395-b5d5-97d4bd6ebfe8",
+    "studentId": "synthetic_student_0d6c9990",
+    "pageNumber": 6,
+    "selection": {
+      "start": {
+        "x": 427.39252755401566,
+        "y": 0
+      },
+      "end": {
+        "x": 590.6639592330118,
+        "y": 179.4750796323101
+      }
+    },
+    "question": "How does this connect to other topics?",
+    "timestamp": "2024-11-02T03:32:54.392Z"
+  },
+  {
+    "id": "0da5817e-5737-45ae-a601-c8d289735170",
+    "studentId": "synthetic_student_072a0c73",
+    "pageNumber": 6,
+    "selection": {
+      "start": {
+        "x": 447.0344145980475,
+        "y": 0
+      },
+      "end": {
+        "x": 604.956896205647,
+        "y": 269.32348285108515
+      }
+    },
+    "question": "Is this formula always applicable?",
+    "timestamp": "2024-11-02T21:03:25.295Z"
+  },
+  {
+    "id": "efa5960b-24b1-4fdf-956d-a4687da0337b",
+    "studentId": "synthetic_student_0d96341c",
+    "pageNumber": 6,
+    "selection": {
+      "start": {
+        "x": 461.4346054950871,
+        "y": 0
+      },
+      "end": {
+        "x": 598.080532683749,
+        "y": 261.7470724200454
+      }
+    },
+    "question": "What are the practical applications of this?",
+    "timestamp": "2024-11-02T20:22:41.840Z"
+  },
+  {
+    "id": "f12c702b-9e9b-41ce-9ee1-343bd7978648",
+    "studentId": "synthetic_student_bd7334c2",
+    "pageNumber": 6,
+    "selection": {
+      "start": {
+        "x": 454.2683209822467,
+        "y": 0
+      },
+      "end": {
+        "x": 578.3694690308947,
+        "y": 228.73023062655588
+      }
+    },
+    "question": "What are the practical applications of this?",
+    "timestamp": "2024-11-02T04:39:52.673Z"
+  },
+  {
+    "id": "89dd7108-be36-4076-b53f-79fcfbd9575f",
+    "studentId": "synthetic_student_c74da6d2",
+    "pageNumber": 6,
+    "selection": {
+      "start": {
+        "x": 443.3030190954909,
+        "y": 0
+      },
+      "end": {
+        "x": 614.0017013112131,
+        "y": 214.32660686749324
+      }
+    },
+    "question": "Could you provide more examples?",
+    "timestamp": "2024-11-02T18:18:19.867Z"
   }
 ]
