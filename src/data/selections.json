@@ -322,5 +322,95 @@
     },
     "question": "",
     "timestamp": "2024-11-03T00:47:15.009Z"
+  },
+  {
+    "id": "7c16fa26-4f6f-4833-9a24-e0bf28157c95",
+    "studentId": "student_1aabfadb-120a-48db-8996-3ae0d473cb71",
+    "pageNumber": 1,
+    "selection": {
+      "id": "7c16fa26-4f6f-4833-9a24-e0bf28157c95",
+      "start": {
+        "x": 16.899993896484375,
+        "y": 50.19999694824219
+      },
+      "end": {
+        "x": 437.8999938964844,
+        "y": 304.1999969482422
+      }
+    },
+    "question": "",
+    "timestamp": "2024-11-03T01:26:17.361Z"
+  },
+  {
+    "id": "6f9d785e-5d0c-4aa9-8073-66a3f6429642",
+    "studentId": "student_ccbb156a-19c4-47f7-8aa0-ee80bd647694",
+    "pageNumber": 1,
+    "selection": {
+      "id": "6f9d785e-5d0c-4aa9-8073-66a3f6429642",
+      "start": {
+        "x": 41,
+        "y": 17.199996948242188
+      },
+      "end": {
+        "x": 570,
+        "y": 242.1999969482422
+      }
+    },
+    "question": "",
+    "timestamp": "2024-11-03T01:27:59.379Z"
+  },
+  {
+    "id": "bff68f18-131d-4aa7-ad1c-0769d79c5c73",
+    "studentId": "student_2840eb8d-510b-4123-be74-419d20fe2b87",
+    "pageNumber": 1,
+    "selection": {
+      "id": "bff68f18-131d-4aa7-ad1c-0769d79c5c73",
+      "start": {
+        "x": 60,
+        "y": 34.19999694824219
+      },
+      "end": {
+        "x": 563,
+        "y": 233.1999969482422
+      }
+    },
+    "question": "",
+    "timestamp": "2024-11-03T01:30:04.680Z"
+  },
+  {
+    "id": "86e0eddf-b673-444b-b16d-fa2e757a1f2e",
+    "studentId": "student_f227fb45-e7b3-4995-a7e4-6bbb702cb1eb",
+    "pageNumber": 1,
+    "selection": {
+      "id": "86e0eddf-b673-444b-b16d-fa2e757a1f2e",
+      "start": {
+        "x": 67,
+        "y": 22.199996948242188
+      },
+      "end": {
+        "x": 531,
+        "y": 266.1999969482422
+      }
+    },
+    "question": "",
+    "timestamp": "2024-11-03T01:30:34.480Z"
+  },
+  {
+    "id": "4d3441c4-8d96-4b7b-9fa0-b743ac4c6979",
+    "studentId": "student_de885e8e-040b-4bf5-bb36-6873c9a9077f",
+    "pageNumber": 1,
+    "selection": {
+      "id": "4d3441c4-8d96-4b7b-9fa0-b743ac4c6979",
+      "start": {
+        "x": 88,
+        "y": 68.19999694824219
+      },
+      "end": {
+        "x": 560,
+        "y": 326.1999969482422
+      }
+    },
+    "question": "",
+    "timestamp": "2024-11-03T01:31:59.933Z"
   }
 ]

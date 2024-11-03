@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState, JSX, ComponentPropsWithoutRef } from 'react';
-import { ChevronLeft, ChevronRight, Plus, Minus, MousePointer, GalleryVerticalEnd, X, GripVertical, Send, Layers } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, Minus, MousePointer, GalleryVerticalEnd, X, GripVertical, Send, Layers, Upload, Pencil } from 'lucide-react';
 import { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
 import { ImageAnalyzer } from '@/app/components/ImageAnalyzer';
 import ReactMarkdown from 'react-markdown';
@@ -10,6 +10,7 @@ import { ImagePreviewBar } from '@/app/components/ImagePreviewBar';
 import { StudentHighlight, HeatmapData } from '@/types/highlights';
 import { generateHeatmapData, saveSelectionToFile, loadSelectionsFromFile } from '@/utils/syntheticData';
 import { HeatmapOverlay } from '@/app/components/HeatmapOverlay';
+import { ConfirmationModal } from '@/app/components/ConfirmationModal';
 
 interface Selection {
   id?: string;
@@ -67,6 +68,14 @@ const PDFReader = () => {
   const [studentId] = useState(`student_${crypto.randomUUID()}`); // Simulated student ID
   const [showHeatmap, setShowHeatmap] = useState(false);
   const [heatmapData, setHeatmapData] = useState<HeatmapData | null>(null);
+  const [pdfList, setPdfList] = useState<Array<{
+    id: string;
+    name: string;
+    file: File;
+    isEditing: boolean;
+  }>>([]);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [pdfToDelete, setPdfToDelete] = useState<string | null>(null);
 
   useEffect(() => {
   const loadPdfJs = async () => {
@@ -88,6 +97,17 @@ const PDFReader = () => {
   const loadPDF = async (file: File) => {
     setLoading(true);
     try {
+      // Add to pdfList if not already added
+      const existingPdf = pdfList.find(pdf => pdf.file === file);
+      if (!existingPdf) {
+        setPdfList(prev => [...prev, {
+          id: crypto.randomUUID(),
+          name: file.name,
+          file: file,
+          isEditing: false,
+        }]);
+      }
+
       const pdfjsLib = await import('pdfjs-dist');
       const fileReader = new FileReader();
 
@@ -862,29 +882,145 @@ const PDFReader = () => {
     loadAndGenerateHeatmap();
   }, [pageNum]);
 
+  const handlePdfUpload = (file: File) => {
+    loadPDF(file);
+  };
+
+  const handleRename = (id: string, newName: string) => {
+    setPdfList(prev => prev.map(pdf => 
+      pdf.id === id ? { ...pdf, name: newName, isEditing: false } : pdf
+    ));
+  };
+
+  // Add this new function with your other functions
+  const handleDeletePdf = (id: string) => {
+    setPdfToDelete(id);
+    setIsDeleteModalOpen(true);
+  };
+
+  // Add this new function to handle the actual deletion
+  const confirmDelete = () => {
+    if (!pdfToDelete) return;
+    
+    const deletedPdf = pdfList.find(pdf => pdf.id === pdfToDelete);
+    setPdfList(prev => prev.filter(pdf => pdf.id !== pdfToDelete));
+    
+    if (deletedPdf && pdfDoc) {
+      setPdfDoc(null);
+      setNumPages(null);
+      setPageNum(1);
+      setThumbnails([]);
+    }
+    
+    setPdfToDelete(null);
+  };
 
   return (
     <div className="fixed inset-0 flex no-scroll select-none">
-      {/* Left Sidebar - Thumbnails */}
+      {/* Left Sidebar - PDF Upload */}
       <div className={`transition-all duration-300 select-none ${
         sidebarOpen ? 'w-64' : 'w-0'
       } border-r bg-gray-50 scroll-y overflow-hidden`}>
         <div className="p-4 w-64"> {/* Fixed width container for content */}
-          <div className="overflow-auto">
-            {thumbnails.map((thumbnail, index) => (
-              <div
-                key={index}
-                onClick={() => setPageNum(index + 1)}
-                className={`p-2 cursor-pointer rounded ${pageNum === index + 1 ? 'bg-blue-100' : 'hover:bg-gray-100'}`}
+          <div className="flex flex-col h-full">
+            {/* Upload Section */}
+            <div className="p-4 border rounded-lg bg-white mb-4">
+              <h3 className="font-semibold text-sm mb-3">Upload PDF</h3>
+              <div 
+                className={`flex flex-col items-center justify-center p-6 border-2 rounded-lg
+                  ${isDragging ? 'border-blue-500 border-dashed bg-blue-50' : 'border-dashed border-gray-200'}`}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  setIsDragging(false);
+                  const file = e.dataTransfer.files[0];
+                  if (file?.type === 'application/pdf') {
+                    handlePdfUpload(file);
+                  }
+                }}
               >
-                <img
-                  src={thumbnail}
-                  alt={`Page ${index + 1}`}
-                  className="w-full border border-gray-200 rounded"
-                />
-                <div className="text-center text-sm mt-1">Page {index + 1}</div>
+                <Upload className="w-8 h-8 text-gray-400 mb-2" />
+                <p className="text-sm text-gray-500 text-center mb-2">
+                  {isDragging ? 'Drop PDF here' : 'Drag & drop PDF here'}
+                </p>
+                <p className="text-xs text-gray-400 text-center mb-3">or</p>
+                <label className="cursor-pointer">
+                  <input
+                    type="file"
+                    accept=".pdf"
+                    onChange={(e) => e.target.files?.[0] && handlePdfUpload(e.target.files[0])}
+                    className="hidden"
+                  />
+                  <span className="px-4 py-2 bg-blue-500 text-white rounded-md text-sm hover:bg-blue-600 transition-colors">
+                    Browse Files
+                  </span>
+                </label>
               </div>
-            ))}
+            </div>
+
+            {/* PDF List */}
+            <div className="space-y-2">
+              {pdfList.map(pdf => (
+                <div 
+                  key={pdf.id}
+                  className="p-3 bg-white rounded-lg border hover:border-blue-200 transition-colors cursor-pointer"
+                >
+                  {pdf.isEditing ? (
+                    <input
+                      type="text"
+                      value={pdf.name}
+                      className="w-full px-2 py-1 border rounded focus:outline-none focus:border-blue-500"
+                      onChange={(e) => {
+                        setPdfList(prev => prev.map(p => 
+                          p.id === pdf.id ? { ...p, name: e.target.value } : p
+                        ));
+                      }}
+                      onBlur={() => handleRename(pdf.id, pdf.name)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          handleRename(pdf.id, pdf.name);
+                        }
+                      }}
+                      autoFocus
+                    />
+                  ) : (
+                    <div className="flex items-center justify-between group">
+                      <div 
+                        className="flex-1 truncate mr-2"
+                        onClick={() => loadPDF(pdf.file)}
+                      >
+                        {pdf.name}
+                      </div>
+                      <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setPdfList(prev => prev.map(p => 
+                              p.id === pdf.id ? { ...p, isEditing: true } : p
+                            ));
+                          }}
+                          className="p-1 hover:bg-gray-100 rounded transition-colors"
+                          title="Rename"
+                        >
+                          <Pencil size={14} className="text-gray-500" />
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeletePdf(pdf.id);
+                          }}
+                          className="p-1 hover:bg-red-100 rounded transition-colors ml-1"
+                          title="Delete"
+                        >
+                          <X size={14} className="text-red-500" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -1219,6 +1355,16 @@ const PDFReader = () => {
           </form>
         </div>
       </div>
+      <ConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => {
+          setIsDeleteModalOpen(false);
+          setPdfToDelete(null);
+        }}
+        onConfirm={confirmDelete}
+        title="Delete PDF"
+        message="Are you sure you want to delete this PDF? This action cannot be undone."
+      />
     </div>
   );
 };
