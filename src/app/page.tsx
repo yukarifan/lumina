@@ -76,6 +76,7 @@ const PDFReader = () => {
   }>>([]);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [pdfToDelete, setPdfToDelete] = useState<string | null>(null);
+  const [overlayOpacity, setOverlayOpacity] = useState(0);
 
   useEffect(() => {
   const loadPdfJs = async () => {
@@ -187,13 +188,15 @@ const PDFReader = () => {
     const context = overlayCanvas.getContext('2d');
     if (!context) return;
 
+    // Clear the entire canvas first
     context.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
 
     if (selectionMode) {
+      // Draw the semi-transparent overlay
       context.fillStyle = 'rgba(0, 0, 0, 0.5)';
       context.fillRect(0, 0, overlayCanvas.width, overlayCanvas.height);
 
-      // Get selections for current page
+      // Clear the areas where selections exist
       const currentPageSelections = selections[pageNum] || [];
       [...currentPageSelections, currentSelection].filter(Boolean).forEach(selection => {
         if (!selection) return;
@@ -215,12 +218,15 @@ const PDFReader = () => {
         const absWidth = Math.abs(width);
         const absHeight = Math.abs(height);
 
+        // Clear the selection area
         context.clearRect(x, y, absWidth, absHeight);
+        
+        // Draw the selection border
         context.strokeStyle = '#0066cc';
         context.lineWidth = 2;
         context.strokeRect(x, y, absWidth, absHeight);
 
-        // Only show delete button on hover
+        // Add delete button if selection is hovered
         if (selection.id && hoveredSelection === selection.id) {
           const btnSize = 24;
           const scaledX = x;
@@ -915,6 +921,21 @@ const PDFReader = () => {
     setPdfToDelete(null);
   };
 
+  const toggleSelectionMode = () => {
+    if (!selectionMode) {
+      // Turning on
+      setSelectionMode(true);
+      setOverlayOpacity(1);
+    } else {
+      // Turning off - fade out first, then disable selection mode
+      setOverlayOpacity(0);
+      // Wait for animation to complete before disabling selection mode
+      setTimeout(() => {
+        setSelectionMode(false);
+      }, 300); // Match this with transition duration
+    }
+  };
+
   return (
     <div className="fixed inset-0 flex no-scroll select-none">
       {/* Left Sidebar - PDF Upload */}
@@ -1146,7 +1167,7 @@ const PDFReader = () => {
             {/* Selection Tool */}
             <div className="flex items-center space-x-2">
               <button
-                onClick={() => setSelectionMode(!selectionMode)}
+                onClick={() => toggleSelectionMode()}
                 className={`p-2 rounded hover:bg-gray-100 ${selectionMode ? 'bg-blue-100' : ''}`}
                 title="Selection Tool"
               >
@@ -1228,7 +1249,9 @@ const PDFReader = () => {
                   className="absolute top-0 left-0 pointer-events-auto"
                   style={{ 
                     zIndex: 50,
-                    cursor: selectionMode ? 'crosshair' : 'default'
+                    cursor: selectionMode ? 'crosshair' : 'default',
+                    opacity: overlayOpacity,
+                    transition: 'opacity 300ms ease-in-out',
                   }}
                   onMouseDown={handleMouseDown}
                   onMouseMove={handleMouseMove}
@@ -1278,7 +1301,7 @@ const PDFReader = () => {
 
         {/* Chat Header */}
         <div className="flex-none p-4 border-b">
-          <h3 className="font-semibold">AI Analysis</h3>
+          <h3 className="font-semibold">Lumina</h3>
         </div>
 
         {/* Chat Messages Container */}
