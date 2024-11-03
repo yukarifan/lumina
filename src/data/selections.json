@@ -1,0 +1,326 @@
+[
+  {
+    "id": "55be82d9-0772-495e-9909-9864690292a6",
+    "studentId": "student_5755fd9a-70bb-47f5-b0be-b4fe3d476cff",
+    "pageNumber": 1,
+    "selection": {
+      "id": "55be82d9-0772-495e-9909-9864690292a6",
+      "start": {
+        "x": 37,
+        "y": 36.19999694824219
+      },
+      "end": {
+        "x": 544,
+        "y": 244.1999969482422
+      }
+    },
+    "timestamp": "2024-11-02T23:27:00.876Z"
+  },
+  {
+    "id": "9fc68b59-4552-4220-8f79-548aedd669dd",
+    "studentId": "student_5755fd9a-70bb-47f5-b0be-b4fe3d476cff",
+    "pageNumber": 1,
+    "selection": {
+      "id": "9fc68b59-4552-4220-8f79-548aedd669dd",
+      "start": {
+        "x": 11,
+        "y": 253.79999923706055
+      },
+      "end": {
+        "x": 322,
+        "y": 313.79999923706055
+      }
+    },
+    "timestamp": "2024-11-02T23:27:06.643Z"
+  },
+  {
+    "id": "83f3f8d5-a19f-4137-9831-63c20947fa70",
+    "studentId": "student_5755fd9a-70bb-47f5-b0be-b4fe3d476cff",
+    "pageNumber": 1,
+    "selection": {
+      "id": "83f3f8d5-a19f-4137-9831-63c20947fa70",
+      "start": {
+        "x": 339,
+        "y": 254.79999923706055
+      },
+      "end": {
+        "x": 606,
+        "y": 644.7999992370605
+      }
+    },
+    "timestamp": "2024-11-02T23:27:15.232Z"
+  },
+  {
+    "id": "81f83352-59d6-4776-a8b4-95a8b833d170",
+    "studentId": "student_5755fd9a-70bb-47f5-b0be-b4fe3d476cff",
+    "pageNumber": 1,
+    "selection": {
+      "id": "81f83352-59d6-4776-a8b4-95a8b833d170",
+      "start": {
+        "x": 298,
+        "y": 323.79999923706055
+      },
+      "end": {
+        "x": 27,
+        "y": 649.7999992370605
+      }
+    },
+    "timestamp": "2024-11-02T23:27:18.907Z"
+  },
+  {
+    "id": "65d644f0-c6f1-42e4-933d-106e973fb17d",
+    "studentId": "student_5755fd9a-70bb-47f5-b0be-b4fe3d476cff",
+    "pageNumber": 2,
+    "selection": {
+      "id": "65d644f0-c6f1-42e4-933d-106e973fb17d",
+      "start": {
+        "x": 359,
+        "y": 619
+      },
+      "end": {
+        "x": 596,
+        "y": 727
+      }
+    },
+    "timestamp": "2024-11-02T23:27:24.422Z"
+  },
+  {
+    "id": "bd1b3a5d-2391-4120-a851-4733e92a07d4",
+    "studentId": "student_5755fd9a-70bb-47f5-b0be-b4fe3d476cff",
+    "pageNumber": 3,
+    "selection": {
+      "id": "bd1b3a5d-2391-4120-a851-4733e92a07d4",
+      "start": {
+        "x": 304,
+        "y": 501
+      },
+      "end": {
+        "x": 48,
+        "y": 783
+      }
+    },
+    "timestamp": "2024-11-02T23:27:29.033Z"
+  },
+  {
+    "id": "b5223e73-8d0a-4c30-9af2-79f60954d24a",
+    "studentId": "student_5755fd9a-70bb-47f5-b0be-b4fe3d476cff",
+    "pageNumber": 4,
+    "selection": {
+      "id": "b5223e73-8d0a-4c30-9af2-79f60954d24a",
+      "start": {
+        "x": 594,
+        "y": 425.1999969482422
+      },
+      "end": {
+        "x": 12,
+        "y": 167.1999969482422
+      }
+    },
+    "timestamp": "2024-11-02T23:27:34.096Z"
+  },
+  {
+    "id": "aae5e1f8-2dc6-48c8-b8d5-246d7dd54e6e",
+    "studentId": "student_5755fd9a-70bb-47f5-b0be-b4fe3d476cff",
+    "pageNumber": 4,
+    "selection": {
+      "id": "aae5e1f8-2dc6-48c8-b8d5-246d7dd54e6e",
+      "start": {
+        "x": 11,
+        "y": 18.199996948242188
+      },
+      "end": {
+        "x": 547,
+        "y": 154.1999969482422
+      }
+    },
+    "timestamp": "2024-11-02T23:27:35.451Z"
+  },
+  {
+    "id": "987fc9fa-db0f-4c53-881d-85eb3bbed168",
+    "studentId": "student_5755fd9a-70bb-47f5-b0be-b4fe3d476cff",
+    "pageNumber": 6,
+    "selection": {
+      "id": "987fc9fa-db0f-4c53-881d-85eb3bbed168",
+      "start": {
+        "x": 399,
+        "y": 362.1999969482422
+      },
+      "end": {
+        "x": 10,
+        "y": 94.19999694824219
+      }
+    },
+    "timestamp": "2024-11-02T23:27:46.205Z"
+  },
+  {
+    "id": "d7b8fd39-b773-429b-98d4-0b8cf393a46e",
+    "studentId": "student_5755fd9a-70bb-47f5-b0be-b4fe3d476cff",
+    "pageNumber": 1,
+    "selection": {
+      "id": "d7b8fd39-b773-429b-98d4-0b8cf393a46e",
+      "start": {
+        "x": 18,
+        "y": 711
+      },
+      "end": {
+        "x": 300,
+        "y": 339
+      }
+    },
+    "timestamp": "2024-11-02T23:27:54.772Z"
+  },
+  {
+    "id": "7291ef80-80c1-4a5e-b955-2e970a8d661c",
+    "studentId": "student_5755fd9a-70bb-47f5-b0be-b4fe3d476cff",
+    "pageNumber": 2,
+    "selection": {
+      "id": "7291ef80-80c1-4a5e-b955-2e970a8d661c",
+      "start": {
+        "x": 562,
+        "y": 463
+      },
+      "end": {
+        "x": 85,
+        "y": 219
+      }
+    },
+    "timestamp": "2024-11-02T23:28:10.324Z"
+  },
+  {
+    "id": "93db8ffe-a30e-4d17-aba8-199807e250a6",
+    "studentId": "student_263190de-b339-4aa1-b247-c419d4c13968",
+    "pageNumber": 1,
+    "selection": {
+      "id": "93db8ffe-a30e-4d17-aba8-199807e250a6",
+      "start": {
+        "x": 48,
+        "y": 26.199996948242188
+      },
+      "end": {
+        "x": 359,
+        "y": 227.1999969482422
+      }
+    },
+    "timestamp": "2024-11-02T23:31:55.204Z"
+  },
+  {
+    "id": "135fa491-8144-44c7-bd1a-eb9c56c476be",
+    "studentId": "student_02f82841-a872-4003-a85d-2748a4c9d6c4",
+    "pageNumber": 1,
+    "selection": {
+      "id": "135fa491-8144-44c7-bd1a-eb9c56c476be",
+      "start": {
+        "x": 78,
+        "y": 353.1999969482422
+      },
+      "end": {
+        "x": 247,
+        "y": 573.1999969482422
+      }
+    },
+    "timestamp": "2024-11-02T23:38:00.573Z"
+  },
+  {
+    "id": "b31fa8a4-818f-45f2-8e39-8aa522a3807b",
+    "studentId": "student_02f82841-a872-4003-a85d-2748a4c9d6c4",
+    "pageNumber": 2,
+    "selection": {
+      "id": "b31fa8a4-818f-45f2-8e39-8aa522a3807b",
+      "start": {
+        "x": 11.11111111111111,
+        "y": 638.0000008477105
+      },
+      "end": {
+        "x": 603.3333333333334,
+        "y": 795.7777786254883
+      }
+    },
+    "timestamp": "2024-11-02T23:40:23.754Z"
+  },
+  {
+    "id": "51f6ea1b-2a3c-44a6-acd9-51591294023f",
+    "studentId": "student_f4954123-b492-4542-85f1-2e58f1536832",
+    "pageNumber": 3,
+    "selection": {
+      "id": "51f6ea1b-2a3c-44a6-acd9-51591294023f",
+      "start": {
+        "x": 6,
+        "y": 449
+      },
+      "end": {
+        "x": 606,
+        "y": 796
+      }
+    },
+    "timestamp": "2024-11-02T23:59:44.105Z"
+  },
+  {
+    "id": "efc36c03-586d-430d-a347-b93148434243",
+    "studentId": "student_687fdaeb-7ee8-488e-bebb-27fa13253dad",
+    "pageNumber": 4,
+    "selection": {
+      "id": "efc36c03-586d-430d-a347-b93148434243",
+      "start": {
+        "x": 10,
+        "y": 15.199996948242188
+      },
+      "end": {
+        "x": 610,
+        "y": 418.1999969482422
+      }
+    },
+    "timestamp": "2024-11-03T00:02:38.168Z"
+  },
+  {
+    "id": "e3464830-c4a9-4559-9165-55dacbae3668",
+    "studentId": "student_16a6b007-6421-443d-9530-2010b7fa49b6",
+    "pageNumber": 1,
+    "selection": {
+      "id": "e3464830-c4a9-4559-9165-55dacbae3668",
+      "start": {
+        "x": 56.81818181818181,
+        "y": 20.181815407492895
+      },
+      "end": {
+        "x": 563.1818181818181,
+        "y": 241.9999972256747
+      }
+    },
+    "timestamp": "2024-11-03T00:04:53.935Z"
+  },
+  {
+    "id": "e47b510c-c926-444d-ba93-24486da91b53",
+    "studentId": "student_16a6b007-6421-443d-9530-2010b7fa49b6",
+    "pageNumber": 1,
+    "selection": {
+      "id": "e47b510c-c926-444d-ba93-24486da91b53",
+      "start": {
+        "x": 23.18181818181818,
+        "y": 261.0909063165838
+      },
+      "end": {
+        "x": 322.27272727272725,
+        "y": 630.9090909090909
+      }
+    },
+    "timestamp": "2024-11-03T00:06:17.342Z"
+  },
+  {
+    "id": "285307a1-578c-4222-8b51-809fb7426f5e",
+    "studentId": "student_5d754a15-9037-4563-9781-df00d87ef9b3",
+    "pageNumber": 2,
+    "selection": {
+      "id": "285307a1-578c-4222-8b51-809fb7426f5e",
+      "start": {
+        "x": 94.73114013671875,
+        "y": 49.13207244873047
+      },
+      "end": {
+        "x": 516.7311401367188,
+        "y": 256.13207244873047
+      }
+    },
+    "question": "",
+    "timestamp": "2024-11-03T00:47:15.009Z"
+  }
+]

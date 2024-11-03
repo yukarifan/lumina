@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     // Base message for image analysis
     const baseMessage = question 
       ? question 
-      : "Please analyze this image from a PDF document and explain what you see. Be concise but informative.";
+      : "The picture is from user, a student. Please analyze this image from a PDF document, give a concise summary, and ask the user to clarify any confusion. Be concise but informative.";
 
     const messages = [
       // Include conversation history if available

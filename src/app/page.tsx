@@ -8,7 +8,7 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import { ImagePreviewBar } from '@/app/components/ImagePreviewBar';
 import { StudentHighlight, HeatmapData } from '@/types/highlights';
-import { generateSyntheticHighlights, generateRandomSyntheticHighlights, generateHeatmapData } from '@/utils/syntheticData';
+import { generateHeatmapData, saveSelectionToFile, loadSelectionsFromFile } from '@/utils/syntheticData';
 import { HeatmapOverlay } from '@/app/components/HeatmapOverlay';
 
 interface Selection {
@@ -66,7 +66,6 @@ const PDFReader = () => {
   }>({});
   const [studentId] = useState(`student_${crypto.randomUUID()}`); // Simulated student ID
   const [showHeatmap, setShowHeatmap] = useState(false);
-  const [syntheticHighlights, setSyntheticHighlights] = useState<StudentHighlight[]>([]);
   const [heatmapData, setHeatmapData] = useState<HeatmapData | null>(null);
   const [renderedPages, setRenderedPages] = useState<{
     [pageNum: number]: HTMLCanvasElement;
@@ -263,6 +262,7 @@ const PDFReader = () => {
     const newPage = pageNum + offset;
     if (numPages && newPage >= 1 && newPage <= numPages) {
       setPageNum(newPage);
+      setPageInput(String(newPage));
     }
   };
 
@@ -367,6 +367,18 @@ const PDFReader = () => {
         ...prev,
         [pageNum]: [...(prev[pageNum] || []), currentSelection]
       }));
+
+      // Save selection to file
+      const highlight: StudentHighlight = {
+        id: currentSelection.id || crypto.randomUUID(),
+        studentId: studentId,
+        pageNumber: pageNum,
+        selection: currentSelection,
+        question: '', // You can add question handling here if needed
+        timestamp: new Date()
+      };
+      
+      saveSelectionToFile(highlight);
 
       // Start analysis in the background
       analyzeSelection(currentSelection);
@@ -831,25 +843,29 @@ const PDFReader = () => {
       document.removeEventListener('mouseup', handleMouseUp);
     };
   }, [isResizing]);
-  useEffect(() => {
-    if (pdfDoc && numPages) {
-      const highlights = generateSyntheticHighlights(numPages);
-      setSyntheticHighlights(highlights);
-    }
-  }, [pdfDoc, numPages]);
 
-  // Add another useEffect to update heatmap data when page changes
+  // Instead, we'll just use the actual selections for the heatmap
   useEffect(() => {
-    if (canvasRef.current && syntheticHighlights.length > 0) {
-      const data = generateHeatmapData(
-        syntheticHighlights,
-        pageNum,
-        canvasRef.current.width,
-        canvasRef.current.height
-      );
-      setHeatmapData(data);
-    }
-  }, [pageNum, syntheticHighlights, canvasRef.current?.width, canvasRef.current?.height]);
+    const loadAndGenerateHeatmap = async () => {
+      console.log('Loading heatmap data for page:', pageNum);
+      if (canvasRef.current) {
+        const fileSelections = await loadSelectionsFromFile();
+        console.log('Filtered selections:', fileSelections.filter(sel => sel.pageNumber === pageNum));
+        
+        const data = generateHeatmapData(
+          fileSelections,
+          pageNum,
+          canvasRef.current.width,
+          canvasRef.current.height
+        );
+        console.log('Generated heatmap data:', data);
+        setHeatmapData(data);
+      }
+    };
+    
+    loadAndGenerateHeatmap();
+  }, [pageNum]);
+
 
   return (
     <div className="fixed inset-0 flex no-scroll select-none">
@@ -1070,43 +1086,33 @@ const PDFReader = () => {
                 </label>
               </div>
             ) : (
-              <div className="relative space-y-4">
-                {Object.entries(renderedPages).map(([pageNum, canvas]) => (
-                  <div key={pageNum} className="relative shadow-lg">
-                    <img 
-                      src={canvas.toDataURL()}
-                      alt={`Page ${pageNum}`}
-                      className="bg-white"
-                    />
-                    {/* Overlay canvas for selections */}
-                    <canvas
-                      className="absolute top-0 left-0 pointer-events-auto"
-                      style={{ 
-                        zIndex: 50,
-                        cursor: selectionMode ? 'crosshair' : 'default',
-                        width: canvas.width,
-                        height: canvas.height
-                      }}
-                      width={canvas.width}
-                      height={canvas.height}
-                      onMouseDown={handleMouseDown}
-                      onMouseMove={handleMouseMove}
-                      onMouseUp={handleMouseUp}
-                      onMouseLeave={() => {
-                        handleMouseUp();
-                        setHoveredSelection(null);
-                      }}
-                      onClick={handleOverlayClick}
-                    />
-                    {showHeatmap && heatmapData && (
-                      <HeatmapOverlay
-                        heatmapData={heatmapData}
-                        width={canvas.width}
-                        height={canvas.height}
-                      />
-                    )}
-                  </div>
-                ))}
+              <div className="relative">
+                <canvas
+                  ref={canvasRef}
+                  className="shadow-lg bg-white"
+                />
+                <canvas
+                  ref={overlayCanvasRef}
+                  className="absolute top-0 left-0 pointer-events-auto"
+                  style={{ 
+                    zIndex: 50,
+                    cursor: selectionMode ? 'crosshair' : 'default'
+                  }}
+                  onMouseDown={handleMouseDown}
+                  onMouseMove={handleMouseMove}
+                  onMouseUp={handleMouseUp}
+                  onMouseLeave={() => {
+                    handleMouseUp();
+                    setHoveredSelection(null);
+                  }}
+                  onClick={handleOverlayClick}
+                />
+                <HeatmapOverlay 
+                  width={canvasRef.current?.width || 0}
+                  height={canvasRef.current?.height || 0}
+                  pageNum={pageNum}
+                  visible={showHeatmap}
+                />
               </div>
             )}
           </div>
