@@ -83,6 +83,7 @@ const PDFReader = () => {
   const [currentBulbs, setCurrentBulbs] = useState<BulbInfo[]>([]);
   const [currentFile, setCurrentFile] = useState<File | null>(null);
   const [showBulbs, setShowBulbs] = useState(false);
+  const [currentImageId, setCurrentImageId] = useState<string | null>(null);
 
   useEffect(() => {
   const loadPdfJs = async () => {
@@ -517,6 +518,7 @@ const PDFReader = () => {
     
     setIsAnalyzing(true);
     const imageId = crypto.randomUUID();
+    setCurrentImageId(imageId);
     
     // Clear existing chat responses immediately when starting a new capture
     setAiResponses([]);
@@ -601,11 +603,16 @@ const PDFReader = () => {
   const handleImageClick = (imageId: string) => {
     const conversation = conversations[imageId] || [];
     setAiResponses(conversation);
+    setCurrentImageId(imageId);
     setIsChatOpen(true);
   };
 
   const handleDeleteImage = (imageId: string) => {
     setCapturedImages(prev => prev.filter(img => img.id !== imageId));
+    if (currentImageId === imageId) {
+      setCurrentImageId(null);
+      setAiResponses([]);
+    }
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -631,11 +638,6 @@ const PDFReader = () => {
     e.preventDefault();
     if (!chatInput.trim()) return;
 
-    // Find the current image ID from the first message that has imageData
-    const currentImageId = aiResponses[0]?.imageData ? 
-      capturedImages.find(img => img.data === aiResponses[0].imageData)?.id : 
-      null;
-
     const userMessage: AIResponse = {
       id: crypto.randomUUID(),
       text: chatInput,
@@ -643,15 +645,11 @@ const PDFReader = () => {
       role: 'user'
     };
 
-    // Add user message to UI
     setAiResponses(prev => [...prev, userMessage]);
     setChatInput('');
-
-    // Add this line to show loading spinner
     setIsAnalyzing(true);
 
     try {
-      // Get previous messages for context
       const messageHistory = aiResponses.map(msg => ({
         role: msg.role,
         content: msg.text
@@ -667,7 +665,6 @@ const PDFReader = () => {
       });
 
       const data = await response.json();
-
       const aiMessage: AIResponse = {
         id: crypto.randomUUID(),
         text: data.analysis,
@@ -702,7 +699,6 @@ const PDFReader = () => {
         role: 'assistant'
       }]);
     } finally {
-      // Add this line to hide loading spinner
       setIsAnalyzing(false);
     }
   };
@@ -767,14 +763,14 @@ const PDFReader = () => {
           const roleLabel = msg.role === 'assistant' ? 'AI' : 'User';
           return `${roleLabel}: ${msg.text}`;
         })
-        .join('\n\n'); // Add extra line break for better readability
+        .join('\n\n');
 
       const summaryResponse = await fetch('/api/summarize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           text: fullConversation,
-          isConversation: true  // Add flag to indicate this is a conversation
+          isConversation: true
         })
       });
 
@@ -787,43 +783,6 @@ const PDFReader = () => {
       ));
     } catch (error) {
       console.error('Error updating summary:', error);
-    }
-
-    try {
-      // Get previous messages for context
-      const messageHistory = aiResponses.map(msg => ({
-        role: msg.role,
-        content: msg.text
-      }));
-
-      // Make API call
-      const response = await fetch('/api/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          question: chatInput,
-          history: messageHistory
-        })
-      });
-
-      const data = await response.json();
-
-      // Add AI response to UI
-      setAiResponses(prev => [...prev, {
-        id: crypto.randomUUID(),
-        text: data.analysis,
-        timestamp: new Date(),
-        role: 'assistant'
-      }]);
-    } catch (error) {
-      console.error('Error getting AI response:', error);
-      // Optionally add error message to UI
-      setAiResponses(prev => [...prev, {
-        id: crypto.randomUUID(),
-        text: "Sorry, I couldn't process your request. Please try again.",
-        timestamp: new Date(),
-        role: 'assistant'
-      }]);
     }
   };
 
