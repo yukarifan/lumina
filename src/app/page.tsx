@@ -258,6 +258,7 @@ const PDFReader = () => {
     const newPage = pageNum + offset;
     if (numPages && newPage >= 1 && newPage <= numPages) {
       setPageNum(newPage);
+      setPageInput(String(newPage));
     }
   };
 
