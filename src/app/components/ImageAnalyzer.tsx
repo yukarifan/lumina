@@ -17,7 +17,9 @@ interface ImageAnalyzerProps {
 export function ImageAnalyzer({ image }: ImageAnalyzerProps) {
   // Pre-process the text to convert \( \) to $ $ format
   const processText = (text: string) => {
-    return text.replace(/\\\((.*?)\\\)/g, '$$$1$$');
+    return text
+      .replace(/\\\((.*?)\\\)/g, '$$$1$$')  // Convert inline math \( \) to $ $
+      .replace(/\\\[(.*?)\\\]/g, '$$$$1$$$$');  // Convert display math \[ \] to $$ $$
   };
 
   const components: Components = {
