@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState, JSX, ComponentPropsWithoutRef } from 'react';
-import { ChevronLeft, ChevronRight, Plus, Minus, MousePointer, GalleryVerticalEnd, X, GripVertical, Send, Layers, Upload, Pencil } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, Minus, MousePointer, GalleryVerticalEnd, X, GripVertical, Send, Layers, Upload, Pencil, Lightbulb } from 'lucide-react';
 import { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
 import { ImageAnalyzer } from '@/app/components/ImageAnalyzer';
 import ReactMarkdown from 'react-markdown';
@@ -11,6 +11,8 @@ import { StudentHighlight, HeatmapData } from '@/types/highlights';
 import { generateHeatmapData, loadSelectionsFromFile } from '@/utils/syntheticData';
 import { HeatmapOverlay } from '@/app/components/HeatmapOverlay';
 import { ConfirmationModal } from '@/app/components/ConfirmationModal';
+import { HintBulb } from './components/HintBulb';
+import { PDFBulbs, BulbInfo } from '@/types/bulbs';
 
 interface Selection {
   id?: string;
@@ -77,6 +79,9 @@ const PDFReader = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [pdfToDelete, setPdfToDelete] = useState<string | null>(null);
   const [overlayOpacity, setOverlayOpacity] = useState(0);
+  const [currentBulbs, setCurrentBulbs] = useState<BulbInfo[]>([]);
+  const [currentFile, setCurrentFile] = useState<File | null>(null);
+  const [showBulbs, setShowBulbs] = useState(false);
 
   useEffect(() => {
   const loadPdfJs = async () => {
@@ -97,6 +102,7 @@ const PDFReader = () => {
 
   const loadPDF = async (file: File) => {
     setLoading(true);
+    setCurrentFile(file);
     try {
       // Add to pdfList if not already added
       const existingPdf = pdfList.find(pdf => pdf.file === file);
@@ -118,6 +124,9 @@ const PDFReader = () => {
         setPdfDoc(doc);
         setNumPages(doc.numPages);
         setPageNum(1);
+
+        // Add this line
+        loadBulbsForPDF(file.name);
 
         // Generate thumbnails
         const thumbnailsArray = [];
@@ -936,6 +945,51 @@ const PDFReader = () => {
     }
   };
 
+  const loadBulbsForPDF = async (pdfName: string) => {
+    try {
+      console.log('Loading bulbs for PDF:', pdfName);
+      const response = await fetch('/api/bulbs');
+      const bulbsData: PDFBulbs = await response.json();
+      
+      if (bulbsData[pdfName]) {
+        // Map the bulbs data to match the BulbInfo interface
+        const mappedBulbs: BulbInfo[] = bulbsData[pdfName].bulbs.map(bulb => ({
+          id: bulb.id,
+          x: bulb.position.x,
+          y: bulb.position.y,
+          message: bulb.message,
+          pageNumber: bulb.pageNumber
+        }));
+        
+        // Filter bulbs for current page
+        const currentPageBulbs = mappedBulbs.filter(bulb => 
+          !bulb.pageNumber || bulb.pageNumber === pageNum
+        );
+        
+        setCurrentBulbs(currentPageBulbs);
+      } else {
+        // Default bulb if no matching PDF found
+        setCurrentBulbs([{
+          x: 100,
+          y: 100,
+          message: "Try selecting text to analyze it!"
+        }]);
+      }
+    } catch (error) {
+      console.error('Error loading bulbs:', error);
+      setCurrentBulbs([]);
+    }
+  };
+
+  useEffect(() => {
+    if (pdfDoc) {
+      const fileName = pdfList.find(pdf => pdf.file === currentFile)?.name;
+      if (fileName) {
+        loadBulbsForPDF(fileName);
+      }
+    }
+  }, [pageNum, pdfDoc]);
+
   return (
     <div className="fixed inset-0 flex no-scroll select-none">
       {/* Left Sidebar - PDF Upload */}
@@ -1196,6 +1250,13 @@ const PDFReader = () => {
                   >
                     <Layers size={20} />
                   </button>
+                  <button
+                    onClick={() => setShowBulbs(!showBulbs)}
+                    className={`p-2 rounded hover:bg-gray-100 ${showBulbs ? 'bg-yellow-100' : ''}`}
+                    title="Toggle Hint Bulbs"
+                  >
+                    <Lightbulb size={20} />
+                  </button>
                 </div>
               </div>
             </div>
@@ -1262,12 +1323,23 @@ const PDFReader = () => {
                   }}
                   onClick={handleOverlayClick}
                 />
+                
+                
                 <HeatmapOverlay 
                   width={canvasRef.current?.width || 0}
                   height={canvasRef.current?.height || 0}
                   pageNum={pageNum}
                   visible={showHeatmap}
                 />
+                {showBulbs && currentBulbs.map((bulb, index) => (
+                  <HintBulb
+                    key={bulb.id || index}
+                    x={bulb.x}
+                    y={bulb.y}
+                    message={bulb.message}
+                    scale={scale}
+                  />
+                ))}
               </div>
             )}
           </div>
