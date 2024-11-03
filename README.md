@@ -1,36 +1,87 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Lumina - Interactive Learning Platform
+
+Lumina is an advanced learning platform that enables interactive document analysis, real-time collaboration, and AI-powered assistance for both students and instructors.
+
+## Features
+
+- **Interactive PDF Viewer**
+  - Smooth PDF navigation with zoom controls
+  - Multi-page support with thumbnail preview
+  - Responsive layout with adjustable sidebar
+
+- **Smart Annotations**
+  - Text selection and highlighting
+  - AI-powered analysis of selected content
+  - Heat map visualization of student engagement
+  - Interactive hint bulbs for additional context
+
+- **AI Integration**
+  - Real-time content analysis
+  - Mathematical formula support with KaTeX
+  - Contextual explanations and insights
+  - Conversation history tracking
+
+- **User Management**
+  - Role-based access (Student/Instructor)
+  - Secure authentication
+  - Personalized user experience
 
 ## Getting Started
 
-First, run the development server:
+1. Clone the repository
+2. Install dependencies:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Set up environment variables:
+Create a `.env.local` file with:
+```
+OPENAI_API_KEY=your_api_key_here
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+4. Run the development server:
+```bash
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+5. Open [http://localhost:3000](http://localhost:3000) with your browser
 
-## Learn More
+## Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
+- **Frontend**: Next.js 15, React 18, TypeScript
+- **Styling**: Tailwind CSS
+- **PDF Processing**: PDF.js
+- **Math Rendering**: KaTeX
+- **AI Integration**: OpenAI GPT-4
+- **Authentication**: Custom auth system
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/
+  ├── app/              # Next.js app directory
+  ├── components/       # Reusable React components
+  ├── types/           # TypeScript type definitions
+  ├── utils/           # Utility functions
+  └── data/            # Data storage
+```
 
-## Deploy on Vercel
+## Development
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Use `npm run dev` for development with hot-reload
+- Use `npm run build` for production builds
+- Use `npm run lint` for code linting
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
