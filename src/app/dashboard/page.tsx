@@ -31,6 +31,47 @@ interface AIResponse {
   role: 'user' | 'assistant';
 }
 
+// Add this interface for the avatar menu
+interface AvatarMenuProps {
+  email: string;
+  role: string;
+  onSignOut: () => void;
+}
+
+const AvatarMenu = ({ email, role, onSignOut }: AvatarMenuProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center justify-center w-10 h-10 rounded-full bg-[rgb(37,187,187)] text-white hover:bg-[rgb(33,168,168)] transition-colors"
+      >
+        <User size={20} />
+      </button>
+
+      {isOpen && (
+        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
+          <div className="px-4 py-2 border-b border-gray-200">
+            <div className="text-sm font-medium text-gray-900">Signed in as</div>
+            <div className="text-sm text-gray-600 truncate">{email}</div>
+            <div className="text-xs text-[rgb(37,187,187)] font-medium uppercase mt-1">
+              {role}
+            </div>
+          </div>
+          <button
+            onClick={onSignOut}
+            className="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+          >
+            <LogOut size={16} className="mr-2" />
+            Sign out
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const PDFReader = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const overlayCanvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -87,6 +128,27 @@ const PDFReader = () => {
   const [currentImageId, setCurrentImageId] = useState<string | null>(null);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const router = useRouter();
+  const [userRole, setUserRole] = useState<string>('');
+  const [userEmail, setUserEmail] = useState<string>('');
+
+  useEffect(() => {
+    // Get user data from localStorage when component mounts
+    const email = localStorage.getItem('userEmail');
+    const role = localStorage.getItem('userRole');
+    
+    if (!email || !role) {
+      router.push('/login');
+      return;
+    }
+    
+    setUserEmail(email);
+    setUserRole(role);
+  }, [router]);
+
+  const handleSignOut = () => {
+    localStorage.clear();
+    router.push('/login');
+  };
 
   useEffect(() => {
   const loadPdfJs = async () => {
@@ -1325,33 +1387,11 @@ const PDFReader = () => {
           <h3 className="font-semibold">Lumina</h3>
           
           {/* Avatar and Dropdown */}
-          <div className="relative user-menu">
-            <button
-              onClick={() => setShowUserMenu(!showUserMenu)}
-              className="flex items-center justify-center w-8 h-8 rounded-full bg-[rgb(37,187,187)] text-white hover:bg-[rgb(33,168,168)] transition-colors"
-            >
-              <User size={20} />
-            </button>
-
-            {/* Dropdown Menu */}
-            {showUserMenu && (
-              <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
-                <div className="py-1">
-                  <div className="px-4 py-2 text-sm text-gray-700 border-b">
-                    Signed in as<br />
-                    <span className="font-medium">123@456.com</span>
-                  </div>
-                  <button
-                    onClick={() => router.push('/login')}
-                    className="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    <LogOut size={16} className="mr-2" />
-                    Sign out
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
+          <AvatarMenu
+            email={userEmail}
+            role={userRole.toUpperCase()}
+            onSignOut={handleSignOut}
+          />
         </div>
 
         {/* Chat Messages Container */}

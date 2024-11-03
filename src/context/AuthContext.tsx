@@ -4,10 +4,13 @@ import { createContext, useContext, useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
 interface AuthContextType {
-  user: any | null
-  login: (email: string, password: string) => Promise<void>
-  logout: () => Promise<void>
-  isLoading: boolean
+  user: {
+    email: string;
+    role: string;
+  } | null;
+  login: (email: string, password: string, role: string) => Promise<void>;
+  logout: () => Promise<void>;
+  isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -20,20 +23,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Check if user is logged in
     const token = localStorage.getItem('auth_token')
-    if (token) {
-      // Validate token with your backend
-      setUser({ id: '1', email: 'user@example.com' }) // Replace with actual user data
+    const email = localStorage.getItem('userEmail')
+    const role = localStorage.getItem('userRole')
+    
+    if (token && email && role) {
+      setUser({ email, role })
     }
     setIsLoading(false)
   }, [])
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string, role: string) => {
     try {
       // Replace with your actual authentication logic
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, role }),
       })
 
       if (!response.ok) {
@@ -42,7 +47,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       const data = await response.json()
       localStorage.setItem('auth_token', data.token)
-      setUser(data.user)
+      localStorage.setItem('userEmail', email)
+      localStorage.setItem('userRole', role)
+      setUser({ ...data.user, email, role })
       router.push('/dashboard')
     } catch (error) {
       console.error('Login error:', error)
@@ -52,6 +59,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = async () => {
     localStorage.removeItem('auth_token')
+    localStorage.removeItem('userEmail')
+    localStorage.removeItem('userRole')
     setUser(null)
     router.push('/login')
   }

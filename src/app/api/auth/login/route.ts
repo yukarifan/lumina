@@ -2,13 +2,19 @@ import { NextResponse } from 'next/server'
 
 export async function POST(request: Request) {
   try {
-    const { email, password } = await request.json()
+    const { email, password, role } = await request.json()
 
-    // Simple credential check
-    if (email === '123@456.com' && password === '123456') {
+    const validCredentials = {
+      student: { email: 'stu@test.com', password: '123456' },
+      instructor: { email: 'ins@test.com', password: '123456' }
+    };
+
+    const credentials = validCredentials[role as keyof typeof validCredentials];
+    
+    if (email === credentials.email && password === credentials.password) {
       return NextResponse.json({
         token: 'dummy_token',
-        user: { id: '1', email }
+        user: { id: '1', email, role }
       })
     }
 

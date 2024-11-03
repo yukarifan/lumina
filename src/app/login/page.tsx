@@ -4,9 +4,12 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 
+type UserRole = 'student' | 'instructor';
+
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState<UserRole>('student');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -16,13 +19,31 @@ export default function LoginPage() {
     setIsLoading(true);
     setError('');
 
-    if (email === '123@456.com' && password === '123456') {
-      localStorage.setItem('isLoggedIn', 'true');
-      router.push('/dashboard');
-    } else {
-      setError('Invalid email or password. Please use 123@456.com / 123456');
+    try {
+      // For demo purposes, using hardcoded credentials
+      const validCredentials = {
+        student: { email: 'student@example.com', password: '123456' },
+        instructor: { email: 'instructor@example.com', password: '123456' }
+      };
+
+      const credentials = validCredentials[role];
+      
+      if (email === credentials.email && password === credentials.password) {
+        // Store user data in localStorage
+        localStorage.setItem('userEmail', email);
+        localStorage.setItem('userRole', role);
+        localStorage.setItem('isLoggedIn', 'true');
+        
+        // Navigate to dashboard
+        router.push('/dashboard');
+      } else {
+        setError(`Invalid credentials. Use ${credentials.email} / 123456`);
+      }
+    } catch (error) {
+      setError('An error occurred during login');
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   return (
@@ -42,6 +63,34 @@ export default function LoginPage() {
             </div>
           )}
 
+          {/* Role Selection */}
+          <div className="grid grid-cols-2 gap-4">
+            <button
+              type="button"
+              onClick={() => setRole('student')}
+              className={`p-4 rounded-lg border-2 transition-all ${
+                role === 'student'
+                  ? 'border-[rgb(37,187,187)] bg-[rgb(37,187,187,0.1)]'
+                  : 'border-gray-200 hover:border-[rgb(37,187,187)]'
+              }`}
+            >
+              <div className="text-lg font-medium">Student</div>
+              <div className="text-sm text-gray-500">Access your courses</div>
+            </button>
+            <button
+              type="button"
+              onClick={() => setRole('instructor')}
+              className={`p-4 rounded-lg border-2 transition-all ${
+                role === 'instructor'
+                  ? 'border-[rgb(37,187,187)] bg-[rgb(37,187,187,0.1)]'
+                  : 'border-gray-200 hover:border-[rgb(37,187,187)]'
+              }`}
+            >
+              <div className="text-lg font-medium">Instructor</div>
+              <div className="text-sm text-gray-500">Manage your classes</div>
+            </button>
+          </div>
+
           <div className="space-y-4">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
@@ -54,7 +103,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[rgb(37,187,187)] focus:border-[rgb(37,187,187)]"
-                placeholder="123@456.com"
+                placeholder={role === 'student' ? 'student@example.com' : 'instructor@example.com'}
               />
             </div>
 
